@@ -1,0 +1,355 @@
+/* ──────────────────────────────────────────────────────────────
+   App.css  –  FIFA World Cup 2026 Match 96 Probability Tracker
+   ────────────────────────────────────────────────────────────── */
+
+/* ── Reset / base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+/* ── Layout ── */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f4f6f9;
+  color: #1a1a2e;
+}
+
+/* ── Header ── */
+.app__header {
+  background: linear-gradient(135deg, #d52b1e 0%, #9b1515 60%, #5c0a0a 100%);
+  color: #fff;
+  padding: 2rem 1.5rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.app__header-content {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.app__trophy { font-size: 3rem; flex-shrink: 0; }
+
+.app__title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+
+.app__subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-top: 0.25rem;
+  font-weight: 600;
+}
+
+.app__venue {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  margin-top: 0.35rem;
+}
+
+/* ── Main ── */
+.app__main {
+  flex: 1;
+  max-width: 960px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* ── Sections ── */
+.app__section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+}
+
+.app__section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.app__section-desc {
+  font-size: 0.875rem;
+  color: #555;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+/* ── Loading ── */
+.app__loading {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #555;
+}
+
+.app__spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid #e0e0e0;
+  border-top-color: #d52b1e;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Error ── */
+.app__error {
+  background: #fff3f3;
+  border: 1px solid #f5c2c2;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  color: #b02020;
+  font-size: 0.95rem;
+}
+
+/* ── Footer ── */
+.app__footer {
+  background: #1a1a2e;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Canada Highlight Card
+   ════════════════════════════════════════════════════════════════ */
+.canada-highlight {
+  background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
+  border: 2px solid #d52b1e;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.canada-highlight::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #d52b1e, #ff6b6b, #d52b1e);
+}
+
+.canada-highlight__badge {
+  display: inline-block;
+  background: #d52b1e;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 0.2rem 0.7rem;
+  border-radius: 20px;
+  margin-bottom: 0.75rem;
+}
+
+.canada-highlight__flag { font-size: 3.5rem; margin-bottom: 0.5rem; }
+
+.canada-highlight__team {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 0.75rem;
+}
+
+.canada-highlight__probability-container {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.canada-highlight__probability {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #d52b1e;
+  line-height: 1;
+}
+
+.canada-highlight__probability-label {
+  font-size: 1rem;
+  color: #777;
+  font-weight: 500;
+}
+
+.canada-highlight__note {
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.canada-highlight__bar {
+  background: #f0e0e0;
+  border-radius: 20px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.canada-highlight__bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #d52b1e, #ff4d4d);
+  border-radius: 20px;
+  transition: width 0.6s ease;
+}
+
+.canada-highlight--eliminated {
+  border-color: #999;
+  background: #f8f8f8;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Probability List Table
+   ════════════════════════════════════════════════════════════════ */
+.prob-list { overflow-x: auto; }
+
+.prob-list__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.prob-list__table thead th {
+  background: #f4f6f9;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  font-weight: 700;
+  color: #555;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e0e3e8;
+}
+
+.prob-list__table tbody tr {
+  border-bottom: 1px solid #f0f2f5;
+  transition: background 0.15s;
+}
+
+.prob-list__table tbody tr:hover { background: #f9fafc; }
+
+.prob-list__row--canada {
+  background: #fff7f7 !important;
+}
+
+.prob-list__row--canada:hover { background: #ffeeee !important; }
+
+.prob-list__table td {
+  padding: 0.65rem 0.75rem;
+  vertical-align: middle;
+}
+
+.prob-list__rank {
+  color: #888;
+  font-size: 0.8rem;
+  width: 2.5rem;
+  text-align: center;
+}
+
+.prob-list__flag { font-size: 1.3rem; width: 2.5rem; text-align: center; }
+
+.prob-list__name {
+  font-weight: 600;
+  min-width: 140px;
+}
+
+.prob-list__row--canada .prob-list__name { color: #d52b1e; }
+
+.prob-list__host-badge { font-size: 0.85rem; }
+
+.prob-list__conf {
+  color: #777;
+  font-size: 0.8rem;
+  min-width: 100px;
+}
+
+.prob-list__pct {
+  min-width: 80px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #1a1a2e;
+}
+
+.prob-list__row--canada .prob-list__pct strong { color: #d52b1e; }
+
+.prob-list__bar-header,
+.prob-list__bar-cell { width: 30%; min-width: 120px; }
+
+.prob-list__bar-track {
+  background: #eef0f4;
+  border-radius: 20px;
+  height: 8px;
+  overflow: hidden;
+}
+
+.prob-list__bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2980b9, #3498db);
+  border-radius: 20px;
+  transition: width 0.5s ease;
+}
+
+.prob-list__bar-fill--canada {
+  background: linear-gradient(90deg, #d52b1e, #ff6b6b);
+}
+
+.prob-list__empty { color: #777; font-style: italic; text-align: center; padding: 2rem; }
+
+/* ════════════════════════════════════════════════════════════════
+   Last Updated Bar
+   ════════════════════════════════════════════════════════════════ */
+.last-updated {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #eef7ee;
+  border: 1px solid #c3e6c3;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+  color: #2e7d32;
+  margin-bottom: 1.5rem;
+}
+
+.last-updated__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4caf50;
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .app__title { font-size: 1.4rem; }
+  .app__trophy { font-size: 2rem; }
+  .canada-highlight__probability { font-size: 2.8rem; }
+  .prob-list__conf { display: none; }
+  .prob-list__bar-cell, .prob-list__bar-header { display: none; }
+}
