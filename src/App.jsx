@@ -41,7 +41,7 @@ function App() {
     }
     let unsubscribe;
     try {
-      unsubscribe = subscribeToUpdates(handleData, REFRESH_INTERVAL_MS, matchConfig.bracket);
+      unsubscribe = subscribeToUpdates(handleData, REFRESH_INTERVAL_MS, MATCH_CONFIGS[selectedMatchNumber].bracket);
     } catch (err) {
       setError("Failed to load probability data. Please refresh the page.");
       setLoading(false);
@@ -49,7 +49,7 @@ function App() {
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, [handleData, matchConfig]);
+  }, [handleData, selectedMatchNumber]);
 
   const availableMatches = Object.values(MATCH_CONFIGS);
 
