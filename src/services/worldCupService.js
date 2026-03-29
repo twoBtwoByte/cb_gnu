@@ -64,61 +64,77 @@ export const KNOCKOUT_WIN_PROB = 0.50;
 // ---------------------------------------------------------------------------
 
 const BASE_PROBABILITIES = [
-  // Groups not on the Match 96 bracket path (probability = 0)
-  { name: "Argentina",     code: "ARG", flag: "🇦🇷", probability: 0,    confederation: "CONMEBOL", group: "I" },
-  { name: "Brazil",        code: "BRA", flag: "🇧🇷", probability: 0,    confederation: "CONMEBOL", group: "H" },
-  { name: "Spain",         code: "ESP", flag: "🇪🇸", probability: 0,    confederation: "UEFA",     group: "F" },
-  { name: "Germany",       code: "GER", flag: "🇩🇪", probability: 0,    confederation: "UEFA",     group: "G" },
-  { name: "Netherlands",   code: "NED", flag: "🇳🇱", probability: 0,    confederation: "UEFA",     group: "J" },
-  { name: "Portugal",      code: "POR", flag: "🇵🇹", probability: 0,    confederation: "UEFA",     group: "K" },
-  { name: "Belgium",       code: "BEL", flag: "🇧🇪", probability: 0,    confederation: "UEFA",     group: "L" },
-  { name: "Uruguay",       code: "URU", flag: "🇺🇾", probability: 0,    confederation: "CONMEBOL", group: "A" },
-  { name: "United States", code: "USA", flag: "🇺🇸", probability: 0,    confederation: "CONCACAF", isHost: true, group: "A" },
-  { name: "Italy",         code: "ITA", flag: "🇮🇹", probability: 0,    confederation: "UEFA",     group: "A" },
-  { name: "Denmark",       code: "DEN", flag: "🇩🇰", probability: 0,    confederation: "UEFA",     group: "F" },
-  { name: "Japan",         code: "JPN", flag: "🇯🇵", probability: 0,    confederation: "AFC",      group: "A" },
-  { name: "Austria",       code: "AUT", flag: "🇦🇹", probability: 0,    confederation: "UEFA",     group: "G" },
-  { name: "South Korea",   code: "KOR", flag: "🇰🇷", probability: 0,    confederation: "AFC",      group: "F" },
-  { name: "Ivory Coast",   code: "CIV", flag: "🇨🇮", probability: 0,    confederation: "CAF",      group: "H" },
-  { name: "Peru",          code: "PER", flag: "🇵🇪", probability: 0,    confederation: "CONMEBOL", group: "G" },
-  { name: "Chile",         code: "CHI", flag: "🇨🇱", probability: 0,    confederation: "CONMEBOL", group: "K" },
-  { name: "Poland",        code: "POL", flag: "🇵🇱", probability: 0,    confederation: "UEFA",     group: "J" },
-  { name: "Cameroon",      code: "CMR", flag: "🇨🇲", probability: 0,    confederation: "CAF",      group: "L" },
-  { name: "Qatar",         code: "QAT", flag: "🇶🇦", probability: 0,    confederation: "AFC",      group: "I" },
-  { name: "Saudi Arabia",  code: "KSA", flag: "🇸🇦", probability: 0,    confederation: "AFC",      group: "F" },
-  { name: "Iran",          code: "IRN", flag: "🇮🇷", probability: 0,    confederation: "AFC",      group: "K" },
-  { name: "Paraguay",      code: "PAR", flag: "🇵🇾", probability: 0,    confederation: "CONMEBOL", group: "L" },
-  { name: "Venezuela",     code: "VEN", flag: "🇻🇪", probability: 0,    confederation: "CONMEBOL", group: "H" },
-  { name: "Greece",        code: "GRE", flag: "🇬🇷", probability: 0,    confederation: "UEFA",     group: "G" },
-  { name: "Slovakia",      code: "SVK", flag: "🇸🇰", probability: 0,    confederation: "UEFA",     group: "J" },
-  { name: "Ukraine",       code: "UKR", flag: "🇺🇦", probability: 0,    confederation: "UEFA",     group: "I" },
-  { name: "Hungary",       code: "HUN", flag: "🇭🇺", probability: 0,    confederation: "UEFA",     group: "L" },
-  { name: "Serbia",        code: "SRB", flag: "🇷🇸", probability: 0,    confederation: "UEFA",     group: "K" },
-  { name: "New Zealand",   code: "NZL", flag: "🇳🇿", probability: 0,    confederation: "OFC",      group: "F" },
+  // Group A – not on Match 96 bracket path (probability = 0)
+  { name: "Mexico",                            code: "MEX",   flag: "🇲🇽", probability: 0,    confederation: "CONCACAF", isHost: true, group: "A" },
+  { name: "South Africa",                      code: "RSA",   flag: "🇿🇦", probability: 0,    confederation: "CAF",                   group: "A" },
+  { name: "South Korea",                       code: "KOR",   flag: "🇰🇷", probability: 0,    confederation: "AFC",                   group: "A" },
+  { name: "TBC (Denmark / Czech Republic)",    code: "TBC_A", flag: "🏳️",  probability: 0,    confederation: "UEFA",                  group: "A" },
 
   // Group B – 4 teams, 2nd place leads to Match 96: P = 1/4 × 0.5 = 12.5%
-  { name: "Colombia",      code: "COL", flag: "🇨🇴", probability: 12.5, confederation: "CONMEBOL", group: "B" },
-  { name: "Mexico",        code: "MEX", flag: "🇲🇽", probability: 12.5, confederation: "CONCACAF", isHost: true, group: "B" },
-  { name: "Ecuador",       code: "ECU", flag: "🇪🇨", probability: 12.5, confederation: "CONMEBOL", group: "B" },
-  { name: "Ghana",         code: "GHA", flag: "🇬🇭", probability: 12.5, confederation: "CAF",      group: "B" },
+  { name: "Canada",                            code: "CAN",   flag: "🇨🇦", probability: 12.5, confederation: "CONCACAF", isHost: true, group: "B" },
+  { name: "TBC (Italy / Bosnia & Herzegovina)", code: "TBC_B", flag: "🏳️", probability: 12.5, confederation: "UEFA",                  group: "B" },
+  { name: "Qatar",                             code: "QAT",   flag: "🇶🇦", probability: 12.5, confederation: "AFC",                   group: "B" },
+  { name: "Switzerland",                       code: "SUI",   flag: "🇨🇭", probability: 12.5, confederation: "UEFA",                  group: "B" },
 
-  // Group C – 4 teams, 1st place leads to Match 96: P = 1/4 × 0.5 = 12.5 %
-  { name: "Morocco",       code: "MAR", flag: "🇲🇦", probability: 12.5, confederation: "CAF",      group: "C" },
-  { name: "Canada",        code: "CAN", flag: "🇨🇦", probability: 12.5, confederation: "CONCACAF", isHost: true, group: "C" },
-  { name: "Australia",     code: "AUS", flag: "🇦🇺", probability: 12.5, confederation: "AFC",      group: "C" },
-  { name: "Turkey",        code: "TUR", flag: "🇹🇷", probability: 12.5, confederation: "UEFA",     group: "C" },
+  // Group C – 4 teams, 1st place leads to Match 96: P = 1/4 × 0.5 = 12.5%
+  { name: "Brazil",                            code: "BRA",   flag: "🇧🇷", probability: 12.5, confederation: "CONMEBOL",              group: "C" },
+  { name: "Morocco",                           code: "MAR",   flag: "🇲🇦", probability: 12.5, confederation: "CAF",                   group: "C" },
+  { name: "Haiti",                             code: "HAI",   flag: "🇭🇹", probability: 12.5, confederation: "CONCACAF",              group: "C" },
+  { name: "Scotland",                          code: "SCO",   flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", probability: 12.5, confederation: "UEFA",                  group: "C" },
 
-  // Group D – 4 teams, 1st place leads to Match 96: P = 1/4 × 0.5 = 12.5 %
-  { name: "France",        code: "FRA", flag: "🇫🇷", probability: 12.5, confederation: "UEFA",     group: "D" },
-  { name: "Croatia",       code: "CRO", flag: "🇭🇷", probability: 12.5, confederation: "UEFA",     group: "D" },
-  { name: "Senegal",       code: "SEN", flag: "🇸🇳", probability: 12.5, confederation: "CAF",      group: "D" },
-  { name: "Algeria",       code: "ALG", flag: "🇩🇿", probability: 12.5, confederation: "CAF",      group: "D" },
+  // Group D – 4 teams, 1st place leads to Match 96: P = 1/4 × 0.5 = 12.5%
+  { name: "United States",                     code: "USA",   flag: "🇺🇸", probability: 12.5, confederation: "CONCACAF", isHost: true, group: "D" },
+  { name: "Paraguay",                          code: "PAR",   flag: "🇵🇾", probability: 12.5, confederation: "CONMEBOL",              group: "D" },
+  { name: "Australia",                         code: "AUS",   flag: "🇦🇺", probability: 12.5, confederation: "AFC",                   group: "D" },
+  { name: "TBC (Türkiye / Kosovo)",            code: "TBC_D", flag: "🏳️",  probability: 12.5, confederation: "UEFA",                  group: "D" },
 
   // Group E – 4 teams, 2nd place leads to Match 96: P = 1/4 × 0.5 = 12.5%
-  { name: "England",       code: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", probability: 12.5, confederation: "UEFA",     group: "E" },
-  { name: "Switzerland",   code: "SUI", flag: "🇨🇭", probability: 12.5, confederation: "UEFA",     group: "E" },
-  { name: "Nigeria",       code: "NGA", flag: "🇳🇬", probability: 12.5, confederation: "CAF",      group: "E" },
-  { name: "Egypt",         code: "EGY", flag: "🇪🇬", probability: 12.5, confederation: "CAF",      group: "E" },
+  { name: "Germany",                           code: "GER",   flag: "🇩🇪", probability: 12.5, confederation: "UEFA",                  group: "E" },
+  { name: "Curaçao",                           code: "CUW",   flag: "🇨🇼", probability: 12.5, confederation: "CONCACAF",              group: "E" },
+  { name: "Ivory Coast",                       code: "CIV",   flag: "🇨🇮", probability: 12.5, confederation: "CAF",                   group: "E" },
+  { name: "Ecuador",                           code: "ECU",   flag: "🇪🇨", probability: 12.5, confederation: "CONMEBOL",              group: "E" },
+
+  // Group F – not on Match 96 bracket path (probability = 0)
+  { name: "Netherlands",                       code: "NED",   flag: "🇳🇱", probability: 0,    confederation: "UEFA",                  group: "F" },
+  { name: "Japan",                             code: "JPN",   flag: "🇯🇵", probability: 0,    confederation: "AFC",                   group: "F" },
+  { name: "TBC (Sweden / Poland)",             code: "TBC_F", flag: "🏳️",  probability: 0,    confederation: "UEFA",                  group: "F" },
+  { name: "Tunisia",                           code: "TUN",   flag: "🇹🇳", probability: 0,    confederation: "CAF",                   group: "F" },
+
+  // Group G – not on Match 96 bracket path (probability = 0)
+  { name: "Belgium",                           code: "BEL",   flag: "🇧🇪", probability: 0,    confederation: "UEFA",                  group: "G" },
+  { name: "Egypt",                             code: "EGY",   flag: "🇪🇬", probability: 0,    confederation: "CAF",                   group: "G" },
+  { name: "Iran",                              code: "IRN",   flag: "🇮🇷", probability: 0,    confederation: "AFC",                   group: "G" },
+  { name: "New Zealand",                       code: "NZL",   flag: "🇳🇿", probability: 0,    confederation: "OFC",                   group: "G" },
+
+  // Group H – not on Match 96 bracket path (probability = 0)
+  { name: "Spain",                             code: "ESP",   flag: "🇪🇸", probability: 0,    confederation: "UEFA",                  group: "H" },
+  { name: "Cape Verde",                        code: "CPV",   flag: "🇨🇻", probability: 0,    confederation: "CAF",                   group: "H" },
+  { name: "Saudi Arabia",                      code: "KSA",   flag: "🇸🇦", probability: 0,    confederation: "AFC",                   group: "H" },
+  { name: "Uruguay",                           code: "URU",   flag: "🇺🇾", probability: 0,    confederation: "CONMEBOL",              group: "H" },
+
+  // Group I – not on Match 96 bracket path (probability = 0)
+  { name: "France",                            code: "FRA",   flag: "🇫🇷", probability: 0,    confederation: "UEFA",                  group: "I" },
+  { name: "Senegal",                           code: "SEN",   flag: "🇸🇳", probability: 0,    confederation: "CAF",                   group: "I" },
+  { name: "TBC (Iraq / Bolivia)",              code: "TBC_I", flag: "🏳️",  probability: 0,    confederation: "AFC",                   group: "I" },
+  { name: "Norway",                            code: "NOR",   flag: "🇳🇴", probability: 0,    confederation: "UEFA",                  group: "I" },
+
+  // Group J – not on Match 96 bracket path (probability = 0)
+  { name: "Argentina",                         code: "ARG",   flag: "🇦🇷", probability: 0,    confederation: "CONMEBOL",              group: "J" },
+  { name: "Algeria",                           code: "ALG",   flag: "🇩🇿", probability: 0,    confederation: "CAF",                   group: "J" },
+  { name: "Austria",                           code: "AUT",   flag: "🇦🇹", probability: 0,    confederation: "UEFA",                  group: "J" },
+  { name: "Jordan",                            code: "JOR",   flag: "🇯🇴", probability: 0,    confederation: "AFC",                   group: "J" },
+
+  // Group K – not on Match 96 bracket path (probability = 0)
+  { name: "Portugal",                          code: "POR",   flag: "🇵🇹", probability: 0,    confederation: "UEFA",                  group: "K" },
+  { name: "TBC (DR Congo / Jamaica)",          code: "TBC_K", flag: "🏳️",  probability: 0,    confederation: "CAF",                   group: "K" },
+  { name: "Uzbekistan",                        code: "UZB",   flag: "🇺🇿", probability: 0,    confederation: "AFC",                   group: "K" },
+  { name: "Colombia",                          code: "COL",   flag: "🇨🇴", probability: 0,    confederation: "CONMEBOL",              group: "K" },
+
+  // Group L – not on Match 96 bracket path (probability = 0)
+  { name: "England",                           code: "ENG",   flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", probability: 0,    confederation: "UEFA",                  group: "L" },
+  { name: "Croatia",                           code: "CRO",   flag: "🇭🇷", probability: 0,    confederation: "UEFA",                  group: "L" },
+  { name: "Ghana",                             code: "GHA",   flag: "🇬🇭", probability: 0,    confederation: "CAF",                   group: "L" },
+  { name: "Panama",                            code: "PAN",   flag: "🇵🇦", probability: 0,    confederation: "CONCACAF",              group: "L" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -251,10 +267,10 @@ export async function getNotableProbabilities() {
 // not lead to BC Place in this round.
 //
 // Groups B and C at a glance (FIFA 2026 draw):
-//   Group B : Mexico 🇲🇽  Ecuador 🇪🇨  Colombia 🇨🇴  Ghana 🇬🇭
-//   Group C : Canada 🇨🇦  Morocco 🇲🇦  Turkey 🇹🇷  Australia 🇦🇺
-//   Group D : France 🇫🇷  Senegal 🇸🇳  Algeria 🇩🇿  Croatia 🇭🇷
-//   Group E : England 🏴󠁧󠁢󠁥󠁮󠁧󠁿  Switzerland 🇨🇭  Nigeria 🇳🇬  Egypt 🇪🇬
+//   Group B : Canada 🇨🇦  TBC (Italy/Bosnia) 🏳️  Qatar 🇶🇦  Switzerland 🇨🇭
+//   Group C : Brazil 🇧🇷  Morocco 🇲🇦  Haiti 🇭🇹  Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿
+//   Group D : United States 🇺🇸  Paraguay 🇵🇾  Australia 🇦🇺  TBC (Türkiye/Kosovo) 🏳️
+//   Group E : Germany 🇩🇪  Curaçao 🇨🇼  Ivory Coast 🇨🇮  Ecuador 🇪🇨
 // ---------------------------------------------------------------------------
 
 /**
