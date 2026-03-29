@@ -3,8 +3,10 @@ import {
   getMatchProbabilities,
   getNotableProbabilities,
   MATCH_INFO,
+  MATCH_CONFIGS,
   MATCH_96_BRACKET,
   KNOCKOUT_WIN_PROB,
+  computeProbabilityForMatch,
   buildTeamPaths,
   getTournamentPaths,
 } from "./services/worldCupService";
@@ -41,12 +43,12 @@ describe("worldCupService", () => {
       });
     });
 
-    it("teams in groups C, D and E (not on the direct Match 96 path) have probability 0%", async () => {
+    it("teams in groups A, C and H (not on any Match 96 bracket path) have probability 0%", async () => {
       const { teams } = await getMatchProbabilities();
-      const offDirectGroups = ["C", "D", "E"];
-      const offDirect = teams.filter((t) => offDirectGroups.includes(t.group));
-      expect(offDirect.length).toBeGreaterThan(0);
-      offDirect.forEach((t) => {
+      const noPathGroups = ["A", "C", "H"];
+      const noPath = teams.filter((t) => noPathGroups.includes(t.group));
+      expect(noPath.length).toBeGreaterThan(0);
+      noPath.forEach((t) => {
         expect(t.probability).toBe(0);
       });
     });
@@ -59,9 +61,9 @@ describe("worldCupService", () => {
       });
     });
 
-    it("teams not on the Match 96 path have probability 0%", async () => {
+    it("teams in groups A, C and H have probability 0% (not on any Match 96 bracket path)", async () => {
       const { teams } = await getMatchProbabilities();
-      const offPathGroups = ["A", "C", "D", "E", "F", "G", "H", "I", "J", "L"];
+      const offPathGroups = ["A", "C", "H"];
       const offPath = teams.filter((t) => offPathGroups.includes(t.group));
       expect(offPath.length).toBeGreaterThan(0);
       offPath.forEach((t) => {
@@ -143,9 +145,9 @@ describe("worldCupService", () => {
       expect(teams.length).toBeGreaterThan(5);
     });
 
-    it("only contains teams from Groups B or K (the Match 96 bracket groups)", async () => {
+    it("only contains teams from groups with a path to Match 96 (B, D, E, F, G, I, J, K, L)", async () => {
       const { teams } = await getNotableProbabilities();
-      const validGroups = new Set(["B", "K"]);
+      const validGroups = new Set(["B", "D", "E", "F", "G", "I", "J", "K", "L"]);
       teams.forEach((t) => {
         expect(validGroups.has(t.group)).toBe(true);
       });
@@ -171,8 +173,8 @@ describe("worldCupService", () => {
 
   describe("buildTeamPaths", () => {
     it("returns an empty array for teams not on the Match 96 bracket path", () => {
-      const argentina = { code: "ARG", group: "J", probability: 0 };
-      expect(buildTeamPaths(argentina)).toEqual([]);
+      const mexico = { code: "MEX", group: "A", probability: 0 };
+      expect(buildTeamPaths(mexico)).toEqual([]);
 
       const spain = { code: "ESP", group: "H", probability: 0 };
       expect(buildTeamPaths(spain)).toEqual([]);
@@ -205,14 +207,28 @@ describe("worldCupService", () => {
       expect(buildTeamPaths(brazil)).toEqual([]);
     });
 
-    it("returns no paths for USA (Group D - not on direct path)", () => {
-      const usa = { code: "USA", group: "D", probability: 0 };
-      expect(buildTeamPaths(usa)).toEqual([]);
+    it("returns 1 path for USA (Group D - can qualify via 3rd place for R32 M87)", () => {
+      const usa = { code: "USA", group: "D", probability: 2.5 };
+      const paths = buildTeamPaths(usa);
+      expect(paths.length).toBe(1);
+      expect(paths[0].requiredPosition).toBe(3);
+      expect(paths[0].r32Label).toBe("R32 Match 87");
+      expect(paths[0].groupFinishLabel).toContain("3rd");
+      expect(paths[0].groupFinishLabel).toContain("Group D");
     });
 
-    it("returns no paths for Germany (Group E - not on direct path)", () => {
-      const germany = { code: "GER", group: "E", probability: 0 };
-      expect(buildTeamPaths(germany)).toEqual([]);
+    it("returns 2 paths for Germany (Group E - eligible for both R32 M85 and R32 M87 via 3rd place)", () => {
+      const germany = { code: "GER", group: "E", probability: 5 };
+      const paths = buildTeamPaths(germany);
+      expect(paths.length).toBe(2);
+      paths.forEach((p) => {
+        expect(p.requiredPosition).toBe(3);
+        expect(p.groupFinishLabel).toContain("3rd");
+        expect(p.groupFinishLabel).toContain("Group E");
+      });
+      const r32Labels = paths.map((p) => p.r32Label);
+      expect(r32Labels).toContain("R32 Match 85");
+      expect(r32Labels).toContain("R32 Match 87");
     });
 
     it("all scenario probabilities are equal (uniform model)", () => {
@@ -287,7 +303,7 @@ describe("worldCupService", () => {
     it("only includes teams whose group leads to Match 96", async () => {
       const { teams } = await getMatchProbabilities();
       const result = getTournamentPaths(teams);
-      const validGroups = new Set(["B", "K"]);
+      const validGroups = new Set(["B", "D", "E", "F", "G", "I", "J", "K", "L"]);
       result.forEach(({ team }) => {
         expect(validGroups.has(team.group)).toBe(true);
       });
@@ -297,11 +313,9 @@ describe("worldCupService", () => {
       const { teams } = await getMatchProbabilities();
       const result = getTournamentPaths(teams);
       const codes = result.map(({ team }) => team.code);
-      expect(codes).not.toContain("ARG"); // Group J
-      expect(codes).not.toContain("FRA"); // Group I
-      expect(codes).not.toContain("ESP"); // Group H
-      expect(codes).not.toContain("BRA"); // Group C (no longer on direct path)
-      expect(codes).not.toContain("USA"); // Group D (no longer on direct path)
+      expect(codes).not.toContain("ESP"); // Group H – no path to Match 96
+      expect(codes).not.toContain("BRA"); // Group C – no path to Match 96
+      expect(codes).not.toContain("MEX"); // Group A – no path to Match 96
     });
 
     it("includes Canada in the tournament paths", async () => {
@@ -327,6 +341,152 @@ describe("worldCupService", () => {
       result.forEach(({ paths }) => {
         expect(paths.length).toBeGreaterThan(0);
       });
+    });
+  });
+
+  describe("MATCH_CONFIGS", () => {
+    it("contains an entry for Match 96", () => {
+      expect(MATCH_CONFIGS[96]).toBeDefined();
+      expect(MATCH_CONFIGS[96].matchNumber).toBe(96);
+    });
+
+    it("MATCH_INFO is an alias for MATCH_CONFIGS[96]", () => {
+      expect(MATCH_INFO).toBe(MATCH_CONFIGS[96]);
+    });
+
+    it("MATCH_96_BRACKET is an alias for MATCH_CONFIGS[96].bracket", () => {
+      expect(MATCH_96_BRACKET).toBe(MATCH_CONFIGS[96].bracket);
+    });
+
+    it("Match 96 bracket slot1 feeds via R32 Match 85 (Group B 1st vs best 3rd E/F/G/I/J)", () => {
+      const { slot1 } = MATCH_CONFIGS[96].bracket;
+      expect(slot1.r32Label).toBe("R32 Match 85");
+      expect(slot1.sideA).toEqual({ group: "B", position: 1 });
+      expect(slot1.sideB.eligibleGroups).toEqual(["E", "F", "G", "I", "J"]);
+    });
+
+    it("Match 96 bracket slot2 feeds via R32 Match 87 (Group K 1st vs best 3rd D/E/I/J/L)", () => {
+      const { slot2 } = MATCH_CONFIGS[96].bracket;
+      expect(slot2.r32Label).toBe("R32 Match 87");
+      expect(slot2.sideA).toEqual({ group: "K", position: 1 });
+      expect(slot2.sideB.eligibleGroups).toEqual(["D", "E", "I", "J", "L"]);
+    });
+  });
+
+  describe("computeProbabilityForMatch", () => {
+    it("Group B team has probability 12.5% (1st-place path via R32 M85)", () => {
+      const canada = { group: "B" };
+      expect(computeProbabilityForMatch(canada, MATCH_96_BRACKET)).toBeCloseTo(12.5, 5);
+    });
+
+    it("Group K team has probability 12.5% (1st-place path via R32 M87)", () => {
+      const portugal = { group: "K" };
+      expect(computeProbabilityForMatch(portugal, MATCH_96_BRACKET)).toBeCloseTo(12.5, 5);
+    });
+
+    it("Group D team has probability 2.5% (3rd-place path via R32 M87 only)", () => {
+      const usa = { group: "D" };
+      expect(computeProbabilityForMatch(usa, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
+    });
+
+    it("Group F team has probability 2.5% (3rd-place path via R32 M85 only)", () => {
+      const netherlands = { group: "F" };
+      expect(computeProbabilityForMatch(netherlands, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
+    });
+
+    it("Group G team has probability 2.5% (3rd-place path via R32 M85 only)", () => {
+      const belgium = { group: "G" };
+      expect(computeProbabilityForMatch(belgium, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
+    });
+
+    it("Group L team has probability 2.5% (3rd-place path via R32 M87 only)", () => {
+      const england = { group: "L" };
+      expect(computeProbabilityForMatch(england, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
+    });
+
+    it("Group E team has probability 5% (3rd-place path via both R32 M85 and R32 M87)", () => {
+      const germany = { group: "E" };
+      expect(computeProbabilityForMatch(germany, MATCH_96_BRACKET)).toBeCloseTo(5, 5);
+    });
+
+    it("Group I team has probability 5% (3rd-place path via both R32 M85 and R32 M87)", () => {
+      const france = { group: "I" };
+      expect(computeProbabilityForMatch(france, MATCH_96_BRACKET)).toBeCloseTo(5, 5);
+    });
+
+    it("Group J team has probability 5% (3rd-place path via both R32 M85 and R32 M87)", () => {
+      const argentina = { group: "J" };
+      expect(computeProbabilityForMatch(argentina, MATCH_96_BRACKET)).toBeCloseTo(5, 5);
+    });
+
+    it("Groups A, C and H have probability 0% (no path to Match 96)", () => {
+      [{ group: "A" }, { group: "C" }, { group: "H" }].forEach((team) => {
+        expect(computeProbabilityForMatch(team, MATCH_96_BRACKET)).toBe(0);
+      });
+    });
+  });
+
+  describe("3rd-place bracket paths", () => {
+    it("groups D, E, F, G, I, J and L all have non-zero probability", async () => {
+      const { teams } = await getMatchProbabilities();
+      const thirdPlaceGroups = ["D", "E", "F", "G", "I", "J", "L"];
+      thirdPlaceGroups.forEach((g) => {
+        const groupTeams = teams.filter((t) => t.group === g);
+        expect(groupTeams.length).toBeGreaterThan(0);
+        groupTeams.forEach((t) => {
+          expect(t.probability).toBeGreaterThan(0);
+        });
+      });
+    });
+
+    it("groups eligible for both slots (E, I, J) have higher probability than single-slot groups (D, F, G, L)", async () => {
+      const { teams } = await getMatchProbabilities();
+      const dual = teams.find((t) => t.group === "E");
+      const single = teams.find((t) => t.group === "D");
+      expect(dual.probability).toBeGreaterThan(single.probability);
+    });
+
+    it("3rd-place path r32Opponents reference the correct opposing group", () => {
+      // Group D can only feed slot2 (R32 M87) → opponent is 1st Group K
+      const usa = { code: "USA", group: "D", probability: 2.5 };
+      const paths = buildTeamPaths(usa);
+      expect(paths.length).toBe(1);
+      expect(paths[0].r32Opponent.name).toContain("Group K");
+
+      // Group F can only feed slot1 (R32 M85) → opponent is 1st Group B
+      const netherlands = { code: "NED", group: "F", probability: 2.5 };
+      const fPaths = buildTeamPaths(netherlands);
+      expect(fPaths.length).toBe(1);
+      expect(fPaths[0].r32Opponent.name).toContain("Group B");
+    });
+
+    it("3rd-place scenario probabilities for each path sum to the team's total probability", () => {
+      const argentina = { code: "ARG", group: "J", probability: 5 };
+      const paths = buildTeamPaths(argentina);
+      const total = paths.reduce((sum, p) => sum + p.probability, 0);
+      expect(total).toBeCloseTo(argentina.probability, 1);
+    });
+  });
+
+  describe("match selector support (bracket parameterisation)", () => {
+    it("getMatchProbabilities accepts a custom bracket and computes correct probabilities", async () => {
+      const { teams } = await getMatchProbabilities(MATCH_96_BRACKET);
+      const canada = teams.find((t) => t.code === "CAN");
+      expect(canada.probability).toBeCloseTo(12.5, 5);
+    });
+
+    it("getTournamentPaths accepts a custom bracket and filters teams accordingly", async () => {
+      const { teams } = await getMatchProbabilities(MATCH_96_BRACKET);
+      const result = getTournamentPaths(teams, MATCH_96_BRACKET);
+      result.forEach(({ paths }) => {
+        expect(paths.length).toBeGreaterThan(0);
+      });
+    });
+
+    it("buildTeamPaths respects a custom bracket parameter", () => {
+      // With the default Match 96 bracket, Group E has 2 paths
+      const germany = { code: "GER", group: "E" };
+      expect(buildTeamPaths(germany, MATCH_96_BRACKET).length).toBe(2);
     });
   });
 });
