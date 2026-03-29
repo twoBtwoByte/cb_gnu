@@ -4,6 +4,7 @@ import {
   getNotableProbabilities,
   MATCH_INFO,
   MATCH_96_BRACKET,
+  KNOCKOUT_WIN_PROB,
   buildTeamPaths,
   getTournamentPaths,
 } from "./services/worldCupService";
@@ -19,6 +20,56 @@ describe("worldCupService", () => {
     it("should be a Round of 16 match on July 7, 2026", () => {
       expect(MATCH_INFO.stage).toBe("Round of 16");
       expect(MATCH_INFO.scheduledDate).toBe("July 7, 2026");
+    });
+  });
+
+  describe("KNOCKOUT_WIN_PROB", () => {
+    it("is exactly 0.5 (50/50 chance in any knockout match)", () => {
+      expect(KNOCKOUT_WIN_PROB).toBe(0.5);
+    });
+  });
+
+  describe("uniform probability model", () => {
+    it("every team in a 4-team group (C or D) on the Match 96 path has probability 12.5%", async () => {
+      const { teams } = await getMatchProbabilities();
+      const groupCTeams = teams.filter((t) => t.group === "C");
+      const groupDTeams = teams.filter((t) => t.group === "D");
+      expect(groupCTeams.length).toBeGreaterThan(0);
+      expect(groupDTeams.length).toBeGreaterThan(0);
+      [...groupCTeams, ...groupDTeams].forEach((t) => {
+        expect(t.probability).toBeCloseTo(12.5, 5);
+      });
+    });
+
+    it("every team in a 5-team group (B or E) on the Match 96 path has probability 10.0%", async () => {
+      const { teams } = await getMatchProbabilities();
+      const groupBTeams = teams.filter((t) => t.group === "B");
+      const groupETeams = teams.filter((t) => t.group === "E");
+      expect(groupBTeams.length).toBeGreaterThan(0);
+      expect(groupETeams.length).toBeGreaterThan(0);
+      [...groupBTeams, ...groupETeams].forEach((t) => {
+        expect(t.probability).toBeCloseTo(10.0, 5);
+      });
+    });
+
+    it("teams not on the Match 96 path have probability 0%", async () => {
+      const { teams } = await getMatchProbabilities();
+      const offPathGroups = ["A", "F", "G", "H", "I", "J", "K", "L"];
+      const offPath = teams.filter((t) => offPathGroups.includes(t.group));
+      expect(offPath.length).toBeGreaterThan(0);
+      offPath.forEach((t) => {
+        expect(t.probability).toBe(0);
+      });
+    });
+
+    it("Canada has the same probability as every other Group C team", async () => {
+      const { teams } = await getMatchProbabilities();
+      const canada = teams.find((t) => t.code === "CAN");
+      const groupC = teams.filter((t) => t.group === "C");
+      expect(canada).toBeDefined();
+      groupC.forEach((t) => {
+        expect(t.probability).toBeCloseTo(canada.probability, 5);
+      });
     });
   });
 
@@ -84,6 +135,14 @@ describe("worldCupService", () => {
       const { teams } = await getNotableProbabilities();
       expect(teams.length).toBeGreaterThan(5);
     });
+
+    it("only contains teams from Groups B, C, D or E (the Match 96 bracket groups)", async () => {
+      const { teams } = await getNotableProbabilities();
+      const validGroups = new Set(["B", "C", "D", "E"]);
+      teams.forEach((t) => {
+        expect(validGroups.has(t.group)).toBe(true);
+      });
+    });
   });
 
   describe("MATCH_96_BRACKET", () => {
@@ -105,15 +164,15 @@ describe("worldCupService", () => {
 
   describe("buildTeamPaths", () => {
     it("returns an empty array for teams not on the Match 96 bracket path", () => {
-      const argentina = { code: "ARG", group: "I", probability: 18.5 };
+      const argentina = { code: "ARG", group: "I", probability: 0 };
       expect(buildTeamPaths(argentina)).toEqual([]);
 
-      const brazil = { code: "BRA", group: "H", probability: 14.2 };
+      const brazil = { code: "BRA", group: "H", probability: 0 };
       expect(buildTeamPaths(brazil)).toEqual([]);
     });
 
-    it("returns paths for Canada (Group C – needs 1st place)", () => {
-      const canada = { code: "CAN", group: "C", probability: 3.4 };
+    it("returns paths for Canada (Group C - needs 1st place)", () => {
+      const canada = { code: "CAN", group: "C", probability: 12.5 };
       const paths = buildTeamPaths(canada);
       expect(paths.length).toBeGreaterThan(0);
       paths.forEach((p) => {
@@ -123,8 +182,8 @@ describe("worldCupService", () => {
       });
     });
 
-    it("returns paths for Mexico (Group B – needs 2nd place)", () => {
-      const mexico = { code: "MEX", group: "B", probability: 5.2 };
+    it("returns paths for Mexico (Group B - needs 2nd place)", () => {
+      const mexico = { code: "MEX", group: "B", probability: 10.0 };
       const paths = buildTeamPaths(mexico);
       expect(paths.length).toBeGreaterThan(0);
       paths.forEach((p) => {
@@ -134,8 +193,8 @@ describe("worldCupService", () => {
       });
     });
 
-    it("returns paths for France (Group D – needs 1st place)", () => {
-      const france = { code: "FRA", group: "D", probability: 16.2 };
+    it("returns paths for France (Group D - needs 1st place)", () => {
+      const france = { code: "FRA", group: "D", probability: 12.5 };
       const paths = buildTeamPaths(france);
       expect(paths.length).toBeGreaterThan(0);
       paths.forEach((p) => {
@@ -144,8 +203,8 @@ describe("worldCupService", () => {
       });
     });
 
-    it("returns paths for England (Group E – needs 2nd place)", () => {
-      const england = { code: "ENG", group: "E", probability: 14.8 };
+    it("returns paths for England (Group E - needs 2nd place)", () => {
+      const england = { code: "ENG", group: "E", probability: 10.0 };
       const paths = buildTeamPaths(england);
       expect(paths.length).toBeGreaterThan(0);
       paths.forEach((p) => {
@@ -154,16 +213,54 @@ describe("worldCupService", () => {
       });
     });
 
-    it("each path has a non-negative probability", () => {
-      const france = { code: "FRA", group: "D", probability: 16.2 };
-      const paths = buildTeamPaths(france);
+    it("all scenario probabilities are equal (uniform model)", () => {
+      const canada = { code: "CAN", group: "C", probability: 12.5 };
+      const paths = buildTeamPaths(canada);
+      expect(paths.length).toBeGreaterThan(0);
+      const first = paths[0].probability;
       paths.forEach((p) => {
-        expect(p.probability).toBeGreaterThanOrEqual(0);
+        expect(p.probability).toBe(first);
       });
     });
 
+    it("scenario probability equals (1/ownGroupSize) x (1/oppGroupSize) x 0.5 x 100 (expressed as %)", () => {
+      // Canada: Group C has 4 teams, Group B (opponents) has 5 teams
+      // P = 1/4 x 1/5 x 0.5 x 100 = 2.5 %
+      const canada = { code: "CAN", group: "C", probability: 12.5 };
+      const paths = buildTeamPaths(canada);
+      expect(paths.length).toBeGreaterThan(0);
+      paths.forEach((p) => {
+        expect(p.probability).toBeCloseTo(2.5, 5);
+      });
+    });
+
+    it("Group D team scenarios each have probability 2.5% (4-team group vs 5-team group)", () => {
+      const france = { code: "FRA", group: "D", probability: 12.5 };
+      const paths = buildTeamPaths(france);
+      // Group D (4 teams) x Group E (5 teams) x 0.5 x 100 = 2.5 %
+      paths.forEach((p) => {
+        expect(p.probability).toBeCloseTo(2.5, 5);
+      });
+    });
+
+    it("Group B team scenarios each have probability 2.5% (5-team group vs 4-team group)", () => {
+      const colombia = { code: "COL", group: "B", probability: 10.0 };
+      const paths = buildTeamPaths(colombia);
+      // Group B (5 teams) x Group C (4 teams) x 0.5 x 100 = 2.5 %
+      paths.forEach((p) => {
+        expect(p.probability).toBeCloseTo(2.5, 5);
+      });
+    });
+
+    it("scenario probabilities sum to the team's total probability", () => {
+      const canada = { code: "CAN", group: "C", probability: 12.5 };
+      const paths = buildTeamPaths(canada);
+      const total = paths.reduce((sum, p) => sum + p.probability, 0);
+      expect(total).toBeCloseTo(canada.probability, 1);
+    });
+
     it("each path includes an r32Opponent with name, code and flag", () => {
-      const canada = { code: "CAN", group: "C", probability: 3.4 };
+      const canada = { code: "CAN", group: "C", probability: 12.5 };
       const paths = buildTeamPaths(canada);
       expect(paths.length).toBeGreaterThan(0);
       paths.forEach((p) => {
@@ -174,12 +271,22 @@ describe("worldCupService", () => {
       });
     });
 
-    it("paths are sorted by descending probability", () => {
-      const france = { code: "FRA", group: "D", probability: 16.2 };
-      const paths = buildTeamPaths(france);
-      for (let i = 0; i < paths.length - 1; i++) {
-        expect(paths[i].probability).toBeGreaterThanOrEqual(paths[i + 1].probability);
-      }
+    it("number of scenarios equals the opposing group size", () => {
+      // Group C (vs Group B which has 5 teams) -> 5 scenarios
+      const canada = { code: "CAN", group: "C", probability: 12.5 };
+      expect(buildTeamPaths(canada).length).toBe(5);
+
+      // Group B (vs Group C which has 4 teams) -> 4 scenarios
+      const colombia = { code: "COL", group: "B", probability: 10.0 };
+      expect(buildTeamPaths(colombia).length).toBe(4);
+
+      // Group D (vs Group E which has 5 teams) -> 5 scenarios
+      const france = { code: "FRA", group: "D", probability: 12.5 };
+      expect(buildTeamPaths(france).length).toBe(5);
+
+      // Group E (vs Group D which has 4 teams) -> 4 scenarios
+      const england = { code: "ENG", group: "E", probability: 10.0 };
+      expect(buildTeamPaths(england).length).toBe(4);
     });
   });
 
@@ -228,4 +335,3 @@ describe("worldCupService", () => {
     });
   });
 });
-

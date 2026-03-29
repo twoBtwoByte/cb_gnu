@@ -3,13 +3,18 @@
  *
  * Service for fetching and computing FIFA World Cup 2026 probabilities.
  *
- * Match 96 is a Semifinal match scheduled at BC Place, Vancouver, Canada.
- * Probabilities represent each team's estimated chance of playing in that match,
- * based on team strength (FIFA Elo ratings) and tournament path simulations.
+ * Match 96 is a Round of 16 match scheduled at BC Place, Vancouver, Canada on
+ * July 7, 2026. Probabilities are calculated using a uniform model:
+ *
+ *   – Group stage  : every team in a group has an equal 1/N chance of
+ *                    finishing in any given position (e.g. 25% each in a
+ *                    4-team group, 20% each in a 5-team group).
+ *   – Knockout leg : each team in any individual match has a 50% chance
+ *                    of advancing to the next round.
  *
  * In production this service would call a live sports-data API. Currently it
- * uses pre-computed base probabilities derived from FIFA World Rankings and
- * automatically refreshes after each completed match.
+ * uses pre-computed base probabilities derived from the uniform model above
+ * and automatically refreshes after each completed match.
  */
 
 // ---------------------------------------------------------------------------
@@ -27,72 +32,107 @@ export const MATCH_INFO = {
 };
 
 // ---------------------------------------------------------------------------
+// Uniform probability model constants
+//
+// These are the two fundamental rules that drive every probability shown in
+// the app:
+//
+//   KNOCKOUT_WIN_PROB  – in any single knockout match with no prior results,
+//                        each team has a 50% chance of winning.
+//
+//   Group-finish prob  – with N teams in a group and no matches played, each
+//                        team has a 1/N chance of finishing in any given
+//                        position (e.g. 25% for a 4-team group).
+//                        Computed as  1 / groupSize  at run-time.
+// ---------------------------------------------------------------------------
+
+/** Probability of either team winning a knockout match (no results yet). */
+export const KNOCKOUT_WIN_PROB = 0.50;
+
+// ---------------------------------------------------------------------------
 // Base probability data
-// Probabilities represent P(team plays in Match 96 at BC Place).
-// The two participants of the match sum to ~200 % in aggregate across all teams
-// because exactly two teams will play. Teams with < 1 % are omitted from the
-// "notable" display list but are included in the full data set.
+//
+// Each team's probability of playing in Match 96 is derived solely from the
+// uniform model:
+//
+//   P(play in Match 96)  =  (1 / own-group-size)  ×  KNOCKOUT_WIN_PROB
+//
+// Teams whose group does not feed into Match 96 have probability 0.
+//   – Groups C & D (4 teams, 1st place required) : 1/4 × 0.5 = 12.5 %
+//   – Groups B & E (5 teams, 2nd place required) : 1/5 × 0.5 = 10.0 %
+//   – All other groups                           : 0.0 %
 // ---------------------------------------------------------------------------
 
 const BASE_PROBABILITIES = [
-  // Powerhouses
-  { name: "Argentina",     code: "ARG", flag: "🇦🇷", probability: 18.5, confederation: "CONMEBOL", group: "I" },
-  { name: "France",        code: "FRA", flag: "🇫🇷", probability: 16.2, confederation: "UEFA",     group: "D" },
-  { name: "England",       code: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", probability: 14.8, confederation: "UEFA",     group: "E" },
-  { name: "Brazil",        code: "BRA", flag: "🇧🇷", probability: 14.2, confederation: "CONMEBOL", group: "H" },
-  { name: "Spain",         code: "ESP", flag: "🇪🇸", probability: 12.4, confederation: "UEFA",     group: "F" },
-  { name: "Germany",       code: "GER", flag: "🇩🇪", probability: 11.8, confederation: "UEFA",     group: "G" },
-  { name: "Netherlands",   code: "NED", flag: "🇳🇱", probability: 10.6, confederation: "UEFA",     group: "J" },
-  { name: "Portugal",      code: "POR", flag: "🇵🇹", probability: 9.8,  confederation: "UEFA",     group: "K" },
+  // Groups not on the Match 96 bracket path (probability = 0)
+  { name: "Argentina",     code: "ARG", flag: "🇦🇷", probability: 0,    confederation: "CONMEBOL", group: "I" },
+  { name: "Brazil",        code: "BRA", flag: "🇧🇷", probability: 0,    confederation: "CONMEBOL", group: "H" },
+  { name: "Spain",         code: "ESP", flag: "🇪🇸", probability: 0,    confederation: "UEFA",     group: "F" },
+  { name: "Germany",       code: "GER", flag: "🇩🇪", probability: 0,    confederation: "UEFA",     group: "G" },
+  { name: "Netherlands",   code: "NED", flag: "🇳🇱", probability: 0,    confederation: "UEFA",     group: "J" },
+  { name: "Portugal",      code: "POR", flag: "🇵🇹", probability: 0,    confederation: "UEFA",     group: "K" },
+  { name: "Belgium",       code: "BEL", flag: "🇧🇪", probability: 0,    confederation: "UEFA",     group: "L" },
+  { name: "Uruguay",       code: "URU", flag: "🇺🇾", probability: 0,    confederation: "CONMEBOL", group: "A" },
+  { name: "United States", code: "USA", flag: "🇺🇸", probability: 0,    confederation: "CONCACAF", isHost: true, group: "A" },
+  { name: "Italy",         code: "ITA", flag: "🇮🇹", probability: 0,    confederation: "UEFA",     group: "A" },
+  { name: "Denmark",       code: "DEN", flag: "🇩🇰", probability: 0,    confederation: "UEFA",     group: "F" },
+  { name: "Japan",         code: "JPN", flag: "🇯🇵", probability: 0,    confederation: "AFC",      group: "A" },
+  { name: "Austria",       code: "AUT", flag: "🇦🇹", probability: 0,    confederation: "UEFA",     group: "G" },
+  { name: "South Korea",   code: "KOR", flag: "🇰🇷", probability: 0,    confederation: "AFC",      group: "F" },
+  { name: "Ivory Coast",   code: "CIV", flag: "🇨🇮", probability: 0,    confederation: "CAF",      group: "H" },
+  { name: "Peru",          code: "PER", flag: "🇵🇪", probability: 0,    confederation: "CONMEBOL", group: "G" },
+  { name: "Chile",         code: "CHI", flag: "🇨🇱", probability: 0,    confederation: "CONMEBOL", group: "K" },
+  { name: "Poland",        code: "POL", flag: "🇵🇱", probability: 0,    confederation: "UEFA",     group: "J" },
+  { name: "Cameroon",      code: "CMR", flag: "🇨🇲", probability: 0,    confederation: "CAF",      group: "L" },
+  { name: "Qatar",         code: "QAT", flag: "🇶🇦", probability: 0,    confederation: "AFC",      group: "I" },
+  { name: "Saudi Arabia",  code: "KSA", flag: "🇸🇦", probability: 0,    confederation: "AFC",      group: "F" },
+  { name: "Iran",          code: "IRN", flag: "🇮🇷", probability: 0,    confederation: "AFC",      group: "K" },
+  { name: "Paraguay",      code: "PAR", flag: "🇵🇾", probability: 0,    confederation: "CONMEBOL", group: "L" },
+  { name: "Venezuela",     code: "VEN", flag: "🇻🇪", probability: 0,    confederation: "CONMEBOL", group: "H" },
+  { name: "Greece",        code: "GRE", flag: "🇬🇷", probability: 0,    confederation: "UEFA",     group: "G" },
+  { name: "Slovakia",      code: "SVK", flag: "🇸🇰", probability: 0,    confederation: "UEFA",     group: "J" },
+  { name: "Ukraine",       code: "UKR", flag: "🇺🇦", probability: 0,    confederation: "UEFA",     group: "I" },
+  { name: "Hungary",       code: "HUN", flag: "🇭🇺", probability: 0,    confederation: "UEFA",     group: "L" },
+  { name: "Serbia",        code: "SRB", flag: "🇷🇸", probability: 0,    confederation: "UEFA",     group: "K" },
+  { name: "New Zealand",   code: "NZL", flag: "🇳🇿", probability: 0,    confederation: "OFC",      group: "F" },
 
-  // Strong contenders
-  { name: "Belgium",       code: "BEL", flag: "🇧🇪", probability: 8.2,  confederation: "UEFA",     group: "L" },
-  { name: "Colombia",      code: "COL", flag: "🇨🇴", probability: 7.5,  confederation: "CONMEBOL", group: "B" },
-  { name: "Uruguay",       code: "URU", flag: "🇺🇾", probability: 6.8,  confederation: "CONMEBOL", group: "A" },
-  { name: "Morocco",       code: "MAR", flag: "🇲🇦", probability: 6.2,  confederation: "CAF",      group: "C" },
-  { name: "United States", code: "USA", flag: "🇺🇸", probability: 5.8,  confederation: "CONCACAF", isHost: true, group: "A" },
-  { name: "Mexico",        code: "MEX", flag: "🇲🇽", probability: 5.2,  confederation: "CONCACAF", isHost: true, group: "B" },
-  { name: "Italy",         code: "ITA", flag: "🇮🇹", probability: 4.9,  confederation: "UEFA",     group: "A" },
-  { name: "Denmark",       code: "DEN", flag: "🇩🇰", probability: 4.5,  confederation: "UEFA",     group: "F" },
-  { name: "Japan",         code: "JPN", flag: "🇯🇵", probability: 4.2,  confederation: "AFC",      group: "A" },
-  { name: "Croatia",       code: "CRO", flag: "🇭🇷", probability: 3.8,  confederation: "UEFA",     group: "D" },
+  // Group B – 5 teams, 2nd place leads to Match 96: P = 1/5 × 0.5 = 10.0 %
+  { name: "Colombia",      code: "COL", flag: "🇨🇴", probability: 10.0, confederation: "CONMEBOL", group: "B" },
+  { name: "Mexico",        code: "MEX", flag: "🇲🇽", probability: 10.0, confederation: "CONCACAF", isHost: true, group: "B" },
+  { name: "Ecuador",       code: "ECU", flag: "🇪🇨", probability: 10.0, confederation: "CONMEBOL", group: "B" },
+  { name: "Ghana",         code: "GHA", flag: "🇬🇭", probability: 10.0, confederation: "CAF",      group: "B" },
+  { name: "Panama",        code: "PAN", flag: "🇵🇦", probability: 10.0, confederation: "CONCACAF", group: "B" },
 
-  // Canada (host nation – home-field advantage included)
-  { name: "Canada",        code: "CAN", flag: "🇨🇦", probability: 3.4,  confederation: "CONCACAF", isHost: true, group: "C" },
+  // Group C – 4 teams, 1st place leads to Match 96: P = 1/4 × 0.5 = 12.5 %
+  { name: "Morocco",       code: "MAR", flag: "🇲🇦", probability: 12.5, confederation: "CAF",      group: "C" },
+  { name: "Canada",        code: "CAN", flag: "🇨🇦", probability: 12.5, confederation: "CONCACAF", isHost: true, group: "C" },
+  { name: "Australia",     code: "AUS", flag: "🇦🇺", probability: 12.5, confederation: "AFC",      group: "C" },
+  { name: "Turkey",        code: "TUR", flag: "🇹🇷", probability: 12.5, confederation: "UEFA",     group: "C" },
 
-  // Other notable teams
-  { name: "Senegal",       code: "SEN", flag: "🇸🇳", probability: 3.1,  confederation: "CAF",      group: "D" },
-  { name: "Switzerland",   code: "SUI", flag: "🇨🇭", probability: 2.8,  confederation: "UEFA",     group: "E" },
-  { name: "Ecuador",       code: "ECU", flag: "🇪🇨", probability: 2.6,  confederation: "CONMEBOL", group: "B" },
-  { name: "Austria",       code: "AUT", flag: "🇦🇹", probability: 2.4,  confederation: "UEFA",     group: "G" },
-  { name: "South Korea",   code: "KOR", flag: "🇰🇷", probability: 2.2,  confederation: "AFC",      group: "F" },
-  { name: "Australia",     code: "AUS", flag: "🇦🇺", probability: 1.9,  confederation: "AFC",      group: "C" },
-  { name: "Turkey",        code: "TUR", flag: "🇹🇷", probability: 1.8,  confederation: "UEFA",     group: "C" },
-  { name: "Nigeria",       code: "NGA", flag: "🇳🇬", probability: 1.6,  confederation: "CAF",      group: "E" },
-  { name: "Algeria",       code: "ALG", flag: "🇩🇿", probability: 1.4,  confederation: "CAF",      group: "D" },
-  { name: "Egypt",         code: "EGY", flag: "🇪🇬", probability: 1.3,  confederation: "CAF",      group: "E" },
-  { name: "Ghana",         code: "GHA", flag: "🇬🇭", probability: 1.1,  confederation: "CAF",      group: "B" },
+  // Group D – 4 teams, 1st place leads to Match 96: P = 1/4 × 0.5 = 12.5 %
+  { name: "France",        code: "FRA", flag: "🇫🇷", probability: 12.5, confederation: "UEFA",     group: "D" },
+  { name: "Croatia",       code: "CRO", flag: "🇭🇷", probability: 12.5, confederation: "UEFA",     group: "D" },
+  { name: "Senegal",       code: "SEN", flag: "🇸🇳", probability: 12.5, confederation: "CAF",      group: "D" },
+  { name: "Algeria",       code: "ALG", flag: "🇩🇿", probability: 12.5, confederation: "CAF",      group: "D" },
 
-  // Low-probability teams (< 1 %) – included for completeness
-  { name: "Ivory Coast",   code: "CIV", flag: "🇨🇮", probability: 0.9,  confederation: "CAF",      group: "H" },
-  { name: "Peru",          code: "PER", flag: "🇵🇪", probability: 0.8,  confederation: "CONMEBOL", group: "G" },
-  { name: "Chile",         code: "CHI", flag: "🇨🇱", probability: 0.7,  confederation: "CONMEBOL", group: "K" },
-  { name: "Poland",        code: "POL", flag: "🇵🇱", probability: 0.7,  confederation: "UEFA",     group: "J" },
-  { name: "Cameroon",      code: "CMR", flag: "🇨🇲", probability: 0.6,  confederation: "CAF",      group: "L" },
-  { name: "Qatar",         code: "QAT", flag: "🇶🇦", probability: 0.5,  confederation: "AFC",      group: "I" },
-  { name: "Saudi Arabia",  code: "KSA", flag: "🇸🇦", probability: 0.5,  confederation: "AFC",      group: "F" },
-  { name: "Iran",          code: "IRN", flag: "🇮🇷", probability: 0.4,  confederation: "AFC",      group: "K" },
-  { name: "Paraguay",      code: "PAR", flag: "🇵🇾", probability: 0.4,  confederation: "CONMEBOL", group: "L" },
-  { name: "Venezuela",     code: "VEN", flag: "🇻🇪", probability: 0.4,  confederation: "CONMEBOL", group: "H" },
-  { name: "Greece",        code: "GRE", flag: "🇬🇷", probability: 0.3,  confederation: "UEFA",     group: "G" },
-  { name: "Slovakia",      code: "SVK", flag: "🇸🇰", probability: 0.3,  confederation: "UEFA",     group: "J" },
-  { name: "Ukraine",       code: "UKR", flag: "🇺🇦", probability: 0.3,  confederation: "UEFA",     group: "I" },
-  { name: "Hungary",       code: "HUN", flag: "🇭🇺", probability: 0.2,  confederation: "UEFA",     group: "L" },
-  { name: "Serbia",        code: "SRB", flag: "🇷🇸", probability: 0.2,  confederation: "UEFA",     group: "K" },
-  { name: "New Zealand",   code: "NZL", flag: "🇳🇿", probability: 0.1,  confederation: "OFC",      group: "F" },
-  { name: "Jamaica",       code: "JAM", flag: "🇯🇲", probability: 0.1,  confederation: "CONCACAF", group: "E" },
-  { name: "Panama",        code: "PAN", flag: "🇵🇦", probability: 0.1,  confederation: "CONCACAF", group: "B" },
+  // Group E – 5 teams, 2nd place leads to Match 96: P = 1/5 × 0.5 = 10.0 %
+  { name: "England",       code: "ENG", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", probability: 10.0, confederation: "UEFA",     group: "E" },
+  { name: "Switzerland",   code: "SUI", flag: "🇨🇭", probability: 10.0, confederation: "UEFA",     group: "E" },
+  { name: "Nigeria",       code: "NGA", flag: "🇳🇬", probability: 10.0, confederation: "CAF",      group: "E" },
+  { name: "Egypt",         code: "EGY", flag: "🇪🇬", probability: 10.0, confederation: "CAF",      group: "E" },
+  { name: "Jamaica",       code: "JAM", flag: "🇯🇲", probability: 10.0, confederation: "CONCACAF", group: "E" },
 ];
+
+// ---------------------------------------------------------------------------
+// Group sizes
+// Computed once from BASE_PROBABILITIES so that the uniform probability
+// formula  1 / groupSize  is always consistent with the team list.
+// ---------------------------------------------------------------------------
+
+const GROUP_SIZES = {};
+BASE_PROBABILITIES.forEach((t) => {
+  GROUP_SIZES[t.group] = (GROUP_SIZES[t.group] ?? 0) + 1;
+});
 
 // ---------------------------------------------------------------------------
 // Simulated match results store
@@ -140,26 +180,15 @@ async function fetchLatestResults() {
   //   );
   //   return response.json();
 
-  // --- Offline simulation ---
-  // Generates minor probability fluctuations after each simulated match,
-  // mirroring real-world updates without requiring an API key during development.
+  // Track how many matches have been played (for the status bar), but do not
+  // apply any probability adjustments – the uniform model (equal chance per
+  // team, no results yet) is the source of truth until a real API is wired up.
   const now = Date.now();
-  const simulatedMatchInterval = 90 * 60 * 1000; // new "match" every 90 min (simulated)
+  const simulatedMatchInterval = 90 * 60 * 1000; // 90 min per simulated match
   const simulatedMatchesDone = Math.floor((now - Date.UTC(2026, 5, 11)) / simulatedMatchInterval);
   const matchesCompleted = Math.max(0, simulatedMatchesDone);
 
-  const adjustments = {};
-  if (matchesCompleted > 0) {
-    // After group-stage matches, redistribute small amounts from weaker to stronger teams.
-    const seed = matchesCompleted % 7;
-    const FLUCTUATION = 0.05;
-    adjustments["ARG"] =  seed * FLUCTUATION;
-    adjustments["FRA"] = (seed % 3) * FLUCTUATION;
-    adjustments["ENG"] = -(seed % 2) * FLUCTUATION;
-    adjustments["CAN"] = (seed % 4 === 0 ? 0.1 : -0.05); // home advantage occasionally visible
-  }
-
-  return { matchesCompleted, adjustments };
+  return { matchesCompleted, adjustments: {} };
 }
 
 // ---------------------------------------------------------------------------
@@ -249,127 +278,68 @@ export const MATCH_96_BRACKET = {
   },
 };
 
-// ---------------------------------------------------------------------------
-// Probability of each team finishing in a specific position within its group.
-// Used to split a team's base probability across distinct path scenarios.
-// Values are percentages and each group's entries sum to 100.
-// ---------------------------------------------------------------------------
-
-const GROUP_POSITION_PROBS = {
-  // Group B  – required position for Match 96 path: 2nd place
-  B: {
-    1: { MEX: 52, ECU: 25, COL: 18, GHA:  4, PAN:  1 },
-    2: { MEX: 28, ECU: 34, COL: 27, GHA: 10, PAN:  1 },
-  },
-  // Group C  – required position for Match 96 path: 1st place
-  C: {
-    1: { CAN: 38, MAR: 42, TUR: 12, AUS:  8 },
-    2: { CAN: 30, MAR: 32, TUR: 22, AUS: 16 },
-  },
-  // Group D  – required position for Match 96 path: 1st place
-  D: {
-    1: { FRA: 62, SEN: 18, ALG: 12, CRO:  8 },
-    2: { FRA: 22, SEN: 28, ALG: 28, CRO: 22 },
-  },
-  // Group E  – required position for Match 96 path: 2nd place
-  E: {
-    1: { ENG: 55, SUI: 22, NGA: 14, EGY:  7, JAM:  2 },
-    2: { ENG: 28, SUI: 32, NGA: 22, EGY: 14, JAM:  4 },
-  },
-};
-
-/**
- * Return the group-stage teammates of `teamCode` in the given `group`,
- * drawn from BASE_PROBABILITIES. Only teams that appear in the
- * GROUP_POSITION_PROBS table for the requested position are included.
- */
-function groupMatesForPosition(group, position, excludeCode) {
-  const positionProbs = GROUP_POSITION_PROBS[group]?.[position] ?? {};
-  return BASE_PROBABILITIES
-    .filter((t) => t.group === group && t.code !== excludeCode && t.code in positionProbs)
-    .map((t) => ({ name: t.name, code: t.code, flag: t.flag }));
-}
-
 /**
  * Build the list of scenario paths a team can take to reach Match 96 at
  * BC Place, Vancouver.
  *
- * For each possible opponent that could occupy the required position in the
- * opposing group, one scenario is returned. Scenarios are sorted by
- * descending probability.
+ * Probabilities are computed using the uniform model:
+ *
+ *   P(this scenario) = (1/own-group-size) × (1/opp-group-size) × KNOCKOUT_WIN_PROB
+ *
+ * Because every team in each group has an equal chance of finishing in any
+ * given position, and every match is a 50/50 result, all scenarios for a
+ * given team have identical probability.
  *
  * @param {Object} team  A team entry from BASE_PROBABILITIES (with `.group`).
  * @returns {Array}  Array of path scenario objects, or empty array when the
  *                   team's group does not feed into Match 96.
  */
 export function buildTeamPaths(team) {
-  const { code, group, probability: totalProb } = team;
+  const { code, group } = team;
   const { slot1, slot2 } = MATCH_96_BRACKET;
 
   // Determine whether this team is on the path and which position is needed
   let requiredPosition = null;
-  let opponentGroup = null;
-  let opponentPosition = null;
-  let r32Label = null;
+  let opponentGroup    = null;
+  let r32Label         = null;
 
   if (group === slot1.sideA.group) {
-    // 1st in Group C → faces 2nd Group B in R32-87
     requiredPosition = 1;
     opponentGroup    = slot1.sideB.group;
-    opponentPosition = slot1.sideB.position;
     r32Label         = slot1.r32Label;
   } else if (group === slot1.sideB.group) {
-    // 2nd in Group B → faces 1st Group C in R32-87
     requiredPosition = 2;
     opponentGroup    = slot1.sideA.group;
-    opponentPosition = slot1.sideA.position;
     r32Label         = slot1.r32Label;
   } else if (group === slot2.sideA.group) {
-    // 1st in Group D → faces 2nd Group E in R32-88
     requiredPosition = 1;
     opponentGroup    = slot2.sideB.group;
-    opponentPosition = slot2.sideB.position;
     r32Label         = slot2.r32Label;
   } else if (group === slot2.sideB.group) {
-    // 2nd in Group E → faces 1st Group D in R32-88
     requiredPosition = 2;
     opponentGroup    = slot2.sideA.group;
-    opponentPosition = slot2.sideA.position;
     r32Label         = slot2.r32Label;
   } else {
-    // This team's bracket does not lead to Match 96 at BC Place
     return [];
   }
 
-  const posProbs   = GROUP_POSITION_PROBS[group]?.[requiredPosition] ?? {};
-  const pFinish    = (posProbs[code] ?? 0) / 100;       // P(team reaches req. position)
-  const opponents  = groupMatesForPosition(opponentGroup, opponentPosition, code);
-  const oppProbs   = GROUP_POSITION_PROBS[opponentGroup]?.[opponentPosition] ?? {};
+  // Uniform probability: each team has an equal 1/N chance of finishing in
+  // any given position, and a 50% chance of winning the knockout match.
+  const ownGroupSize    = GROUP_SIZES[group]         ?? 4;
+  const oppGroupSize    = GROUP_SIZES[opponentGroup] ?? 4;
+  const scenarioProbPct = (1 / ownGroupSize) * (1 / oppGroupSize) * KNOCKOUT_WIN_PROB * 100;
+  const scenarioProbPctRounded = Math.round(scenarioProbPct * 100) / 100; // 2 d.p.
 
-  // For each possible opponent, compute the scenario probability:
-  //   P(scenario) ≈ totalProb × P(opponent is in required position)
-  // These sum approximately to totalProb across all scenarios.
-  const scenarios = opponents.map((opp) => {
-    const pOpp        = (oppProbs[opp.code] ?? 0) / 100;
-    // Weight: proportion of "facing this specific opponent" given pFinish
-    const scenarioProb = pFinish > 0
-      ? totalProb * pOpp
-      : 0;
+  // Every eligible opponent in the opposing group is equally likely
+  const opponents = BASE_PROBABILITIES.filter((t) => t.group === opponentGroup);
 
-    return {
-      groupFinishLabel : `${requiredPosition === 1 ? "1st" : "2nd"} in Group ${group}`,
-      requiredPosition,
-      r32Label,
-      r32Opponent      : opp,
-      probability      : Math.round(scenarioProb * 10) / 10, // 1 d.p.
-    };
-  });
-
-  // Sort highest probability first
-  scenarios.sort((a, b) => b.probability - a.probability);
-
-  // Remove zero-probability scenarios (team is not expected to reach the req. position)
-  return scenarios.filter((s) => s.probability > 0);
+  return opponents.map((opp) => ({
+    groupFinishLabel : `${requiredPosition === 1 ? "1st" : "2nd"} in Group ${group}`,
+    requiredPosition,
+    r32Label,
+    r32Opponent      : { name: opp.name, code: opp.code, flag: opp.flag },
+    probability      : scenarioProbPctRounded,
+  }));
 }
 
 /**
