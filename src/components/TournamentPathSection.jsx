@@ -34,11 +34,11 @@ function TournamentPathSection({ teamPaths, matchInfo }) {
       <div className="path-section__bracket-note">
         <span className="path-section__bracket-tag">Bracket structure</span>
         <span>
-          <strong>R32 Match 87:</strong> 1st place Group C vs 2nd place Group B
+          <strong>R32 Match 85:</strong> 1st place Group B vs best 3rd-place team (Groups E/F/G/I/J)
           &nbsp;&rarr;&nbsp; winner plays in Match {matchInfo.matchNumber}
         </span>
         <span>
-          <strong>R32 Match 88:</strong> 1st place Group D vs 2nd place Group E
+          <strong>R32 Match 87:</strong> 1st place Group K vs best 3rd-place team (Groups D/E/I/J/L)
           &nbsp;&rarr;&nbsp; winner plays in Match {matchInfo.matchNumber}
         </span>
       </div>

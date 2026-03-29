@@ -4,7 +4,12 @@
  * Service for fetching and computing FIFA World Cup 2026 probabilities.
  *
  * Match 96 is a Round of 16 match scheduled at BC Place, Vancouver, Canada on
- * July 7, 2026. Probabilities are calculated using a uniform model:
+ * July 7, 2026. It is fed by two Round of 32 matches:
+ *
+ *   R32 M85 : 1st place Group B  vs  best 3rd-place team from Groups E/F/G/I/J
+ *   R32 M87 : 1st place Group K  vs  best 3rd-place team from Groups D/E/I/J/L
+ *
+ * Probabilities are calculated using a uniform model:
  *
  *   – Group stage  : every team in a group has an equal 1/N chance of
  *                    finishing in any given position (25% each in a
@@ -58,9 +63,10 @@ export const KNOCKOUT_WIN_PROB = 0.50;
 //   P(play in Match 96)  =  (1 / own-group-size)  ×  KNOCKOUT_WIN_PROB
 //
 // Every group has exactly 4 teams, so for all bracket-path groups:
-//   – Groups C & D (4 teams, 1st place required) : 1/4 × 0.5 = 12.5%
-//   – Groups B & E (4 teams, 2nd place required) : 1/4 × 0.5 = 12.5%
-//   – All other groups                           : 0.0%
+//   – Group B (4 teams, 1st place required via R32 M85) : 1/4 × 0.5 = 12.5%
+//   – Group K (4 teams, 1st place required via R32 M87) : 1/4 × 0.5 = 12.5%
+//   – All other groups                                  : 0.0%
+//     (3rd-place qualifier probability is not modelled in this uniform model)
 // ---------------------------------------------------------------------------
 
 const BASE_PROBABILITIES = [
@@ -70,29 +76,29 @@ const BASE_PROBABILITIES = [
   { name: "South Korea",                       code: "KOR",   flag: "🇰🇷", probability: 0,    confederation: "AFC",                   group: "A" },
   { name: "TBC (Denmark / Czech Republic)",    code: "TBC_A", flag: "🏳️",  probability: 0,    confederation: "UEFA",                  group: "A" },
 
-  // Group B – 4 teams, 2nd place leads to Match 96: P = 1/4 × 0.5 = 12.5%
+  // Group B – 4 teams, 1st place leads to Match 96 via R32 M85: P = 1/4 × 0.5 = 12.5%
   { name: "Canada",                            code: "CAN",   flag: "🇨🇦", probability: 12.5, confederation: "CONCACAF", isHost: true, group: "B" },
   { name: "TBC (Italy / Bosnia & Herzegovina)", code: "TBC_B", flag: "🏳️", probability: 12.5, confederation: "UEFA",                  group: "B" },
   { name: "Qatar",                             code: "QAT",   flag: "🇶🇦", probability: 12.5, confederation: "AFC",                   group: "B" },
   { name: "Switzerland",                       code: "SUI",   flag: "🇨🇭", probability: 12.5, confederation: "UEFA",                  group: "B" },
 
-  // Group C – 4 teams, 1st place leads to Match 96: P = 1/4 × 0.5 = 12.5%
-  { name: "Brazil",                            code: "BRA",   flag: "🇧🇷", probability: 12.5, confederation: "CONMEBOL",              group: "C" },
-  { name: "Morocco",                           code: "MAR",   flag: "🇲🇦", probability: 12.5, confederation: "CAF",                   group: "C" },
-  { name: "Haiti",                             code: "HAI",   flag: "🇭🇹", probability: 12.5, confederation: "CONCACAF",              group: "C" },
-  { name: "Scotland",                          code: "SCO",   flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", probability: 12.5, confederation: "UEFA",                  group: "C" },
+  // Group C – not on Match 96 bracket path (probability = 0)
+  { name: "Brazil",                            code: "BRA",   flag: "🇧🇷", probability: 0,    confederation: "CONMEBOL",              group: "C" },
+  { name: "Morocco",                           code: "MAR",   flag: "🇲🇦", probability: 0,    confederation: "CAF",                   group: "C" },
+  { name: "Haiti",                             code: "HAI",   flag: "🇭🇹", probability: 0,    confederation: "CONCACAF",              group: "C" },
+  { name: "Scotland",                          code: "SCO",   flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", probability: 0,    confederation: "UEFA",                  group: "C" },
 
-  // Group D – 4 teams, 1st place leads to Match 96: P = 1/4 × 0.5 = 12.5%
-  { name: "United States",                     code: "USA",   flag: "🇺🇸", probability: 12.5, confederation: "CONCACAF", isHost: true, group: "D" },
-  { name: "Paraguay",                          code: "PAR",   flag: "🇵🇾", probability: 12.5, confederation: "CONMEBOL",              group: "D" },
-  { name: "Australia",                         code: "AUS",   flag: "🇦🇺", probability: 12.5, confederation: "AFC",                   group: "D" },
-  { name: "TBC (Türkiye / Kosovo)",            code: "TBC_D", flag: "🏳️",  probability: 12.5, confederation: "UEFA",                  group: "D" },
+  // Group D – not on Match 96 bracket path (probability = 0)
+  { name: "United States",                     code: "USA",   flag: "🇺🇸", probability: 0,    confederation: "CONCACAF", isHost: true, group: "D" },
+  { name: "Paraguay",                          code: "PAR",   flag: "🇵🇾", probability: 0,    confederation: "CONMEBOL",              group: "D" },
+  { name: "Australia",                         code: "AUS",   flag: "🇦🇺", probability: 0,    confederation: "AFC",                   group: "D" },
+  { name: "TBC (Türkiye / Kosovo)",            code: "TBC_D", flag: "🏳️",  probability: 0,    confederation: "UEFA",                  group: "D" },
 
-  // Group E – 4 teams, 2nd place leads to Match 96: P = 1/4 × 0.5 = 12.5%
-  { name: "Germany",                           code: "GER",   flag: "🇩🇪", probability: 12.5, confederation: "UEFA",                  group: "E" },
-  { name: "Curaçao",                           code: "CUW",   flag: "🇨🇼", probability: 12.5, confederation: "CONCACAF",              group: "E" },
-  { name: "Ivory Coast",                       code: "CIV",   flag: "🇨🇮", probability: 12.5, confederation: "CAF",                   group: "E" },
-  { name: "Ecuador",                           code: "ECU",   flag: "🇪🇨", probability: 12.5, confederation: "CONMEBOL",              group: "E" },
+  // Group E – not on Match 96 bracket path (probability = 0)
+  { name: "Germany",                           code: "GER",   flag: "🇩🇪", probability: 0,    confederation: "UEFA",                  group: "E" },
+  { name: "Curaçao",                           code: "CUW",   flag: "🇨🇼", probability: 0,    confederation: "CONCACAF",              group: "E" },
+  { name: "Ivory Coast",                       code: "CIV",   flag: "🇨🇮", probability: 0,    confederation: "CAF",                   group: "E" },
+  { name: "Ecuador",                           code: "ECU",   flag: "🇪🇨", probability: 0,    confederation: "CONMEBOL",              group: "E" },
 
   // Group F – not on Match 96 bracket path (probability = 0)
   { name: "Netherlands",                       code: "NED",   flag: "🇳🇱", probability: 0,    confederation: "UEFA",                  group: "F" },
@@ -124,11 +130,11 @@ const BASE_PROBABILITIES = [
   { name: "Austria",                           code: "AUT",   flag: "🇦🇹", probability: 0,    confederation: "UEFA",                  group: "J" },
   { name: "Jordan",                            code: "JOR",   flag: "🇯🇴", probability: 0,    confederation: "AFC",                   group: "J" },
 
-  // Group K – not on Match 96 bracket path (probability = 0)
-  { name: "Portugal",                          code: "POR",   flag: "🇵🇹", probability: 0,    confederation: "UEFA",                  group: "K" },
-  { name: "TBC (DR Congo / Jamaica)",          code: "TBC_K", flag: "🏳️",  probability: 0,    confederation: "CAF",                   group: "K" },
-  { name: "Uzbekistan",                        code: "UZB",   flag: "🇺🇿", probability: 0,    confederation: "AFC",                   group: "K" },
-  { name: "Colombia",                          code: "COL",   flag: "🇨🇴", probability: 0,    confederation: "CONMEBOL",              group: "K" },
+  // Group K – 4 teams, 1st place leads to Match 96 via R32 M87: P = 1/4 × 0.5 = 12.5%
+  { name: "Portugal",                          code: "POR",   flag: "🇵🇹", probability: 12.5, confederation: "UEFA",                  group: "K" },
+  { name: "TBC (DR Congo / Jamaica)",          code: "TBC_K", flag: "🏳️",  probability: 12.5, confederation: "CAF",                   group: "K" },
+  { name: "Uzbekistan",                        code: "UZB",   flag: "🇺🇿", probability: 12.5, confederation: "AFC",                   group: "K" },
+  { name: "Colombia",                          code: "COL",   flag: "🇨🇴", probability: 12.5, confederation: "CONMEBOL",              group: "K" },
 
   // Group L – not on Match 96 bracket path (probability = 0)
   { name: "England",                           code: "ENG",   flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", probability: 0,    confederation: "UEFA",                  group: "L" },
@@ -259,18 +265,17 @@ export async function getNotableProbabilities() {
 // Match 96 (Round of 16) at BC Place, Vancouver on July 7, 2026 is fed by
 // two Round of 32 matchups:
 //
-//   R32-87 : 1st place Group C  vs  2nd place Group B
-//   R32-88 : 1st place Group D  vs  2nd place Group E
+//   R32-85 : 1st place Group B  vs  best 3rd-place team (Groups E/F/G/I/J)
+//   R32-87 : 1st place Group K  vs  best 3rd-place team (Groups D/E/I/J/L)
 //
-// Teams in Groups B, C, D and E each have exactly one group-finish position
-// that places them on the path to Match 96. Every other group (A, F–L) does
-// not lead to BC Place in this round.
+// Teams in Groups B and K each have exactly one group-finish position (1st)
+// that places them on the path to Match 96.  The 3rd-place qualifier slots
+// are determined by FIFA's best-third-place selection rules and are not
+// modelled individually in this uniform model.
 //
-// Groups B and C at a glance (FIFA 2026 draw):
+// Groups B and K at a glance (FIFA 2026 draw):
 //   Group B : Canada 🇨🇦  TBC (Italy/Bosnia) 🏳️  Qatar 🇶🇦  Switzerland 🇨🇭
-//   Group C : Brazil 🇧🇷  Morocco 🇲🇦  Haiti 🇭🇹  Scotland 🏴󠁧󠁢󠁳󠁣󠁴󠁿
-//   Group D : United States 🇺🇸  Paraguay 🇵🇾  Australia 🇦🇺  TBC (Türkiye/Kosovo) 🏳️
-//   Group E : Germany 🇩🇪  Curaçao 🇨🇼  Ivory Coast 🇨🇮  Ecuador 🇪🇨
+//   Group K : Portugal 🇵🇹  TBC (DR Congo/Jamaica) 🏳️  Uzbekistan 🇺🇿  Colombia 🇨🇴
 // ---------------------------------------------------------------------------
 
 /**
@@ -278,17 +283,17 @@ export async function getNotableProbabilities() {
  * Match 96 at BC Place.
  */
 export const MATCH_96_BRACKET = {
-  // Slot 1 enters Match 96 via R32 Match 87
+  // Slot 1 enters Match 96 via R32 Match 85
   slot1: {
-    r32Label: "R32 Match 87",
-    sideA: { group: "C", position: 1 }, // 1st Group C plays 2nd Group B
-    sideB: { group: "B", position: 2 }, // 2nd Group B plays 1st Group C
+    r32Label: "R32 Match 85",
+    sideA: { group: "B", position: 1 }, // 1st Group B plays best 3rd from EFGIJ
+    sideB: { thirdPlace: true, eligibleGroups: ["E", "F", "G", "I", "J"], label: "3EFGIJ" },
   },
-  // Slot 2 enters Match 96 via R32 Match 88
+  // Slot 2 enters Match 96 via R32 Match 87
   slot2: {
-    r32Label: "R32 Match 88",
-    sideA: { group: "D", position: 1 }, // 1st Group D plays 2nd Group E
-    sideB: { group: "E", position: 2 }, // 2nd Group E plays 1st Group D
+    r32Label: "R32 Match 87",
+    sideA: { group: "K", position: 1 }, // 1st Group K plays best 3rd from DEIJL
+    sideB: { thirdPlace: true, eligibleGroups: ["D", "E", "I", "J", "L"], label: "3DEIJL" },
   },
 };
 
@@ -296,63 +301,78 @@ export const MATCH_96_BRACKET = {
  * Build the list of scenario paths a team can take to reach Match 96 at
  * BC Place, Vancouver.
  *
- * Probabilities are computed using the uniform model:
+ * For teams in Group B or K (who face a 3rd-place qualifier opponent):
  *
- *   P(this scenario) = (1/own-group-size) × (1/opp-group-size) × KNOCKOUT_WIN_PROB
+ *   P(this scenario) = (1/own-group-size) × KNOCKOUT_WIN_PROB
  *
  * Every group has exactly 4 teams. With equal finishing chances and a 50/50
- * knockout match, every scenario for every team has identical probability:
- *   1/4 × 1/4 × 0.5 × 100 = 3.125%
+ * knockout match, the probability for each bracket-path team is:
+ *   1/4 × 0.5 × 100 = 12.5%
+ *
+ * The 3rd-place qualifier side is represented as a single virtual opponent
+ * since FIFA's best-third-place selection rules are not modelled individually.
  *
  * @param {Object} team  A team entry from BASE_PROBABILITIES (with `.group`).
  * @returns {Array}  Array of path scenario objects, or empty array when the
  *                   team's group does not feed into Match 96.
  */
 export function buildTeamPaths(team) {
-  const { code, group } = team;
+  const { group } = team;
   const { slot1, slot2 } = MATCH_96_BRACKET;
 
-  // Determine whether this team is on the path and which position is needed
+  // Determine whether this team's group is on the path (sideA only —
+  // the sideB in each slot is a 3rd-place qualifier, not a specific group).
   let requiredPosition = null;
-  let opponentGroup    = null;
+  let opponentSide     = null;
   let r32Label         = null;
 
   if (group === slot1.sideA.group) {
-    requiredPosition = 1;
-    opponentGroup    = slot1.sideB.group;
-    r32Label         = slot1.r32Label;
-  } else if (group === slot1.sideB.group) {
-    requiredPosition = 2;
-    opponentGroup    = slot1.sideA.group;
+    requiredPosition = slot1.sideA.position;
+    opponentSide     = slot1.sideB;
     r32Label         = slot1.r32Label;
   } else if (group === slot2.sideA.group) {
-    requiredPosition = 1;
-    opponentGroup    = slot2.sideB.group;
-    r32Label         = slot2.r32Label;
-  } else if (group === slot2.sideB.group) {
-    requiredPosition = 2;
-    opponentGroup    = slot2.sideA.group;
+    requiredPosition = slot2.sideA.position;
+    opponentSide     = slot2.sideB;
     r32Label         = slot2.r32Label;
   } else {
     return [];
   }
 
-  // Uniform probability: each team has an equal 1/N chance of finishing in
-  // any given position, and a 50% chance of winning the knockout match.
-  const ownGroupSize    = GROUP_SIZES[group]         ?? 4;
-  const oppGroupSize    = GROUP_SIZES[opponentGroup] ?? 4;
-  const scenarioProbPct = (1 / ownGroupSize) * (1 / oppGroupSize) * KNOCKOUT_WIN_PROB * 100;
-  const scenarioProbPctRounded = Math.round(scenarioProbPct * 1000) / 1000; // 3 decimal places
+  const ownGroupSize       = GROUP_SIZES[group] ?? 4;
+  const positionLabel      = requiredPosition === 1 ? "1st" : "2nd";
+  const groupFinishLabel   = `${positionLabel} in Group ${group}`;
 
-  // Every eligible opponent in the opposing group is equally likely
-  const opponents = BASE_PROBABILITIES.filter((t) => t.group === opponentGroup);
+  if (opponentSide.thirdPlace) {
+    // 3rd-place qualifier opponent – single scenario representing the one
+    // best-third-place team selected by FIFA rules.
+    const scenarioProbPct        = (1 / ownGroupSize) * KNOCKOUT_WIN_PROB * 100;
+    const scenarioProbPctRounded = Math.round(scenarioProbPct * 1000) / 1000;
 
+    return [{
+      groupFinishLabel,
+      requiredPosition,
+      r32Label,
+      r32Opponent: {
+        name: `Best 3rd-place team (${opponentSide.label})`,
+        code: opponentSide.label,
+        flag: "🏳️",
+      },
+      probability: scenarioProbPctRounded,
+    }];
+  }
+
+  // Specific-group opponent (kept for potential future bracket slots)
+  const oppGroupSize           = GROUP_SIZES[opponentSide.group] ?? 4;
+  const scenarioProbPct        = (1 / ownGroupSize) * (1 / oppGroupSize) * KNOCKOUT_WIN_PROB * 100;
+  const scenarioProbPctRounded = Math.round(scenarioProbPct * 1000) / 1000;
+
+  const opponents = BASE_PROBABILITIES.filter((t) => t.group === opponentSide.group);
   return opponents.map((opp) => ({
-    groupFinishLabel : `${requiredPosition === 1 ? "1st" : "2nd"} in Group ${group}`,
+    groupFinishLabel,
     requiredPosition,
     r32Label,
-    r32Opponent      : { name: opp.name, code: opp.code, flag: opp.flag },
-    probability      : scenarioProbPctRounded,
+    r32Opponent: { name: opp.name, code: opp.code, flag: opp.flag },
+    probability: scenarioProbPctRounded,
   }));
 }
 
