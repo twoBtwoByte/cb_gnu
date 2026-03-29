@@ -353,3 +353,189 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
   .prob-list__conf { display: none; }
   .prob-list__bar-cell, .prob-list__bar-header { display: none; }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   Tournament Path Section
+   ════════════════════════════════════════════════════════════════ */
+.path-section__empty {
+  color: #777;
+  font-style: italic;
+  text-align: center;
+  padding: 2rem;
+}
+
+.path-section__intro {
+  font-size: 0.875rem;
+  color: #555;
+  line-height: 1.55;
+  margin-bottom: 1rem;
+}
+
+.path-section__bracket-note {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: #f0f4ff;
+  border-left: 4px solid #3f6cbf;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.83rem;
+  color: #2c3e6e;
+  line-height: 1.5;
+}
+
+.path-section__bracket-tag {
+  display: inline-block;
+  background: #3f6cbf;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 0.15rem 0.6rem;
+  border-radius: 12px;
+  margin-bottom: 0.35rem;
+  width: fit-content;
+}
+
+/* ── Path cards ── */
+.path-section__teams {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.path-card {
+  border: 1px solid #e0e3e8;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.path-card--canada {
+  border-color: #d52b1e;
+  box-shadow: 0 0 0 1px #d52b1e22;
+}
+
+.path-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #f4f6f9;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #e0e3e8;
+  flex-wrap: wrap;
+}
+
+.path-card--canada .path-card__header {
+  background: #fff7f7;
+  border-bottom-color: #f5c2c2;
+}
+
+.path-card__flag { font-size: 1.4rem; flex-shrink: 0; }
+
+.path-card__name {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1a1a2e;
+  flex: 1;
+  min-width: 120px;
+}
+
+.path-card--canada .path-card__name { color: #d52b1e; }
+
+.path-card__host-badge { font-size: 0.85rem; }
+
+.path-card__group {
+  background: #e8ecf5;
+  color: #3f6cbf;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.path-card__total-prob {
+  font-size: 0.82rem;
+  color: #666;
+  flex-shrink: 0;
+}
+
+/* ── Scenario table ── */
+.path-card__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.path-card__table thead th {
+  background: #fafbfd;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.73rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #777;
+  border-bottom: 1px solid #eaedf2;
+}
+
+.path-card__row {
+  border-bottom: 1px solid #f0f2f5;
+  transition: background 0.15s;
+}
+
+.path-card__row:last-child { border-bottom: none; }
+
+.path-card__row:hover { background: #f9fafc; }
+
+.path-card__table td {
+  padding: 0.6rem 0.75rem;
+  vertical-align: middle;
+}
+
+.path-card__finish-badge {
+  display: inline-block;
+  background: #e8f4e8;
+  color: #2e7d32;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.path-card__opp-flag { font-size: 1.1rem; }
+
+.path-card__r32-label {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.path-card__bc-badge {
+  display: inline-block;
+  background: #fff3e0;
+  color: #e65100;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.path-card__col-finish  { min-width: 140px; }
+.path-card__col-r32     { min-width: 200px; }
+.path-card__col-r16     { min-width: 170px; }
+.path-card__col-prob    { text-align: right; min-width: 80px; font-variant-numeric: tabular-nums; }
+
+.path-card__prob--canada { color: #d52b1e; }
+
+/* ── Responsive path section ── */
+@media (max-width: 640px) {
+  .path-card__col-r16 { display: none; }
+  .path-card__r32-label { display: none; }
+  .path-card__total-prob { display: none; }
+  .path-section__bracket-note span { font-size: 0.78rem; }
+}

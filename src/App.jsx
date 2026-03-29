@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { subscribeToUpdates, MATCH_INFO } from "./services/worldCupService.js";
+import { subscribeToUpdates, MATCH_INFO, getTournamentPaths } from "./services/worldCupService.js";
 import CanadaHighlight from "./components/CanadaHighlight.jsx";
 import ProbabilityList from "./components/ProbabilityList.jsx";
+import TournamentPathSection from "./components/TournamentPathSection.jsx";
 import LastUpdated from "./components/LastUpdated.jsx";
 import "./App.css";
 
@@ -80,6 +81,25 @@ function App() {
                 🇨🇦 Canada's Probability
               </h2>
               <CanadaHighlight canada={canada} matchInfo={MATCH_INFO} />
+            </section>
+
+            {/* ── Tournament paths ── */}
+            <section className="app__section" aria-labelledby="paths-heading">
+              <h2 id="paths-heading" className="app__section-title">
+                🗺️ Tournament Paths to Match {MATCH_INFO.matchNumber}
+              </h2>
+              <p className="app__section-desc">
+                How each country can reach Match {MATCH_INFO.matchNumber} at{" "}
+                {MATCH_INFO.venue}, {MATCH_INFO.city} on{" "}
+                {MATCH_INFO.scheduledDate}. Each line shows a distinct
+                scenario — a different group-stage finish position or a
+                different Round of 32 opponent — together with its estimated
+                probability.
+              </p>
+              <TournamentPathSection
+                teamPaths={getTournamentPaths(teams)}
+                matchInfo={MATCH_INFO}
+              />
             </section>
 
             {/* ── All countries > 1 % ── */}
