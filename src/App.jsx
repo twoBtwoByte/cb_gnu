@@ -79,6 +79,10 @@ function App() {
     setSimulatedResults({});
   }, []);
 
+  const handleAutoPopulate = useCallback((results) => {
+    setSimulatedResults(results);
+  }, []);
+
   // Reset simulated results when the selected match changes
   useEffect(() => {
     setSimulatedResults({});
@@ -310,6 +314,7 @@ function App() {
                     simulatedResults={simulatedResults}
                     onResultChange={handleResultChange}
                     onReset={handleReset}
+                    onAutoPopulate={handleAutoPopulate}
                   />
                 </section>
               </div>
