@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   subscribeToUpdates,
+  getNotableProbabilities,
   MATCH_CONFIGS,
   TEAM_DATA,
   getTournamentPaths,
@@ -88,6 +89,26 @@ function App() {
     () => Object.values(simulatedResults).some((r) => r.homeScore !== "" || r.awayScore !== ""),
     [simulatedResults]
   );
+
+  // Count the number of matches populated in the simulator (both scores filled in).
+  const simulatorMatchCount = useMemo(
+    () =>
+      Object.values(simulatedResults).filter(
+        (r) =>
+          r.homeScore !== "" &&
+          r.awayScore !== "" &&
+          !isNaN(parseInt(r.homeScore, 10)) &&
+          !isNaN(parseInt(r.awayScore, 10))
+      ).length,
+    [simulatedResults]
+  );
+
+  // Manually refresh probability data from the live source.
+  const handleRefresh = useCallback(() => {
+    getNotableProbabilities(matchConfig.bracket)
+      .then(handleData)
+      .catch(() => setError("Failed to refresh probability data. Please try again."));
+  }, [matchConfig.bracket, handleData]);
 
   // When the simulator is active, recalculate probabilities from entered scores.
   // Otherwise fall back to the live (polled) data.
@@ -297,8 +318,9 @@ function App() {
             {/* ── Status bar ── */}
             <LastUpdated
               lastUpdated={lastUpdated}
-              matchesCompleted={matchesCompleted}
+              matchesCompleted={matchesCompleted + simulatorMatchCount}
               refreshInterval={REFRESH_INTERVAL_MS}
+              onRefresh={handleRefresh}
             />
           </>
         )}

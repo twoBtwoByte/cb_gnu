@@ -345,6 +345,25 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
   50%       { opacity: 0.5; transform: scale(0.85); }
 }
 
+.last-updated__refresh-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid #4caf50;
+  border-radius: 6px;
+  color: #2e7d32;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.last-updated__refresh-btn:hover {
+  background: #4caf50;
+  color: #fff;
+}
+
 /* ── Responsive ── */
 @media (max-width: 640px) {
   .app__title { font-size: 1.4rem; }
