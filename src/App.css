@@ -540,7 +540,210 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
   .path-section__bracket-note span { font-size: 0.78rem; }
 }
 
-/* ── Match selector ── */
+/* ════════════════════════════════════════════════════════════════
+   Simulation-active banner
+   ════════════════════════════════════════════════════════════════ */
+.app__sim-banner {
+  background: #fffbea;
+  border: 1px solid #f5d76e;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  font-size: 0.88rem;
+  color: #7c5e00;
+  margin-bottom: 1rem;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Group Stage Simulator
+   ════════════════════════════════════════════════════════════════ */
+.simulator { }
+
+.simulator__toolbar {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.simulator__desc {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+  min-width: 200px;
+}
+
+.simulator__reset-btn {
+  flex-shrink: 0;
+  background: #fff3f3;
+  border: 1px solid #f5c2c2;
+  border-radius: 8px;
+  color: #b02020;
+  font-size: 0.83rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.simulator__reset-btn:hover {
+  background: #ffe5e5;
+  border-color: #e08080;
+}
+
+.simulator__groups {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Individual group block ── */
+.sim-group {
+  border: 1px solid #e0e3e8;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.sim-group__title {
+  background: #f4f6f9;
+  border-bottom: 1px solid #e0e3e8;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  padding: 0.55rem 1rem;
+  margin: 0;
+}
+
+/* ── Match rows ── */
+.sim-group__matches {
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sim-match {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.25rem;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.sim-match:last-child { border-bottom: none; }
+
+.sim-match__team {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sim-match__team--away {
+  justify-content: flex-end;
+}
+
+.sim-match__flag { font-size: 1.1rem; flex-shrink: 0; }
+
+.sim-match__scores {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.sim-match__input {
+  width: 3rem;
+  text-align: center;
+  border: 1px solid #cdd2da;
+  border-radius: 6px;
+  padding: 0.25rem 0.3rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  background: #fafbfc;
+  color: #1a1a2e;
+  transition: border-color 0.15s;
+  /* hide spinner arrows */
+  -moz-appearance: textfield;
+}
+
+.sim-match__input::-webkit-outer-spin-button,
+.sim-match__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.sim-match__input:focus {
+  outline: none;
+  border-color: #3f6cbf;
+  background: #fff;
+  box-shadow: 0 0 0 2px #3f6cbf33;
+}
+
+.sim-match__sep {
+  font-weight: 700;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+/* ── Standings table ── */
+.sim-standings {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  border-top: 1px solid #e0e3e8;
+}
+
+.sim-standings thead th {
+  background: #fafbfd;
+  padding: 0.4rem 0.6rem;
+  text-align: center;
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #777;
+  border-bottom: 1px solid #eaedf2;
+}
+
+.sim-standings thead th.sim-standings__name { text-align: left; }
+
+.sim-standings__row { border-bottom: 1px solid #f0f2f5; }
+.sim-standings__row:last-child { border-bottom: none; }
+
+/* Position highlights */
+.sim-standings__row--pos1 { background: #f0fff0; }
+.sim-standings__row--pos3 { background: #fffbf0; }
+.sim-standings__row--pos4 { background: #fafafa; color: #999; }
+
+.sim-standings td {
+  padding: 0.45rem 0.6rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.sim-standings__pos { color: #888; font-size: 0.8rem; width: 1.8rem; }
+.sim-standings__flag { font-size: 1.15rem; width: 2rem; }
+.sim-standings__name { text-align: left !important; font-weight: 600; min-width: 130px; }
+.sim-standings__num { width: 2.4rem; font-variant-numeric: tabular-nums; }
+.sim-standings__pts { width: 2.4rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.sim-standings__host { font-size: 0.8rem; }
+
+@media (max-width: 640px) {
+  .sim-match__team { font-size: 0.78rem; }
+  .sim-standings { font-size: 0.75rem; }
+  .sim-standings__num { display: none; }
+  /* Keep Pts and GD visible on mobile */
+  .sim-standings__pts { display: table-cell; }
+}
 .app__match-selector {
   margin-bottom: 0;
 }

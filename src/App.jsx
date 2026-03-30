@@ -1,9 +1,16 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import { subscribeToUpdates, MATCH_CONFIGS, getTournamentPaths } from "./services/worldCupService.js";
+import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import {
+  subscribeToUpdates,
+  MATCH_CONFIGS,
+  TEAM_DATA,
+  getTournamentPaths,
+  computeSimulatedProbabilities,
+} from "./services/worldCupService.js";
 import CanadaHighlight from "./components/CanadaHighlight.jsx";
 import ProbabilityList from "./components/ProbabilityList.jsx";
 import TournamentPathSection from "./components/TournamentPathSection.jsx";
 import LastUpdated from "./components/LastUpdated.jsx";
+import GroupSimulator from "./components/GroupSimulator.jsx";
 import "./App.css";
 
 // Poll for new results every 5 minutes
@@ -17,6 +24,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedMatchNumber, setSelectedMatchNumber] = useState(96);
+  // simulatedResults: matchKey → { homeScore: string, awayScore: string }
+  const [simulatedResults, setSimulatedResults] = useState({});
 
   const matchConfig = MATCH_CONFIGS[selectedMatchNumber];
   // Track whether any data has been received yet so we only show the full
@@ -52,6 +61,58 @@ function App() {
   }, [handleData, selectedMatchNumber]);
 
   const availableMatches = Object.values(MATCH_CONFIGS);
+
+  // ── Simulator callbacks ──────────────────────────────────────────────────
+  const handleResultChange = useCallback((matchKey, field, value) => {
+    setSimulatedResults((prev) => ({
+      ...prev,
+      [matchKey]: {
+        ...(prev[matchKey] ?? { homeScore: "", awayScore: "" }),
+        [field]: value,
+      },
+    }));
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setSimulatedResults({});
+  }, []);
+
+  // Reset simulated results when the selected match changes
+  useEffect(() => {
+    setSimulatedResults({});
+  }, [selectedMatchNumber]);
+
+  // ── Simulated probability display ────────────────────────────────────────
+  const isSimulating = useMemo(
+    () => Object.values(simulatedResults).some((r) => r.homeScore !== "" || r.awayScore !== ""),
+    [simulatedResults]
+  );
+
+  // When the simulator is active, recalculate probabilities from entered scores.
+  // Otherwise fall back to the live (polled) data.
+  const displayTeams = useMemo(() => {
+    if (!isSimulating) return teams;
+
+    const simProbs = computeSimulatedProbabilities(simulatedResults, matchConfig.bracket);
+    const all = TEAM_DATA.map((t) => ({
+      ...t,
+      probability: simProbs[t.code] ?? 0,
+    }));
+    all.sort((a, b) => b.probability - a.probability);
+
+    const notable = all.filter((t) => t.probability > 1);
+    const simulatedCanada = all.find((t) => t.code === "CAN");
+    if (simulatedCanada && !notable.find((t) => t.code === "CAN")) {
+      notable.push(simulatedCanada);
+      notable.sort((a, b) => b.probability - a.probability);
+    }
+    return notable;
+  }, [isSimulating, simulatedResults, matchConfig, teams]);
+
+  const displayCanada = useMemo(() => {
+    if (!isSimulating) return canada;
+    return displayTeams.find((t) => t.code === "CAN") ?? canada;
+  }, [isSimulating, displayTeams, canada]);
 
   return (
     <div className="app">
@@ -115,12 +176,32 @@ function App() {
 
         {!loading && !error && (
           <>
+            {/* ── Group Stage Simulator ── */}
+            <section className="app__section" aria-labelledby="simulator-heading">
+              <h2 id="simulator-heading" className="app__section-title">
+                ⚽ Group Stage Simulator
+              </h2>
+              <GroupSimulator
+                bracket={matchConfig.bracket}
+                simulatedResults={simulatedResults}
+                onResultChange={handleResultChange}
+                onReset={handleReset}
+              />
+            </section>
+
+            {isSimulating && (
+              <div className="app__sim-banner" role="status" aria-live="polite">
+                🎯 <strong>Simulation active</strong> — probabilities below reflect
+                your entered scores. Reset scores to return to the base model.
+              </div>
+            )}
+
             {/* ── Canada spotlight ── */}
             <section className="app__section" aria-labelledby="canada-heading">
               <h2 id="canada-heading" className="app__section-title">
                 🇨🇦 Canada's Probability
               </h2>
-              <CanadaHighlight canada={canada} matchInfo={matchConfig} />
+              <CanadaHighlight canada={displayCanada} matchInfo={matchConfig} />
             </section>
 
             {/* ── Tournament paths ── */}
@@ -137,7 +218,7 @@ function App() {
                 probability.
               </p>
               <TournamentPathSection
-                teamPaths={getTournamentPaths(teams, matchConfig.bracket)}
+                teamPaths={getTournamentPaths(displayTeams, matchConfig.bracket)}
                 matchInfo={matchConfig}
               />
             </section>
@@ -148,11 +229,11 @@ function App() {
                 All Countries with Probability &gt; 1%
               </h2>
               <p className="app__section-desc">
-                Showing {teams.length} countries whose estimated probability of
+                Showing {displayTeams.length} countries whose estimated probability of
                 playing in Match {matchConfig.matchNumber} exceeds 1%.
                 Probabilities update automatically after each completed match.
               </p>
-              <ProbabilityList teams={teams} />
+              <ProbabilityList teams={displayTeams} />
             </section>
 
             {/* ── Status bar ── */}

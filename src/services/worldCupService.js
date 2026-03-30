@@ -356,3 +356,222 @@ export function subscribeToUpdates(callback, intervalMs = 5 * 60 * 1000, bracket
 
   return () => clearInterval(id);
 }
+
+// ---------------------------------------------------------------------------
+// Group Stage Simulator
+//
+// These helpers power the interactive group-match score entry UI.  Users can
+// enter scores for any completed (or hypothetical) group match; the service
+// layer then recomputes group standings and adjusted match-96 probabilities.
+// ---------------------------------------------------------------------------
+
+/**
+ * Return the set of group letters whose matches are relevant to the simulator
+ * for a given bracket:
+ *   – Every sideA group (e.g. "B" and "K" for Match 96).
+ *   – Every sideB eligible group that is NOT behind a hostTeamSlot (those teams
+ *     would play Canada in the R32 match, not in Match 96, so their group-stage
+ *     results don't affect Match 96 probabilities).
+ *
+ * @param {Object} bracket  Bracket config from MATCH_CONFIGS[n].bracket.
+ * @returns {string[]} Sorted array of group letters.
+ */
+export function getSimulatorGroups(bracket) {
+  const groups = new Set();
+  for (const slot of Object.values(bracket)) {
+    if (slot?.sideA?.group) groups.add(slot.sideA.group);
+    if (!slot.hostTeamSlot && slot.sideB?.thirdPlace && Array.isArray(slot.sideB.eligibleGroups)) {
+      slot.sideB.eligibleGroups.forEach((g) => groups.add(g));
+    }
+  }
+  return [...groups].sort();
+}
+
+/**
+ * Generate the full round-robin match schedule for the given groups.
+ * Each group of N teams produces N*(N-1)/2 unique fixtures.
+ *
+ * @param {string[]} groups  Array of group letters to include.
+ * @returns {Array<{key: string, group: string, homeTeam: Object, awayTeam: Object}>}
+ */
+export function generateGroupMatches(groups) {
+  const matches = [];
+  for (const group of groups) {
+    const teams = TEAM_DATA.filter((t) => t.group === group);
+    for (let i = 0; i < teams.length; i++) {
+      for (let j = i + 1; j < teams.length; j++) {
+        matches.push({
+          key: `${group}-${teams[i].code}-${teams[j].code}`,
+          group,
+          homeTeam: teams[i],
+          awayTeam: teams[j],
+        });
+      }
+    }
+  }
+  return matches;
+}
+
+/**
+ * Determine whether all matches within a group have valid entered scores.
+ *
+ * @param {string} group    Group letter.
+ * @param {Object} results  Map of matchKey → { homeScore, awayScore } strings.
+ * @returns {boolean}
+ */
+export function isGroupComplete(group, results) {
+  const teams = TEAM_DATA.filter((t) => t.group === group);
+  const totalMatches = (teams.length * (teams.length - 1)) / 2;
+  let played = 0;
+  for (let i = 0; i < teams.length; i++) {
+    for (let j = i + 1; j < teams.length; j++) {
+      const key = `${group}-${teams[i].code}-${teams[j].code}`;
+      const r = results[key];
+      if (r && r.homeScore !== "" && r.awayScore !== "" &&
+          r.homeScore != null && r.awayScore != null &&
+          !isNaN(parseInt(r.homeScore, 10)) && !isNaN(parseInt(r.awayScore, 10))) {
+        played++;
+      }
+    }
+  }
+  return played === totalMatches;
+}
+
+/**
+ * Compute group-stage standings for a single group from the entered results.
+ * Only matches with valid numeric scores for both teams are counted.
+ *
+ * Sorting order: points → goal difference → goals scored → name (alphabetical).
+ *
+ * @param {string} group    Group letter.
+ * @param {Object} results  Map of matchKey → { homeScore, awayScore } strings.
+ * @returns {Array} Sorted standings rows (one per team), each including
+ *   { ...teamFields, pts, w, d, l, gf, ga, gd, played }.
+ */
+export function computeGroupStandings(group, results) {
+  const teams = TEAM_DATA.filter((t) => t.group === group);
+  const rows = {};
+  teams.forEach((t) => {
+    rows[t.code] = { ...t, pts: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, played: 0 };
+  });
+
+  for (let i = 0; i < teams.length; i++) {
+    for (let j = i + 1; j < teams.length; j++) {
+      const key = `${group}-${teams[i].code}-${teams[j].code}`;
+      const r = results[key];
+      if (!r || r.homeScore === "" || r.awayScore === "" ||
+          r.homeScore == null || r.awayScore == null) continue;
+      const hg = parseInt(r.homeScore, 10);
+      const ag = parseInt(r.awayScore, 10);
+      if (isNaN(hg) || isNaN(ag)) continue;
+
+      const home = rows[teams[i].code];
+      const away = rows[teams[j].code];
+
+      home.gf += hg; home.ga += ag; home.gd += hg - ag; home.played++;
+      away.gf += ag; away.ga += hg; away.gd += ag - hg; away.played++;
+
+      if (hg > ag) {
+        home.pts += 3; home.w++;
+        away.l++;
+      } else if (hg < ag) {
+        away.pts += 3; away.w++;
+        home.l++;
+      } else {
+        home.pts += 1; home.d++;
+        away.pts += 1; away.d++;
+      }
+    }
+  }
+
+  return Object.values(rows).sort((a, b) =>
+    b.pts !== a.pts ? b.pts - a.pts :
+    b.gd  !== a.gd  ? b.gd  - a.gd  :
+    b.gf  !== a.gf  ? b.gf  - a.gf  :
+    a.name.localeCompare(b.name)
+  );
+}
+
+/**
+ * Compute adjusted per-team probabilities using simulated group match results.
+ *
+ * Rules:
+ *   – If ALL matches in a sideA group are entered, the exact 1st-place team
+ *     gets KNOCKOUT_WIN_PROB × 100 %; all others get 0 %.
+ *   – If a sideA group is incomplete, the uniform model applies (every team
+ *     in the group has an equal share: 1/N × KNOCKOUT_WIN_PROB × 100 %).
+ *   – If ALL eligible sideB groups (for a non-hostTeamSlot slot) are complete,
+ *     the best 3rd-place team (ranked by pts → GD → GF → name) gets
+ *     KNOCKOUT_WIN_PROB × 100 %; all others in those groups get 0 % for this path.
+ *   – If the sideB pool is incomplete, uniform distribution applies.
+ *
+ * @param {Object} simulatedResults  Map of matchKey → { homeScore, awayScore }.
+ * @param {Object} [bracket]         Bracket config. Defaults to MATCH_96_BRACKET.
+ * @returns {Object} Map of teamCode → probability % (rounded to 3 dp).
+ */
+export function computeSimulatedProbabilities(simulatedResults, bracket = MATCH_96_BRACKET) {
+  const probs = {};
+  TEAM_DATA.forEach((t) => { probs[t.code] = 0; });
+
+  for (const slot of Object.values(bracket)) {
+    if (!slot?.sideA || !slot?.sideB) continue;
+
+    // ── sideA path ──────────────────────────────────────────────────────────
+    const { group: sideAGroup, position: sideAPos } = slot.sideA;
+    const groupSize = GROUP_SIZES[sideAGroup] ?? 4;
+
+    if (isGroupComplete(sideAGroup, simulatedResults)) {
+      const standings = computeGroupStandings(sideAGroup, simulatedResults);
+      const qualifier = standings[sideAPos - 1];
+      if (qualifier) {
+        probs[qualifier.code] += KNOCKOUT_WIN_PROB * 100;
+      }
+    } else {
+      // Uniform: equal share for all teams in the group
+      TEAM_DATA.filter((t) => t.group === sideAGroup).forEach((t) => {
+        probs[t.code] += (1 / groupSize) * KNOCKOUT_WIN_PROB * 100;
+      });
+    }
+
+    // ── sideB path (3rd-place) ───────────────────────────────────────────────
+    // Skip host-team slots (those teams play Canada in the R32, not M96).
+    if (!slot.hostTeamSlot && slot.sideB.thirdPlace && Array.isArray(slot.sideB.eligibleGroups)) {
+      const eligibleGroups = slot.sideB.eligibleGroups;
+      const allComplete = eligibleGroups.every((g) => isGroupComplete(g, simulatedResults));
+
+      if (allComplete) {
+        // Collect the 3rd-place team from each eligible group
+        const thirdPlaceTeams = eligibleGroups
+          .map((g) => computeGroupStandings(g, simulatedResults)[2])
+          .filter(Boolean);
+
+        // Rank them: pts → GD → GF → name
+        thirdPlaceTeams.sort((a, b) =>
+          b.pts !== a.pts ? b.pts - a.pts :
+          b.gd  !== a.gd  ? b.gd  - a.gd  :
+          b.gf  !== a.gf  ? b.gf  - a.gf  :
+          a.name.localeCompare(b.name)
+        );
+
+        if (thirdPlaceTeams[0]) {
+          probs[thirdPlaceTeams[0].code] += KNOCKOUT_WIN_PROB * 100;
+        }
+      } else {
+        // Uniform: each team in each eligible group has equal share
+        eligibleGroups.forEach((g) => {
+          const gSize = GROUP_SIZES[g] ?? 4;
+          TEAM_DATA.filter((t) => t.group === g).forEach((t) => {
+            probs[t.code] += (1 / gSize) * (1 / eligibleGroups.length) * KNOCKOUT_WIN_PROB * 100;
+          });
+        });
+      }
+    }
+  }
+
+  // Round to 3 decimal places
+  Object.keys(probs).forEach((code) => {
+    probs[code] = Math.round(probs[code] * 1000) / 1000;
+  });
+
+  return probs;
+}
