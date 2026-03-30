@@ -217,18 +217,14 @@ describe("worldCupService", () => {
       expect(paths[0].groupFinishLabel).toContain("Group D");
     });
 
-    it("returns 2 paths for Germany (Group E - eligible for both R32 M85 and R32 M87 via 3rd place)", () => {
-      const germany = { code: "GER", group: "E", probability: 5 };
+    it("returns 1 path for Germany (Group E - only R32 M87; M85 path excluded as Germany would play Canada in M85)", () => {
+      const germany = { code: "GER", group: "E", probability: 2.5 };
       const paths = buildTeamPaths(germany);
-      expect(paths.length).toBe(2);
-      paths.forEach((p) => {
-        expect(p.requiredPosition).toBe(3);
-        expect(p.groupFinishLabel).toContain("3rd");
-        expect(p.groupFinishLabel).toContain("Group E");
-      });
-      const r32Labels = paths.map((p) => p.r32Label);
-      expect(r32Labels).toContain("R32 Match 85");
-      expect(r32Labels).toContain("R32 Match 87");
+      expect(paths.length).toBe(1);
+      expect(paths[0].requiredPosition).toBe(3);
+      expect(paths[0].groupFinishLabel).toContain("3rd");
+      expect(paths[0].groupFinishLabel).toContain("Group E");
+      expect(paths[0].r32Label).toBe("R32 Match 87");
     });
 
     it("all scenario probabilities are equal (uniform model)", () => {
@@ -389,14 +385,14 @@ describe("worldCupService", () => {
       expect(computeProbabilityForMatch(usa, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
     });
 
-    it("Group F team has probability 2.5% (3rd-place path via R32 M85 only)", () => {
+    it("Group F team has probability 0% (R32 M85 path excluded: F teams would play Canada in M85, not M96)", () => {
       const netherlands = { group: "F" };
-      expect(computeProbabilityForMatch(netherlands, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
+      expect(computeProbabilityForMatch(netherlands, MATCH_96_BRACKET)).toBeCloseTo(0, 5);
     });
 
-    it("Group G team has probability 2.5% (3rd-place path via R32 M85 only)", () => {
+    it("Group G team has probability 0% (R32 M85 path excluded: G teams would play Canada in M85, not M96)", () => {
       const belgium = { group: "G" };
-      expect(computeProbabilityForMatch(belgium, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
+      expect(computeProbabilityForMatch(belgium, MATCH_96_BRACKET)).toBeCloseTo(0, 5);
     });
 
     it("Group L team has probability 2.5% (3rd-place path via R32 M87 only)", () => {
@@ -404,19 +400,19 @@ describe("worldCupService", () => {
       expect(computeProbabilityForMatch(england, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
     });
 
-    it("Group E team has probability 5% (3rd-place path via both R32 M85 and R32 M87)", () => {
+    it("Group E team has probability 2.5% (only R32 M87 path; M85 path excluded as E teams play Canada in M85)", () => {
       const germany = { group: "E" };
-      expect(computeProbabilityForMatch(germany, MATCH_96_BRACKET)).toBeCloseTo(5, 5);
+      expect(computeProbabilityForMatch(germany, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
     });
 
-    it("Group I team has probability 5% (3rd-place path via both R32 M85 and R32 M87)", () => {
+    it("Group I team has probability 2.5% (only R32 M87 path; M85 path excluded as I teams play Canada in M85)", () => {
       const france = { group: "I" };
-      expect(computeProbabilityForMatch(france, MATCH_96_BRACKET)).toBeCloseTo(5, 5);
+      expect(computeProbabilityForMatch(france, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
     });
 
-    it("Group J team has probability 5% (3rd-place path via both R32 M85 and R32 M87)", () => {
+    it("Group J team has probability 2.5% (only R32 M87 path; M85 path excluded as J teams play Canada in M85)", () => {
       const argentina = { group: "J" };
-      expect(computeProbabilityForMatch(argentina, MATCH_96_BRACKET)).toBeCloseTo(5, 5);
+      expect(computeProbabilityForMatch(argentina, MATCH_96_BRACKET)).toBeCloseTo(2.5, 5);
     });
 
     it("Groups A, C and H have probability 0% (no path to Match 96)", () => {
@@ -427,23 +423,37 @@ describe("worldCupService", () => {
   });
 
   describe("3rd-place bracket paths", () => {
-    it("groups D, E, F, G, I, J and L all have non-zero probability", async () => {
+    it("groups D, E, I, J and L have non-zero probability; groups F and G have 0% (M85 path excluded)", async () => {
       const { teams } = await getMatchProbabilities();
-      const thirdPlaceGroups = ["D", "E", "F", "G", "I", "J", "L"];
-      thirdPlaceGroups.forEach((g) => {
+      const nonZeroGroups = ["D", "E", "I", "J", "L"];
+      nonZeroGroups.forEach((g) => {
         const groupTeams = teams.filter((t) => t.group === g);
         expect(groupTeams.length).toBeGreaterThan(0);
         groupTeams.forEach((t) => {
           expect(t.probability).toBeGreaterThan(0);
         });
       });
+      // Groups F and G can only reach M96 via the R32 M85 host-team slot, which is
+      // excluded because those teams would play Canada in M85, not in M96.
+      const zeroGroups = ["F", "G"];
+      zeroGroups.forEach((g) => {
+        const groupTeams = teams.filter((t) => t.group === g);
+        expect(groupTeams.length).toBeGreaterThan(0);
+        groupTeams.forEach((t) => {
+          expect(t.probability).toBe(0);
+        });
+      });
     });
 
-    it("groups eligible for both slots (E, I, J) have higher probability than single-slot groups (D, F, G, L)", async () => {
+    it("groups E, I, J have the same probability as D and L (all 2.5%, M87 only); F and G have 0% (M85-only, excluded)", async () => {
       const { teams } = await getMatchProbabilities();
-      const dual = teams.find((t) => t.group === "E");
-      const single = teams.find((t) => t.group === "D");
-      expect(dual.probability).toBeGreaterThan(single.probability);
+      const groupE = teams.find((t) => t.group === "E");
+      const groupD = teams.find((t) => t.group === "D");
+      const groupF = teams.find((t) => t.group === "F");
+      // E, I, J previously had 5% (two paths), now 2.5% (M85 path excluded)
+      expect(groupE.probability).toBeCloseTo(groupD.probability, 5);
+      // F and G only had the M85 path which is now excluded → 0%
+      expect(groupF.probability).toBe(0);
     });
 
     it("3rd-place path r32Opponents reference the correct opposing group", () => {
@@ -453,15 +463,15 @@ describe("worldCupService", () => {
       expect(paths.length).toBe(1);
       expect(paths[0].r32Opponent.name).toContain("Group K");
 
-      // Group F can only feed slot1 (R32 M85) → opponent is 1st Group B
-      const netherlands = { code: "NED", group: "F", probability: 2.5 };
+      // Group F's only path (R32 M85) is excluded because F teams would play
+      // Canada in M85, so Group F has no valid paths to playing Canada in M96.
+      const netherlands = { code: "NED", group: "F", probability: 0 };
       const fPaths = buildTeamPaths(netherlands);
-      expect(fPaths.length).toBe(1);
-      expect(fPaths[0].r32Opponent.name).toContain("Group B");
+      expect(fPaths.length).toBe(0);
     });
 
     it("3rd-place scenario probabilities for each path sum to the team's total probability", () => {
-      const argentina = { code: "ARG", group: "J", probability: 5 };
+      const argentina = { code: "ARG", group: "J", probability: 2.5 };
       const paths = buildTeamPaths(argentina);
       const total = paths.reduce((sum, p) => sum + p.probability, 0);
       expect(total).toBeCloseTo(argentina.probability, 1);
@@ -484,9 +494,9 @@ describe("worldCupService", () => {
     });
 
     it("buildTeamPaths respects a custom bracket parameter", () => {
-      // With the default Match 96 bracket, Group E has 2 paths
+      // With the default Match 96 bracket, Group E has 1 path (M87 only; M85 excluded)
       const germany = { code: "GER", group: "E" };
-      expect(buildTeamPaths(germany, MATCH_96_BRACKET).length).toBe(2);
+      expect(buildTeamPaths(germany, MATCH_96_BRACKET).length).toBe(1);
     });
   });
 });

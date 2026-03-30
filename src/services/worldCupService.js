@@ -17,6 +17,9 @@
  *   – 3rd-place selection: for teams that can qualify via 3rd place,
  *                    each team in an eligible pool of M groups has a 1/M
  *                    chance of being selected as the best 3rd-place team.
+ *                    Exception: if the bracket slot is marked hostTeamSlot,
+ *                    the sideB 3rd-place path is excluded because those
+ *                    teams would play Canada in the R32 match (not M96).
  *
  * In production this service would call a live sports-data API. Currently it
  * uses the uniform model above and automatically refreshes after each
@@ -100,8 +103,10 @@ export function computeProbabilityForMatch(team, bracket) {
     if (team.group === slot.sideA.group) {
       prob += (1 / groupSize) * KNOCKOUT_WIN_PROB * 100;
     }
-    // sideB path: team's group is in the 3rd-place eligible pool
-    if (slot.sideB.thirdPlace && Array.isArray(slot.sideB.eligibleGroups) && slot.sideB.eligibleGroups.includes(team.group)) {
+    // sideB path: team's group is in the 3rd-place eligible pool.
+    // Skip host-team slots: if sideA is Canada's group, a sideB team would play
+    // Canada in the R32 match, not in Match 96, so this path must be excluded.
+    if (!slot.hostTeamSlot && slot.sideB.thirdPlace && Array.isArray(slot.sideB.eligibleGroups) && slot.sideB.eligibleGroups.includes(team.group)) {
       const poolSize = slot.sideB.eligibleGroups.length;
       prob += (1 / groupSize) * (1 / poolSize) * KNOCKOUT_WIN_PROB * 100;
     }
@@ -294,7 +299,9 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET) {
     }
 
     // ── sideB path: this group can qualify via 3rd place ────────────────────
-    if (slot.sideB.thirdPlace && slot.sideB.eligibleGroups.includes(group)) {
+    // Skip host-team slots: sideB teams in that slot would play Canada in the
+    // R32 match (not in Match 96), so the path doesn't lead to playing Canada.
+    if (!slot.hostTeamSlot && slot.sideB.thirdPlace && slot.sideB.eligibleGroups.includes(group)) {
       const poolSize = slot.sideB.eligibleGroups.length;
       const scenarioProbPct = Math.round((1 / ownGroupSize) * (1 / poolSize) * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
       paths.push({

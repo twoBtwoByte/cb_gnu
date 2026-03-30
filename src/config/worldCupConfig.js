@@ -45,10 +45,14 @@ export const MATCH_CONFIGS = {
     description: "FIFA World Cup 2026 – Match 96 (Round of 16) at BC Place, Vancouver",
     bracket: {
       // Slot 1 enters Match 96 via R32 Match 85
+      // hostTeamSlot: true – Canada (Group B) plays the sideB team here in R32 M85.
+      // A sideB team that wins M85 eliminates Canada and cannot then play Canada in M96.
+      // Therefore sideB paths for this slot are excluded from the M96 probability calculation.
       slot1: {
         r32Label: "R32 Match 85",
         sideA: { group: "B", position: 1 }, // 1st Group B plays best 3rd from EFGIJ
         sideB: { thirdPlace: true, eligibleGroups: ["E", "F", "G", "I", "J"], label: "3EFGIJ" },
+        hostTeamSlot: true,
       },
       // Slot 2 enters Match 96 via R32 Match 87
       slot2: {
@@ -95,19 +99,19 @@ export const TEAM_DATA = [
   { name: "Australia",                         code: "AUS",   flag: "🇦🇺", confederation: "AFC",                   group: "D" },
   { name: "TBC (Türkiye / Kosovo)",            code: "TBC_D", flag: "🏳️",  confederation: "UEFA",                  group: "D" },
 
-  // Group E – 3rd place eligible for R32 M85 (E/F/G/I/J) and R32 M87 (D/E/I/J/L): P = 2 × 2.5% = 5%
+  // Group E – 3rd place in M87 pool only (M85 path excluded: E teams would play Canada in M85): P = 1/4 × 1/5 × 0.5 = 2.5%
   { name: "Germany",                           code: "GER",   flag: "🇩🇪", confederation: "UEFA",                  group: "E" },
   { name: "Curaçao",                           code: "CUW",   flag: "🇨🇼", confederation: "CONCACAF",              group: "E" },
   { name: "Ivory Coast",                       code: "CIV",   flag: "🇨🇮", confederation: "CAF",                   group: "E" },
   { name: "Ecuador",                           code: "ECU",   flag: "🇪🇨", confederation: "CONMEBOL",              group: "E" },
 
-  // Group F – 3rd place eligible for R32 M85 best-3rd pool (E/F/G/I/J): P = 2.5%
+  // Group F – 3rd place only in M85 pool (E/F/G/I/J), which is excluded (F teams play Canada in M85): P = 0%
   { name: "Netherlands",                       code: "NED",   flag: "🇳🇱", confederation: "UEFA",                  group: "F" },
   { name: "Japan",                             code: "JPN",   flag: "🇯🇵", confederation: "AFC",                   group: "F" },
   { name: "TBC (Sweden / Poland)",             code: "TBC_F", flag: "🏳️",  confederation: "UEFA",                  group: "F" },
   { name: "Tunisia",                           code: "TUN",   flag: "🇹🇳", confederation: "CAF",                   group: "F" },
 
-  // Group G – 3rd place eligible for R32 M85 best-3rd pool (E/F/G/I/J): P = 2.5%
+  // Group G – 3rd place only in M85 pool (E/F/G/I/J), which is excluded (G teams play Canada in M85): P = 0%
   { name: "Belgium",                           code: "BEL",   flag: "🇧🇪", confederation: "UEFA",                  group: "G" },
   { name: "Egypt",                             code: "EGY",   flag: "🇪🇬", confederation: "CAF",                   group: "G" },
   { name: "Iran",                              code: "IRN",   flag: "🇮🇷", confederation: "AFC",                   group: "G" },
@@ -119,13 +123,13 @@ export const TEAM_DATA = [
   { name: "Saudi Arabia",                      code: "KSA",   flag: "🇸🇦", confederation: "AFC",                   group: "H" },
   { name: "Uruguay",                           code: "URU",   flag: "🇺🇾", confederation: "CONMEBOL",              group: "H" },
 
-  // Group I – 3rd place eligible for R32 M85 (E/F/G/I/J) and R32 M87 (D/E/I/J/L): P = 5%
+  // Group I – 3rd place in M87 pool only (M85 path excluded: I teams would play Canada in M85): P = 1/4 × 1/5 × 0.5 = 2.5%
   { name: "France",                            code: "FRA",   flag: "🇫🇷", confederation: "UEFA",                  group: "I" },
   { name: "Senegal",                           code: "SEN",   flag: "🇸🇳", confederation: "CAF",                   group: "I" },
   { name: "TBC (Iraq / Bolivia)",              code: "TBC_I", flag: "🏳️",  confederation: "AFC",                   group: "I" },
   { name: "Norway",                            code: "NOR",   flag: "🇳🇴", confederation: "UEFA",                  group: "I" },
 
-  // Group J – 3rd place eligible for R32 M85 (E/F/G/I/J) and R32 M87 (D/E/I/J/L): P = 5%
+  // Group J – 3rd place in M87 pool only (M85 path excluded: J teams would play Canada in M85): P = 1/4 × 1/5 × 0.5 = 2.5%
   { name: "Argentina",                         code: "ARG",   flag: "🇦🇷", confederation: "CONMEBOL",              group: "J" },
   { name: "Algeria",                           code: "ALG",   flag: "🇩🇿", confederation: "CAF",                   group: "J" },
   { name: "Austria",                           code: "AUT",   flag: "🇦🇹", confederation: "UEFA",                  group: "J" },
