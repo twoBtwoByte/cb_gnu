@@ -79,10 +79,6 @@ function App() {
     setSimulatedResults({});
   }, []);
 
-  const handleAutoPopulate = useCallback((results) => {
-    setSimulatedResults(results);
-  }, []);
-
   // Reset simulated results when the selected match changes
   useEffect(() => {
     setSimulatedResults({});
@@ -207,13 +203,6 @@ function App() {
               <h2 id="canada-heading" className="app__section-title">
                 🇨🇦 Canada's Probability
               </h2>
-              <GroupSimulator
-                bracket={matchConfig.bracket}
-                simulatedResults={simulatedResults}
-                onResultChange={handleResultChange}
-                onReset={handleReset}
-                onAutoPopulate={handleAutoPopulate}
-              />
               <CanadaHighlight canada={displayCanada} matchInfo={matchConfig} />
             </section>
 
