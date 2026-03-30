@@ -11,9 +11,6 @@ function ProbabilityList({ teams }) {
     return <p className="prob-list__empty">No probability data available.</p>;
   }
 
-  // Maximum probability in the list – used to scale bar widths
-  const maxProbability = teams[0]?.probability ?? 1;
-
   return (
     <div className="prob-list">
       <table className="prob-list__table" aria-label="Country probabilities for Match 96">
@@ -30,7 +27,7 @@ function ProbabilityList({ teams }) {
         <tbody>
           {teams.map((team, index) => {
             const isCanada = team.code === "CAN";
-            const barWidth = (team.probability / maxProbability) * 100;
+            const barWidth = team.probability;
 
             return (
               <tr
