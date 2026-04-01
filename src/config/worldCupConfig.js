@@ -79,11 +79,11 @@ export const TEAM_DATA = [
   { name: "Mexico",                            code: "MEX",   flag: "🇲🇽", confederation: "CONCACAF", isHost: true, group: "A" },
   { name: "South Africa",                      code: "RSA",   flag: "🇿🇦", confederation: "CAF",                   group: "A" },
   { name: "South Korea",                       code: "KOR",   flag: "🇰🇷", confederation: "AFC",                   group: "A" },
-  { name: "TBC (Denmark / Czech Republic)",    code: "TBC_A", flag: "🏳️",  confederation: "UEFA",                  group: "A" },
+  { name: "Czech Republic",                    code: "CZE", flag: "🏳️",  confederation: "UEFA",                  group: "A" },
 
   // Group B – 1st place leads to Match 96 via R32 M85: P = 1/4 × 0.5 = 12.5%
   { name: "Canada",                            code: "CAN",   flag: "🇨🇦", confederation: "CONCACAF", isHost: true, group: "B" },
-  { name: "TBC (Italy / Bosnia & Herzegovina)", code: "TBC_B", flag: "🏳️", confederation: "UEFA",                  group: "B" },
+  { name: "Bosnia & Herzegovina",              code: "BIH", flag: "🏳️", confederation: "UEFA",                  group: "B" },
   { name: "Qatar",                             code: "QAT",   flag: "🇶🇦", confederation: "AFC",                   group: "B" },
   { name: "Switzerland",                       code: "SUI",   flag: "🇨🇭", confederation: "UEFA",                  group: "B" },
 
@@ -97,7 +97,7 @@ export const TEAM_DATA = [
   { name: "United States",                     code: "USA",   flag: "🇺🇸", confederation: "CONCACAF", isHost: true, group: "D" },
   { name: "Paraguay",                          code: "PAR",   flag: "🇵🇾", confederation: "CONMEBOL",              group: "D" },
   { name: "Australia",                         code: "AUS",   flag: "🇦🇺", confederation: "AFC",                   group: "D" },
-  { name: "TBC (Türkiye / Kosovo)",            code: "TBC_D", flag: "🏳️",  confederation: "UEFA",                  group: "D" },
+  { name: "Türkiye",                           code: "TUR", flag: "🏳️",  confederation: "UEFA",                  group: "D" },
 
   // Group E – 3rd place in M87 pool only (M85 path excluded: E teams would play Canada in M85): P = 1/4 × 1/5 × 0.5 = 2.5%
   { name: "Germany",                           code: "GER",   flag: "🇩🇪", confederation: "UEFA",                  group: "E" },
@@ -108,7 +108,7 @@ export const TEAM_DATA = [
   // Group F – 3rd place only in M85 pool (E/F/G/I/J), which is excluded (F teams play Canada in M85): P = 0%
   { name: "Netherlands",                       code: "NED",   flag: "🇳🇱", confederation: "UEFA",                  group: "F" },
   { name: "Japan",                             code: "JPN",   flag: "🇯🇵", confederation: "AFC",                   group: "F" },
-  { name: "TBC (Sweden / Poland)",             code: "TBC_F", flag: "🏳️",  confederation: "UEFA",                  group: "F" },
+  { name: "Sweden",                            code: "SWE", flag: "🏳️",  confederation: "UEFA",                  group: "F" },
   { name: "Tunisia",                           code: "TUN",   flag: "🇹🇳", confederation: "CAF",                   group: "F" },
 
   // Group G – 3rd place only in M85 pool (E/F/G/I/J), which is excluded (G teams play Canada in M85): P = 0%
@@ -126,7 +126,7 @@ export const TEAM_DATA = [
   // Group I – 3rd place in M87 pool only (M85 path excluded: I teams would play Canada in M85): P = 1/4 × 1/5 × 0.5 = 2.5%
   { name: "France",                            code: "FRA",   flag: "🇫🇷", confederation: "UEFA",                  group: "I" },
   { name: "Senegal",                           code: "SEN",   flag: "🇸🇳", confederation: "CAF",                   group: "I" },
-  { name: "TBC (Iraq / Bolivia)",              code: "TBC_I", flag: "🏳️",  confederation: "AFC",                   group: "I" },
+  { name: "Iraq",                              code: "IRQ", flag: "🏳️",  confederation: "AFC",                   group: "I" },
   { name: "Norway",                            code: "NOR",   flag: "🇳🇴", confederation: "UEFA",                  group: "I" },
 
   // Group J – 3rd place in M87 pool only (M85 path excluded: J teams would play Canada in M85): P = 1/4 × 1/5 × 0.5 = 2.5%
@@ -137,7 +137,7 @@ export const TEAM_DATA = [
 
   // Group K – 1st place leads to Match 96 via R32 M87: P = 1/4 × 0.5 = 12.5%
   { name: "Portugal",                          code: "POR",   flag: "🇵🇹", confederation: "UEFA",                  group: "K" },
-  { name: "TBC (DR Congo / Jamaica)",          code: "TBC_K", flag: "🏳️",  confederation: "CAF",                   group: "K" },
+  { name: "DR Congo",                          code: "COD", flag: "🏳️",  confederation: "CAF",                   group: "K" },
   { name: "Uzbekistan",                        code: "UZB",   flag: "🇺🇿", confederation: "AFC",                   group: "K" },
   { name: "Colombia",                          code: "COL",   flag: "🇨🇴", confederation: "CONMEBOL",              group: "K" },
 
