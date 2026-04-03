@@ -226,11 +226,11 @@ describe("Group Stage Simulator", () => {
     it("with no results entered, matches the base uniform model probabilities", () => {
       const probs = computeSimulatedProbabilities({}, MATCH_96_BRACKET);
       // Group B: 12.5% each
-      ["CAN", "QAT", "SUI", "TBC_B"].forEach((code) => {
+      ["CAN", "QAT", "SUI", "BIH"].forEach((code) => {
         expect(probs[code]).toBeCloseTo(12.5, 5);
       });
       // Group K: 12.5% each
-      ["POR", "TBC_K", "UZB", "COL"].forEach((code) => {
+      ["POR", "COD", "UZB", "COL"].forEach((code) => {
         expect(probs[code]).toBeCloseTo(12.5, 5);
       });
       // Groups D, E, I, J, L: 2.5% each
@@ -258,7 +258,7 @@ describe("Group Stage Simulator", () => {
       const probs = computeSimulatedProbabilities(results, MATCH_96_BRACKET);
       expect(probs["CAN"]).toBeCloseTo(KNOCKOUT_WIN_PROB * 100, 5);
       // Other Group B teams eliminated from 1st → 0%
-      ["QAT", "SUI", "TBC_B"].forEach((code) => {
+      ["QAT", "SUI", "BIH"].forEach((code) => {
         expect(probs[code]).toBe(0);
       });
     });
@@ -295,7 +295,7 @@ describe("Group Stage Simulator", () => {
       });
       const probs = computeSimulatedProbabilities(results, MATCH_96_BRACKET);
       expect(probs["POR"]).toBeCloseTo(KNOCKOUT_WIN_PROB * 100, 5);
-      ["TBC_K", "UZB", "COL"].forEach((code) => {
+      ["COD", "UZB", "COL"].forEach((code) => {
         expect(probs[code]).toBe(0);
       });
     });
@@ -350,7 +350,7 @@ describe("Group Stage Simulator", () => {
       const results = { [matches[0].key]: { homeScore: "1", awayScore: "0" } };
       const probs = computeSimulatedProbabilities(results, MATCH_96_BRACKET);
       // Group B is incomplete → uniform 12.5% each
-      ["CAN", "QAT", "SUI", "TBC_B"].forEach((code) => {
+      ["CAN", "QAT", "SUI", "BIH"].forEach((code) => {
         expect(probs[code]).toBeCloseTo(12.5, 5);
       });
     });
