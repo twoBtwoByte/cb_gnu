@@ -156,18 +156,18 @@ describe("worldCupService", () => {
 
   describe("MATCH_96_BRACKET", () => {
     it("defines two bracket slots", () => {
-      expect(MATCH_96_BRACKET.slot1).toBeDefined();
-      expect(MATCH_96_BRACKET.slot2).toBeDefined();
+      expect(MATCH_96_BRACKET.sideA).toBeDefined();
+      expect(MATCH_96_BRACKET.sideB).toBeDefined();
     });
 
-    it("slot1 involves 1st Group B vs best 3rd-place team from EFGIJ", () => {
-      expect(MATCH_96_BRACKET.slot1.sideA).toEqual({ group: "B", position: 1 });
-      expect(MATCH_96_BRACKET.slot1.sideB).toMatchObject({ thirdPlace: true, label: "3EFGIJ" });
+    it("sideA involves 1st Group B vs best 3rd-place team from EFGIJ", () => {
+      expect(MATCH_96_BRACKET.sideA.sideA).toEqual({ group: "B", position: 1 });
+      expect(MATCH_96_BRACKET.sideA.sideB).toMatchObject({ thirdPlace: true, label: "3EFGIJ" });
     });
 
-    it("slot2 involves 1st Group K vs best 3rd-place team from DEIJL", () => {
-      expect(MATCH_96_BRACKET.slot2.sideA).toEqual({ group: "K", position: 1 });
-      expect(MATCH_96_BRACKET.slot2.sideB).toMatchObject({ thirdPlace: true, label: "3DEIJL" });
+    it("sideB involves 1st Group K vs best 3rd-place team from DEIJL", () => {
+      expect(MATCH_96_BRACKET.sideB.sideA).toEqual({ group: "K", position: 1 });
+      expect(MATCH_96_BRACKET.sideB.sideB).toMatchObject({ thirdPlace: true, label: "3DEIJL" });
     });
   });
 
@@ -354,18 +354,18 @@ describe("worldCupService", () => {
       expect(MATCH_96_BRACKET).toBe(MATCH_CONFIGS[96].bracket);
     });
 
-    it("Match 96 bracket slot1 feeds via R32 Match 85 (Group B 1st vs best 3rd E/F/G/I/J)", () => {
-      const { slot1 } = MATCH_CONFIGS[96].bracket;
-      expect(slot1.r32Label).toBe("R32 Match 85");
-      expect(slot1.sideA).toEqual({ group: "B", position: 1 });
-      expect(slot1.sideB.eligibleGroups).toEqual(["E", "F", "G", "I", "J"]);
+    it("Match 96 bracket sideA feeds via R32 Match 85 (Group B 1st vs best 3rd E/F/G/I/J)", () => {
+      const { sideA } = MATCH_CONFIGS[96].bracket;
+      expect(sideA.r32Label).toBe("R32 Match 85");
+      expect(sideA.sideA).toEqual({ group: "B", position: 1 });
+      expect(sideA.sideB.eligibleGroups).toEqual(["E", "F", "G", "I", "J"]);
     });
 
-    it("Match 96 bracket slot2 feeds via R32 Match 87 (Group K 1st vs best 3rd D/E/I/J/L)", () => {
-      const { slot2 } = MATCH_CONFIGS[96].bracket;
-      expect(slot2.r32Label).toBe("R32 Match 87");
-      expect(slot2.sideA).toEqual({ group: "K", position: 1 });
-      expect(slot2.sideB.eligibleGroups).toEqual(["D", "E", "I", "J", "L"]);
+    it("Match 96 bracket sideB feeds via R32 Match 87 (Group K 1st vs best 3rd D/E/I/J/L)", () => {
+      const { sideB } = MATCH_CONFIGS[96].bracket;
+      expect(sideB.r32Label).toBe("R32 Match 87");
+      expect(sideB.sideA).toEqual({ group: "K", position: 1 });
+      expect(sideB.sideB.eligibleGroups).toEqual(["D", "E", "I", "J", "L"]);
     });
   });
 
@@ -457,7 +457,7 @@ describe("worldCupService", () => {
     });
 
     it("3rd-place path r32Opponents reference the correct opposing group", () => {
-      // Group D can only feed slot2 (R32 M87) → opponent is 1st Group K
+      // Group D can only feed sideB (R32 M87) → opponent is 1st Group K
       const usa = { code: "USA", group: "D", probability: 2.5 };
       const paths = buildTeamPaths(usa);
       expect(paths.length).toBe(1);

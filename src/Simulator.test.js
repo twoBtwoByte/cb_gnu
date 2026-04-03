@@ -355,11 +355,11 @@ describe("Group Stage Simulator", () => {
       });
     });
 
-    it("total probabilities across all teams sum to at most 150% (two slots: slot1 = 50%, slot2 = 100%)", () => {
+    it("total probabilities across all teams sum to at most 150% (two slots: sideA = 50%, sideB = 100%)", () => {
       const probs = computeSimulatedProbabilities({}, MATCH_96_BRACKET);
       const total = Object.values(probs).reduce((s, p) => s + p, 0);
-      // slot1 (Group B only, hostTeamSlot) contributes 50%;
-      // slot2 (Group K sideA + DEIJL sideB) contributes up to 100%
+      // sideA (Group B only, hostTeamSlot) contributes 50%;
+      // sideB (Group K sideA + DEIJL sideB) contributes up to 100%
       expect(total).toBeCloseTo(150, 3);
     });
   });

@@ -51,7 +51,7 @@ export const MATCH_CONFIGS = {
       // hostTeamSlot: true – Canada (Group B) plays the sideB team here in R32 M85.
       // A sideB team that wins M85 eliminates Canada and cannot then play Canada in M96.
       // Therefore sideB paths for this slot are excluded from the M96 probability calculation.
-      slot1: {
+      sideA: {
         r32Label: "R32 Match 85",
         label: "1B vs 3EFGIJ",
         sideA: { group: "B", position: 1 }, // 1st Group B plays best 3rd from EFGIJ
@@ -59,7 +59,7 @@ export const MATCH_CONFIGS = {
         hostTeamSlot: true,
       },
       // Slot 2 enters Match 96 via R32 Match 87
-      slot2: {
+      sideB: {
         r32Label: "R32 Match 87",
         label: "1K vs 3DEIJL",
         sideA: { group: "K", position: 1 }, // 1st Group K plays best 3rd from DEIJL
