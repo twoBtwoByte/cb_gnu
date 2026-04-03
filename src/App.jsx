@@ -197,7 +197,7 @@ function App() {
         {!loading && !error && (
           <>
             {/* ── Canada spotlight ── */}
-            {displayCanada?.probability > 1 && (
+            {(displayCanada?.probability > 1 || canada?.probability > 0) && (
               <section className="app__section" aria-labelledby="canada-heading">
                 <h2 id="canada-heading" className="app__section-title">
                   🇨🇦 Canada's Probability
