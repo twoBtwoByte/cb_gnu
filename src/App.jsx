@@ -163,28 +163,22 @@ function App() {
       <main className="app__main">
         {/* ── Match selector ── */}
         <section className="app__section app__match-selector" aria-labelledby="match-selector-heading">
-          <h2 id="match-selector-heading" className="app__section-title">
+          <label id="match-selector-heading" className="app__section-title" htmlFor="match-selector-dropdown">
             🎯 Select a Match
-          </h2>
-          <p className="app__section-desc">
-            Choose a match to see which countries have a path to that game and
-            their estimated probability of playing in it.
-          </p>
-          <div className="match-selector__options">
+          </label>
+          <select
+            id="match-selector-dropdown"
+            className="match-selector__dropdown"
+            value={selectedMatchNumber}
+            onChange={(e) => setSelectedMatchNumber(Number(e.target.value))}
+            aria-label="Select a match"
+          >
             {availableMatches.map((cfg) => (
-              <button
-                key={cfg.matchNumber}
-                className={`match-selector__btn${selectedMatchNumber === cfg.matchNumber ? " match-selector__btn--active" : ""}`}
-                onClick={() => setSelectedMatchNumber(cfg.matchNumber)}
-                aria-pressed={selectedMatchNumber === cfg.matchNumber}
-              >
-                <span className="match-selector__match-num">Match {cfg.matchNumber}</span>
-                <span className="match-selector__match-detail">
-                  {cfg.stage} &middot; {cfg.venue}, {cfg.city}
-                </span>
-              </button>
+              <option key={cfg.matchNumber} value={cfg.matchNumber}>
+                {cfg.label}
+              </option>
             ))}
-          </div>
+          </select>
         </section>
 
         {loading && (
@@ -203,12 +197,14 @@ function App() {
         {!loading && !error && (
           <>
             {/* ── Canada spotlight ── */}
-            <section className="app__section" aria-labelledby="canada-heading">
-              <h2 id="canada-heading" className="app__section-title">
-                🇨🇦 Canada's Probability
-              </h2>
-              <CanadaHighlight canada={displayCanada} matchInfo={matchConfig} />
-            </section>
+            {displayCanada?.probability > 1 && (
+              <section className="app__section" aria-labelledby="canada-heading">
+                <h2 id="canada-heading" className="app__section-title">
+                  🇨🇦 Canada's Probability
+                </h2>
+                <CanadaHighlight canada={displayCanada} matchInfo={matchConfig} />
+              </section>
+            )}
 
             {isSimulating && (
               <div className="app__sim-banner" role="status" aria-live="polite">

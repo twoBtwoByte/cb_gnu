@@ -43,7 +43,7 @@ export const MATCH_CONFIGS = {
     country: "Canada",
     scheduledDate: "July 7, 2026",
     description: "FIFA World Cup 2026 – Match 96 (Round of 16) at BC Place, Vancouver",
-    label: "W85 vs W87",
+    label: "R16 Match 96",
     sideA: "W85",
     sideB: "W87",
     bracket: {
