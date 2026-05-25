@@ -146,6 +146,21 @@ describe("App Canada section visibility", () => {
     expect(window.location.search).toContain("country=Canada");
   });
 
+  it("quick-select link sets spotlight country to Canada", async () => {
+    render(<App />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Quick select Canada" }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "🇨🇦 Canada's Probability" })
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByLabelText("Country")).toHaveValue("CAN");
+    expect(window.location.search).toContain("country=Canada");
+  });
+
   it("updates Canada's Probability section based on simulator-entered scores", async () => {
     render(<App />);
 
