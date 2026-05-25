@@ -78,6 +78,9 @@ TEAM_DATA.forEach((t) => {
 //   sideB (3rd-place qualifier, for teams in the eligible pool):
 //       P = (1 / groupSize) × (1 / poolSize) × KNOCKOUT_WIN_PROB × 100
 //
+//   sideB (specific-group qualifier):
+//       P = (1 / groupSize) × KNOCKOUT_WIN_PROB × 100
+//
 // Teams that appear in multiple slots accumulate probability from each slot
 // independently (the paths are mutually exclusive events).
 // ---------------------------------------------------------------------------
@@ -103,12 +106,16 @@ export function computeProbabilityForMatch(team, bracket) {
     if (team.group === slot.sideA.group) {
       prob += (1 / groupSize) * KNOCKOUT_WIN_PROB * 100;
     }
-    // sideB path: team's group is in the 3rd-place eligible pool.
+    // sideB path: team's group is either in the 3rd-place eligible pool or a
+    // specific opposing group qualifier.
     // Skip host-team slots: if sideA is Canada's group, a sideB team would play
     // Canada in the R32 match, not in Match 96, so this path must be excluded.
     if (!slot.hostTeamSlot && slot.sideB.thirdPlace && Array.isArray(slot.sideB.eligibleGroups) && slot.sideB.eligibleGroups.includes(team.group)) {
       const poolSize = slot.sideB.eligibleGroups.length;
       prob += (1 / groupSize) * (1 / poolSize) * KNOCKOUT_WIN_PROB * 100;
+    }
+    if (slot.sideB.group && team.group === slot.sideB.group) {
+      prob += (1 / groupSize) * KNOCKOUT_WIN_PROB * 100;
     }
   }
 
@@ -291,7 +298,7 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET) {
       }
     }
 
-    // ── sideB path: this group can qualify via 3rd place ────────────────────
+    // ── sideB path: this group can qualify via 3rd place or fixed-group slot ─
     // Skip host-team slots: sideB teams in that slot would play Canada in the
     // R32 match (not in Match 96), so the path doesn't lead to playing Canada.
     if (!slot.hostTeamSlot && slot.sideB.thirdPlace && slot.sideB.eligibleGroups.includes(group)) {
@@ -307,6 +314,22 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET) {
           flag: "🏳️",
         },
         probability: scenarioProbPct,
+      });
+    }
+
+    if (slot.sideB.group === group) {
+      const pos = slot.sideB.position;
+      const posLabel = pos === 1 ? "1st" : pos === 2 ? "2nd" : `${pos}th`;
+      const oppGroupSize = GROUP_SIZES[slot.sideA.group] ?? 4;
+      const probPct = Math.round((1 / ownGroupSize) * (1 / oppGroupSize) * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
+      TEAM_DATA.filter((t) => t.group === slot.sideA.group).forEach((opp) => {
+        paths.push({
+          groupFinishLabel: `${posLabel} in Group ${group}`,
+          requiredPosition: pos,
+          r32Label: slot.r32Label,
+          r32Opponent: { name: opp.name, code: opp.code, flag: opp.flag },
+          probability: probPct,
+        });
       });
     }
   }
@@ -373,6 +396,7 @@ export function getSimulatorGroups(bracket) {
   const groups = new Set();
   for (const slot of Object.values(bracket)) {
     if (slot?.sideA?.group) groups.add(slot.sideA.group);
+    if (slot?.sideB?.group) groups.add(slot.sideB.group);
     if (!slot.hostTeamSlot && slot.sideB?.thirdPlace && Array.isArray(slot.sideB.eligibleGroups)) {
       slot.sideB.eligibleGroups.forEach((g) => groups.add(g));
     }
@@ -556,6 +580,25 @@ export function computeSimulatedProbabilities(simulatedResults, bracket = MATCH_
           TEAM_DATA.filter((t) => t.group === g).forEach((t) => {
             probs[t.code] += (1 / gSize) * (1 / eligibleGroups.length) * KNOCKOUT_WIN_PROB * 100;
           });
+        });
+      }
+    }
+
+    // ── sideB path (specific-group qualifier) ────────────────────────────────
+    if (slot.sideB?.group) {
+      const sideBGroup = slot.sideB.group;
+      const sideBPos = slot.sideB.position;
+      const sideBGroupSize = GROUP_SIZES[sideBGroup] ?? 4;
+
+      if (isGroupComplete(sideBGroup, simulatedResults)) {
+        const standings = computeGroupStandings(sideBGroup, simulatedResults);
+        const qualifier = standings[sideBPos - 1];
+        if (qualifier) {
+          probs[qualifier.code] += KNOCKOUT_WIN_PROB * 100;
+        }
+      } else {
+        TEAM_DATA.filter((t) => t.group === sideBGroup).forEach((t) => {
+          probs[t.code] += (1 / sideBGroupSize) * KNOCKOUT_WIN_PROB * 100;
         });
       }
     }

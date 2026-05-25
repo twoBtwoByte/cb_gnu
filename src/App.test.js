@@ -341,6 +341,15 @@ describe("worldCupService", () => {
   });
 
   describe("MATCH_CONFIGS", () => {
+    it("contains an entry for Match 83", () => {
+      expect(MATCH_CONFIGS[83]).toBeDefined();
+      expect(MATCH_CONFIGS[83].matchNumber).toBe(83);
+      expect(MATCH_CONFIGS[83].stage).toBe("Round of 32");
+      expect(MATCH_CONFIGS[83].venue).toBe("Toronto Stadium");
+      expect(MATCH_CONFIGS[83].bracket.slot1.sideA).toEqual({ group: "K", position: 2 });
+      expect(MATCH_CONFIGS[83].bracket.slot1.sideB).toEqual({ group: "L", position: 2 });
+    });
+
     it("contains an entry for Match 96", () => {
       expect(MATCH_CONFIGS[96]).toBeDefined();
       expect(MATCH_CONFIGS[96].matchNumber).toBe(96);
@@ -497,6 +506,29 @@ describe("worldCupService", () => {
       // With the default Match 96 bracket, Group E has 1 path (M87 only; M85 excluded)
       const germany = { code: "GER", group: "E" };
       expect(buildTeamPaths(germany, MATCH_96_BRACKET).length).toBe(1);
+    });
+
+    it("custom Match 83 bracket gives Groups K and L non-zero probabilities", async () => {
+      const { teams } = await getMatchProbabilities(MATCH_CONFIGS[83].bracket);
+      const groupK = teams.filter((t) => t.group === "K");
+      const groupL = teams.filter((t) => t.group === "L");
+      const groupA = teams.filter((t) => t.group === "A");
+
+      expect(groupK.length).toBe(4);
+      expect(groupL.length).toBe(4);
+      groupK.forEach((t) => expect(t.probability).toBeCloseTo(12.5, 5));
+      groupL.forEach((t) => expect(t.probability).toBeCloseTo(12.5, 5));
+      groupA.forEach((t) => expect(t.probability).toBe(0));
+    });
+
+    it("buildTeamPaths supports sideB specific-group qualifiers in Match 83", () => {
+      const england = { code: "ENG", group: "L" };
+      const paths = buildTeamPaths(england, MATCH_CONFIGS[83].bracket);
+      expect(paths).toHaveLength(4);
+      paths.forEach((p) => {
+        expect(p.requiredPosition).toBe(2);
+        expect(p.groupFinishLabel).toContain("2nd in Group L");
+      });
     });
   });
 });
