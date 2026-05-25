@@ -2,10 +2,11 @@ import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import App from "./App.jsx";
-import { MATCH_CONFIGS, generateGroupMatches, subscribeToUpdates } from "./services/worldCupService.js";
+import { MATCH_CONFIGS, generateGroupMatches } from "./services/worldCupService.js";
+import { ServicesProvider, defaultServices } from "./application/ServicesContext.jsx";
 
-vi.mock("./components/CanadaHighlight.jsx", () => ({
-  default: ({ canada }) => <div>{canada ? `${canada.name} ${canada.probability}` : "No Canada"}</div>,
+vi.mock("./components/SpotlightCountryCard.jsx", () => ({
+  default: ({ name, probability }) => <div>{name ? `${name} ${probability}` : "No spotlight"}</div>,
 }));
 
 vi.mock("./components/ProbabilityList.jsx", () => ({
@@ -27,13 +28,14 @@ vi.mock("./components/GroupSimulator.jsx", () => ({
       <button
         onClick={() => {
           const results = {};
-          generateGroupMatches(["B"]).forEach((m) => {
-            if (m.homeTeam.code === "QAT" || m.awayTeam.code === "QAT") {
-              results[m.key] = m.homeTeam.code === "QAT"
-                ? { homeScore: "3", awayScore: "0" }
-                : { homeScore: "0", awayScore: "3" };
+          generateGroupMatches(["B"]).forEach((match) => {
+            if (match.homeTeam.code === "QAT" || match.awayTeam.code === "QAT") {
+              results[match.key] =
+                match.homeTeam.code === "QAT"
+                  ? { homeScore: "3", awayScore: "0" }
+                  : { homeScore: "0", awayScore: "3" };
             } else {
-              results[m.key] = { homeScore: "1", awayScore: "1" };
+              results[match.key] = { homeScore: "1", awayScore: "1" };
             }
           });
           onAutoPopulate(results);
@@ -45,27 +47,17 @@ vi.mock("./components/GroupSimulator.jsx", () => ({
   ),
 }));
 
-vi.mock("./services/worldCupService.js", async () => {
-  const actual = await vi.importActual("./services/worldCupService.js");
-
-  return {
-    ...actual,
-    subscribeToUpdates: vi.fn(),
-    getTournamentPaths: vi.fn(() => []),
-  };
-});
-
 describe("App Canada section visibility", () => {
   const livePayloadByMatch = {
     96: {
       teams: [
-        { code: "CAN", name: "Canada", group: "B", probability: 12.5 },
-        { code: "POR", name: "Portugal", group: "K", probability: 12.5 },
-      ],
-      allTeams: [
         { code: "CAN", name: "Canada", flag: "🇨🇦", group: "B", probability: 12.5 },
         { code: "POR", name: "Portugal", flag: "🇵🇹", group: "K", probability: 12.5 },
-        { code: "ESP", name: "Spain", flag: "🇪🇸", group: "H", probability: 0 },
+      ],
+      allTeams: [
+        { code: "CAN", name: "Canada", flag: "🇨🇦", group: "B", confederation: "CONCACAF", probability: 12.5 },
+        { code: "POR", name: "Portugal", flag: "🇵🇹", group: "K", confederation: "UEFA", probability: 12.5 },
+        { code: "ESP", name: "Spain", flag: "🇪🇸", group: "H", confederation: "UEFA", probability: 0 },
       ],
       canada: { code: "CAN", name: "Canada", group: "B", probability: 12.5 },
       matchesCompleted: 0,
@@ -73,55 +65,85 @@ describe("App Canada section visibility", () => {
     },
     83: {
       teams: [
-        { code: "POR", name: "Portugal", group: "K", probability: 12.5 },
-        { code: "ENG", name: "England", group: "L", probability: 12.5 },
+        { code: "CAN", name: "Canada", flag: "🇨🇦", group: "B", probability: 12.5 },
+        { code: "POR", name: "Portugal", flag: "🇵🇹", group: "K", probability: 12.5 },
+        { code: "ENG", name: "England", flag: "🏴", group: "L", probability: 12.5 },
       ],
-      canada: { code: "CAN", name: "Canada", group: "B", probability: 0 },
+      allTeams: [
+        { code: "CAN", name: "Canada", flag: "🇨🇦", group: "B", confederation: "CONCACAF", probability: 12.5 },
+        { code: "POR", name: "Portugal", flag: "🇵🇹", group: "K", confederation: "UEFA", probability: 12.5 },
+        { code: "ENG", name: "England", flag: "🏴", group: "L", confederation: "UEFA", probability: 12.5 },
+      ],
+      canada: { code: "CAN", name: "Canada", group: "B", probability: 12.5 },
       matchesCompleted: 0,
       lastUpdated: new Date("2026-07-01T00:00:00Z"),
     },
   };
 
+  let probabilityRepository;
+  let pathBuilder;
+
+  const renderApp = () =>
+    render(
+      <ServicesProvider
+        services={{
+          probabilityRepository,
+          pathBuilder,
+        }}
+      >
+        <App />
+      </ServicesProvider>
+    );
+
   beforeEach(() => {
     vi.clearAllMocks();
     window.history.replaceState({}, "", "/");
-    subscribeToUpdates.mockImplementation((callback, intervalMs, bracket) => {
-      const matchNumber = Object.values(MATCH_CONFIGS).find((config) => config.bracket === bracket)?.matchNumber ?? 96;
-      callback(livePayloadByMatch[matchNumber]);
-      return vi.fn();
-    });
+
+    probabilityRepository = {
+      ...defaultServices.probabilityRepository,
+      subscribeToUpdates: vi.fn((callback, intervalMs, bracket) => {
+        const matchNumber =
+          Object.values(MATCH_CONFIGS).find((config) => config.bracket === bracket)?.matchNumber ?? 96;
+        callback(livePayloadByMatch[matchNumber]);
+        return vi.fn();
+      }),
+      getNotableProbabilities: vi.fn(async (bracket) => {
+        const matchNumber =
+          Object.values(MATCH_CONFIGS).find((config) => config.bracket === bracket)?.matchNumber ?? 96;
+        return livePayloadByMatch[matchNumber];
+      }),
+    };
+
+    pathBuilder = {
+      ...defaultServices.pathBuilder,
+      getTournamentPaths: vi.fn(() => []),
+    };
   });
 
   it("shows spotlight selector at the top when no spotlight country is selected", async () => {
-    render(<App />);
+    renderApp();
 
     const selectorHeading = await screen.findByRole("heading", { name: "🌟 Spotlight Country" });
     const selectorSection = selectorHeading.closest("section");
     expect(selectorSection).toHaveClass("app__spotlight-selector--top");
-    expect(
-      screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })).not.toBeInTheDocument();
   });
 
   it("keeps selector at the top when URL spotlight country is invalid", async () => {
     window.history.replaceState({}, "", "/?country=NotARealCountry");
-    render(<App />);
+    renderApp();
 
     const selectorHeading = await screen.findByRole("heading", { name: "🌟 Spotlight Country" });
     const selectorSection = selectorHeading.closest("section");
     expect(selectorSection).toHaveClass("app__spotlight-selector--top");
-    expect(
-      screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })).not.toBeInTheDocument();
   });
 
   it("uses a valid URL spotlight country and moves selector to the bottom", async () => {
     window.history.replaceState({}, "", "/?country=Canada");
-    render(<App />);
+    renderApp();
 
-    expect(
-      await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" })
-    ).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" })).toBeInTheDocument();
 
     const selectorHeading = await screen.findByRole("heading", { name: "🌟 Spotlight Country" });
     const selectorSection = selectorHeading.closest("section");
@@ -129,15 +151,13 @@ describe("App Canada section visibility", () => {
   });
 
   it("updates URL and moves selector to bottom after selecting a valid spotlight country", async () => {
-    render(<App />);
+    renderApp();
     const select = await screen.findByLabelText("Country");
 
     fireEvent.change(select, { target: { value: "CAN" } });
 
     await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "🇨🇦 Canada's Probability" })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "🇨🇦 Canada's Probability" })).toBeInTheDocument();
     });
 
     const selectorHeading = screen.getByRole("heading", { name: "🌟 Spotlight Country" });
@@ -147,14 +167,12 @@ describe("App Canada section visibility", () => {
   });
 
   it("quick-select link sets spotlight country to Canada", async () => {
-    render(<App />);
+    renderApp();
 
     fireEvent.click(await screen.findByRole("button", { name: "Quick select Canada" }));
 
     await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "🇨🇦 Canada's Probability" })
-      ).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "🇨🇦 Canada's Probability" })).toBeInTheDocument();
     });
 
     expect(screen.getByLabelText("Country")).toHaveValue("CAN");
@@ -162,7 +180,7 @@ describe("App Canada section visibility", () => {
   });
 
   it("updates Canada's Probability section based on simulator-entered scores", async () => {
-    render(<App />);
+    renderApp();
 
     fireEvent.change(await screen.findByLabelText("Country"), { target: { value: "CAN" } });
     await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" });
@@ -170,39 +188,20 @@ describe("App Canada section visibility", () => {
     fireEvent.click(screen.getByRole("button", { name: "Simulate Canada eliminated" }));
 
     await waitFor(() => {
-      expect(
-        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })).not.toBeInTheDocument();
       expect(screen.queryByText("Canada 0")).not.toBeInTheDocument();
     });
   });
 
   it("updates Canada's Probability value when switching to another match", async () => {
-    subscribeToUpdates.mockImplementation((callback, intervalMs, bracket) => {
-      const matchNumber = Object.values(MATCH_CONFIGS).find((config) => config.bracket === bracket)?.matchNumber ?? 96;
-      if (matchNumber === 83) {
-        callback({
-          teams: [
-            { code: "CAN", name: "Canada", group: "B", probability: 12.5 },
-            { code: "POR", name: "Portugal", group: "K", probability: 12.5 },
-            { code: "ENG", name: "England", group: "L", probability: 12.5 },
-          ],
-          allTeams: [
-            { code: "CAN", name: "Canada", flag: "🇨🇦", group: "B", probability: 12.5 },
-            { code: "POR", name: "Portugal", flag: "🇵🇹", group: "K", probability: 12.5 },
-            { code: "ENG", name: "England", flag: "🏴", group: "L", probability: 12.5 },
-          ],
-          canada: { code: "CAN", name: "Canada", group: "B", probability: 12.5 },
-          matchesCompleted: 0,
-          lastUpdated: new Date("2026-07-01T00:00:00Z"),
-        });
-      } else {
-        callback(livePayloadByMatch[96]);
-      }
+    probabilityRepository.subscribeToUpdates.mockImplementation((callback, intervalMs, bracket) => {
+      const matchNumber =
+        Object.values(MATCH_CONFIGS).find((config) => config.bracket === bracket)?.matchNumber ?? 96;
+      callback(livePayloadByMatch[matchNumber]);
       return vi.fn();
     });
 
-    render(<App />);
+    renderApp();
 
     fireEvent.change(await screen.findByLabelText("Country"), { target: { value: "CAN" } });
     await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" });
@@ -212,22 +211,19 @@ describe("App Canada section visibility", () => {
     fireEvent.click(screen.getByRole("button", { name: "Simulate Canada eliminated" }));
 
     await waitFor(() => {
-      expect(
-        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })).not.toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByRole("button", { name: /Match 83/i }));
 
     await waitFor(() => {
-      expect(
-        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
-      ).not.toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "🇨🇦 Canada's Probability" })).toBeInTheDocument();
+      expect(screen.getByText("Canada 12.5")).toBeInTheDocument();
     });
   });
 
   it("shows matchup participants in each match selector button", async () => {
-    render(<App />);
+    renderApp();
 
     await screen.findByRole("heading", { name: "🎯 Select a Match" });
 
