@@ -35,6 +35,22 @@
 // ---------------------------------------------------------------------------
 
 export const MATCH_CONFIGS = {
+  83: {
+    matchNumber: 83,
+    stage: "Round of 32",
+    venue: "Toronto Stadium",
+    city: "Toronto",
+    country: "Canada",
+    scheduledDate: "TBD",
+    description: "FIFA World Cup 2026 – Match 83 (Round of 32) at Toronto Stadium, Toronto",
+    bracket: {
+      slot1: {
+        r32Label: "Match 83",
+        sideA: { group: "K", position: 2 }, // 2nd Group K
+        sideB: { group: "L", position: 2 }, // 2nd Group L
+      },
+    },
+  },
   96: {
     matchNumber: 96,
     stage: "Round of 16",

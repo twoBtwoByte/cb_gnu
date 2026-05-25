@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   MATCH_96_BRACKET,
+  MATCH_CONFIGS,
   KNOCKOUT_WIN_PROB,
   getSimulatorGroups,
   generateGroupMatches,
@@ -44,6 +45,11 @@ describe("Group Stage Simulator", () => {
     it("returns groups in sorted (alphabetical) order", () => {
       const groups = getSimulatorGroups(MATCH_96_BRACKET);
       expect(groups).toEqual([...groups].sort());
+    });
+
+    it("includes both fixed qualifier groups for Match 83", () => {
+      const groups = getSimulatorGroups(MATCH_CONFIGS[83].bracket);
+      expect(groups).toEqual(["K", "L"]);
     });
   });
 
