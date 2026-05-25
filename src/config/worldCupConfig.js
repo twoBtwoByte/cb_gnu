@@ -51,6 +51,22 @@ export const MATCH_CONFIGS = {
       },
     },
   },
+  85: {
+    matchNumber: 85,
+    stage: "Round of 32",
+    venue: "BC Place",
+    city: "Vancouver",
+    country: "Canada",
+    scheduledDate: "July 2, 2026",
+    description: "FIFA World Cup 2026 – Match 85 (Round of 32) at BC Place, Vancouver",
+    bracket: {
+      slot1: {
+        r32Label: "Match 85",
+        sideA: { group: "B", position: 1 }, // 1st Group B
+        sideB: { thirdPlace: true, eligibleGroups: ["E", "F", "G", "I", "J"], label: "3EFGIJ" }, // Best 3rd from E/F/G/I/J
+      },
+    },
+  },
   96: {
     matchNumber: 96,
     stage: "Round of 16",
