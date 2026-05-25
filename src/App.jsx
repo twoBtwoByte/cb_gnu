@@ -41,6 +41,43 @@ const getSpotlightCodeFromUrl = () => {
   return getSpotlightCodeFromSearchParams(new URLSearchParams(window.location.search));
 };
 
+const formatGroupQualifier = (side) => {
+  if (!side) return "";
+  if (side.thirdPlace) {
+    if (side.label) return side.label;
+    return `3${(side.eligibleGroups ?? []).join("")}`;
+  }
+  if (typeof side.position === "number" && side.group) {
+    return `${side.position}${side.group}`;
+  }
+  return "";
+};
+
+const formatWinnerFromR32Label = (r32Label = "") => {
+  const matchNumber = r32Label.match(/\d+/)?.[0];
+  return matchNumber ? `W${matchNumber}` : "";
+};
+
+const getMatchupLabel = (cfg) => {
+  const slots = Object.entries(cfg.bracket ?? {})
+    .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
+    .map(([, slot]) => slot);
+
+  if (slots.length >= 2) {
+    const winnerA = formatWinnerFromR32Label(slots[0].r32Label);
+    const winnerB = formatWinnerFromR32Label(slots[1].r32Label);
+    if (winnerA && winnerB) return `${winnerA} vs ${winnerB}`;
+  }
+
+  if (slots.length >= 1) {
+    const sideA = formatGroupQualifier(slots[0].sideA);
+    const sideB = formatGroupQualifier(slots[0].sideB);
+    if (sideA && sideB) return `${sideA} vs ${sideB}`;
+  }
+
+  return "";
+};
+
 function App() {
   const [teams, setTeams] = useState([]);
   const [allTeams, setAllTeams] = useState([]);
@@ -321,6 +358,7 @@ function App() {
                 <span className="match-selector__match-detail">
                   {cfg.stage} &middot; {cfg.venue}, {cfg.city}
                 </span>
+                <span className="match-selector__matchup">{getMatchupLabel(cfg)}</span>
               </button>
             ))}
           </div>

@@ -200,4 +200,14 @@ describe("App Canada section visibility", () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  it("shows matchup participants in each match selector button", async () => {
+    render(<App />);
+
+    await screen.findByRole("heading", { name: "🎯 Select a Match" });
+
+    expect(screen.getByText("2K vs 2L")).toBeInTheDocument();
+    expect(screen.getByText("1B vs 3EFGIJ")).toBeInTheDocument();
+    expect(screen.getByText("W85 vs W87")).toBeInTheDocument();
+  });
 });
