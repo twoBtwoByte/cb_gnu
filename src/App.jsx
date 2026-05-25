@@ -135,6 +135,8 @@ function App() {
     return displayTeams.find((t) => t.code === "CAN") ?? canada;
   }, [isSimulating, displayTeams, canada]);
 
+  const showCanadaSection = !displayCanada || displayCanada.probability > 0;
+
   return (
     <div className="app">
       {/* ── Header ── */}
@@ -198,12 +200,14 @@ function App() {
         {!loading && !error && (
           <>
             {/* ── Canada spotlight ── */}
-            <section className="app__section" aria-labelledby="canada-heading">
-              <h2 id="canada-heading" className="app__section-title">
-                🇨🇦 Canada's Probability
-              </h2>
-              <CanadaHighlight canada={displayCanada} matchInfo={matchConfig} />
-            </section>
+            {showCanadaSection && (
+              <section className="app__section" aria-labelledby="canada-heading">
+                <h2 id="canada-heading" className="app__section-title">
+                  🇨🇦 Canada's Probability
+                </h2>
+                <CanadaHighlight canada={displayCanada} matchInfo={matchConfig} />
+              </section>
+            )}
 
             {isSimulating && (
               <div className="app__sim-banner" role="status" aria-live="polite">
