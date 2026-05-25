@@ -154,6 +154,44 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
   line-height: 1.5;
 }
 
+.app__footer-actions {
+  margin-top: 0.7rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.app__footer-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  text-decoration: none;
+  background: #ffdd73;
+  color: #4f3600;
+  border-radius: 999px;
+  padding: 0.42rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transition: filter 0.15s ease;
+}
+
+.app__footer-btn:hover {
+  filter: brightness(0.95);
+}
+
+.app__footer-link {
+  color: rgba(255,255,255,0.82);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.app__footer-link:hover {
+  color: #ffffff;
+}
+
 /* ════════════════════════════════════════════════════════════════
    Canada Highlight Card
    ════════════════════════════════════════════════════════════════ */

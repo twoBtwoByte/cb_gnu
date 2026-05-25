@@ -521,6 +521,19 @@ function App() {
           path simulations. Data refreshes automatically every{" "}
           {REFRESH_INTERVAL_MS / 60000} minutes.
         </p>
+        <div className="app__footer-actions">
+          <a
+            className="app__footer-btn"
+            href="https://www.buymeacoffee.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ☕ Buy Me a Coffee
+          </a>
+          <a className="app__footer-link" href="/contact.html">
+            Contact &amp; Suggestions (coming soon)
+          </a>
+        </div>
       </footer>
     </div>
   );
