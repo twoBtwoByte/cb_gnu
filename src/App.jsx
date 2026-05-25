@@ -293,6 +293,16 @@ function App() {
     };
   }, [displayAllTeams, selectedSpotlightTeamMeta]);
 
+  const shouldShowSpotlightSection = useMemo(
+    () =>
+      Boolean(
+        hasValidSpotlightSelection &&
+        displaySpotlightTeam &&
+        !(displaySpotlightTeam.code === "CAN" && displaySpotlightTeam.probability <= 0)
+      ),
+    [hasValidSpotlightSelection, displaySpotlightTeam]
+  );
+
   const renderSpotlightSelector = (position) => (
     <section
       className={`app__section app__spotlight-selector app__spotlight-selector--${position}`}
@@ -398,7 +408,7 @@ function App() {
         {!loading && !error && (
           <>
             {/* ── Spotlight country ── */}
-            {hasValidSpotlightSelection && displaySpotlightTeam && (
+            {shouldShowSpotlightSection && (
               <section className="app__section" aria-labelledby="spotlight-heading">
                 <h2 id="spotlight-heading" className="app__section-title">
                   {displaySpotlightTeam.flag} {displaySpotlightTeam.name}&apos;s Probability
