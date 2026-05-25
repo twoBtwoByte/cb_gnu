@@ -210,7 +210,6 @@ export async function getMatchProbabilities(bracket = MATCH_96_BRACKET) {
 
 /**
  * Returns probability data filtered to teams with probability > 1 %.
- * Canada's entry is always present regardless of the threshold.
  *
  * @param {Object} [bracket] Bracket configuration to use. Defaults to MATCH_96_BRACKET.
  */
@@ -219,12 +218,6 @@ export async function getNotableProbabilities(bracket = MATCH_96_BRACKET) {
 
   const canada = teams.find((t) => t.code === "CAN");
   const notable = teams.filter((t) => t.probability > 1);
-
-  // Guarantee Canada is in the list (even if probability drops ≤ 1 %)
-  if (canada && !notable.find((t) => t.code === "CAN")) {
-    notable.push(canada);
-    notable.sort((a, b) => b.probability - a.probability);
-  }
 
   return { teams: notable, canada, matchesCompleted, lastUpdated };
 }
