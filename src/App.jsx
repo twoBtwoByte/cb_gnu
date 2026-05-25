@@ -104,11 +104,6 @@ function App() {
     setSimulatedResults(results);
   }, []);
 
-  // Reset simulated results when the selected match changes
-  useEffect(() => {
-    setSimulatedResults({});
-  }, [selectedMatchNumber]);
-
   // ── Simulated probability display ────────────────────────────────────────
   const isSimulating = useMemo(
     () => Object.values(simulatedResults).some((r) => r.homeScore !== "" || r.awayScore !== ""),
