@@ -292,6 +292,27 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 
 .prob-list__row--canada .prob-list__pct strong { color: #d52b1e; }
 
+.prob-list__role-header,
+.prob-list__role-cell {
+  min-width: 140px;
+}
+
+.prob-list__role-cell {
+  font-size: 0.8rem;
+  color: #444;
+}
+
+.prob-list__role-single {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.prob-list__role-multi {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .prob-list__bar-header,
 .prob-list__bar-cell { width: 30%; min-width: 120px; }
 
@@ -370,6 +391,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
   .app__trophy { font-size: 2rem; }
   .canada-highlight__probability { font-size: 2.8rem; }
   .prob-list__conf { display: none; }
+  .prob-list__role-header,
+  .prob-list__role-cell { display: none; }
   .prob-list__bar-cell, .prob-list__bar-header { display: none; }
 }
 

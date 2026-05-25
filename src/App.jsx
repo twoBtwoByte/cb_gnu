@@ -6,6 +6,7 @@ import {
   TEAM_DATA,
   getTournamentPaths,
   computeSimulatedProbabilities,
+  computeProbabilityForMatch,
 } from "./services/worldCupService.js";
 import CanadaHighlight from "./components/CanadaHighlight.jsx";
 import ProbabilityList from "./components/ProbabilityList.jsx";
@@ -64,6 +65,26 @@ function App() {
 
   const availableMatches = Object.values(MATCH_CONFIGS);
 
+  const bracketSlots = useMemo(
+    () =>
+      Object.entries(matchConfig.bracket ?? {}).sort(([a], [b]) =>
+        a.localeCompare(b, undefined, { numeric: true })
+      ),
+    [matchConfig.bracket]
+  );
+
+  const team1Bracket = useMemo(
+    () =>
+      bracketSlots[0] ? { [bracketSlots[0][0]]: bracketSlots[0][1] } : {},
+    [bracketSlots]
+  );
+
+  const team2Bracket = useMemo(
+    () =>
+      bracketSlots[1] ? { [bracketSlots[1][0]]: bracketSlots[1][1] } : {},
+    [bracketSlots]
+  );
+
   // ── Simulator callbacks ──────────────────────────────────────────────────
   const handleResultChange = useCallback((matchKey, field, value) => {
     setSimulatedResults((prev) => ({
@@ -117,18 +138,28 @@ function App() {
   // When the simulator is active, recalculate probabilities from entered scores.
   // Otherwise fall back to the live (polled) data.
   const displayTeams = useMemo(() => {
-    if (!isSimulating) return teams;
+    if (!isSimulating) {
+      return teams.map((t) => ({
+        ...t,
+        team1Probability: computeProbabilityForMatch(t, team1Bracket),
+        team2Probability: computeProbabilityForMatch(t, team2Bracket),
+      }));
+    }
 
     const simProbs = computeSimulatedProbabilities(simulatedResults, matchConfig.bracket);
+    const simTeam1Probs = computeSimulatedProbabilities(simulatedResults, team1Bracket);
+    const simTeam2Probs = computeSimulatedProbabilities(simulatedResults, team2Bracket);
     const all = TEAM_DATA.map((t) => ({
       ...t,
       probability: simProbs[t.code] ?? 0,
+      team1Probability: simTeam1Probs[t.code] ?? 0,
+      team2Probability: simTeam2Probs[t.code] ?? 0,
     }));
     all.sort((a, b) => b.probability - a.probability);
 
     const notable = all.filter((t) => t.probability > 1);
     return notable;
-  }, [isSimulating, simulatedResults, matchConfig, teams]);
+  }, [isSimulating, simulatedResults, matchConfig, teams, team1Bracket, team2Bracket]);
 
   const displayCanada = useMemo(() => {
     if (!isSimulating) return canada;
