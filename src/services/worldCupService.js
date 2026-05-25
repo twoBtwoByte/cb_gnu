@@ -226,7 +226,7 @@ export async function getNotableProbabilities(bracket = MATCH_96_BRACKET) {
   const canada = teams.find((t) => t.code === "CAN");
   const notable = teams.filter((t) => t.probability > 1);
 
-  return { teams: notable, canada, matchesCompleted, lastUpdated };
+  return { teams: notable, allTeams: teams, canada, matchesCompleted, lastUpdated };
 }
 
 // ---------------------------------------------------------------------------

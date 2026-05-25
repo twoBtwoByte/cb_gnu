@@ -62,6 +62,11 @@ describe("App Canada section visibility", () => {
         { code: "CAN", name: "Canada", group: "B", probability: 12.5 },
         { code: "POR", name: "Portugal", group: "K", probability: 12.5 },
       ],
+      allTeams: [
+        { code: "CAN", name: "Canada", flag: "🇨🇦", group: "B", probability: 12.5 },
+        { code: "POR", name: "Portugal", flag: "🇵🇹", group: "K", probability: 12.5 },
+        { code: "ESP", name: "Spain", flag: "🇪🇸", group: "H", probability: 0 },
+      ],
       canada: { code: "CAN", name: "Canada", group: "B", probability: 12.5 },
       matchesCompleted: 0,
       lastUpdated: new Date("2026-07-01T00:00:00Z"),
@@ -79,6 +84,7 @@ describe("App Canada section visibility", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    window.history.replaceState({}, "", "/");
     subscribeToUpdates.mockImplementation((callback, intervalMs, bracket) => {
       const matchNumber = Object.values(MATCH_CONFIGS).find((config) => config.bracket === bracket)?.matchNumber ?? 96;
       callback(livePayloadByMatch[matchNumber]);
@@ -86,25 +92,58 @@ describe("App Canada section visibility", () => {
     });
   });
 
-  it("shows Canada's Probability when Canada has a non-zero chance in the selected match", async () => {
+  it("shows spotlight selector at the top when no spotlight country is selected", async () => {
+    render(<App />);
+
+    const selectorHeading = await screen.findByRole("heading", { name: "🌟 Spotlight Country" });
+    const selectorSection = selectorHeading.closest("section");
+    expect(selectorSection).toHaveClass("app__spotlight-selector--top");
+    expect(
+      screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("keeps selector at the top when URL spotlight country is invalid", async () => {
+    window.history.replaceState({}, "", "/?country=NotARealCountry");
+    render(<App />);
+
+    const selectorHeading = await screen.findByRole("heading", { name: "🌟 Spotlight Country" });
+    const selectorSection = selectorHeading.closest("section");
+    expect(selectorSection).toHaveClass("app__spotlight-selector--top");
+    expect(
+      screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
+    ).not.toBeInTheDocument();
+  });
+
+  it("uses a valid URL spotlight country and moves selector to the bottom", async () => {
+    window.history.replaceState({}, "", "/?country=Canada");
     render(<App />);
 
     expect(
       await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" })
     ).toBeInTheDocument();
+
+    const selectorHeading = await screen.findByRole("heading", { name: "🌟 Spotlight Country" });
+    const selectorSection = selectorHeading.closest("section");
+    expect(selectorSection).toHaveClass("app__spotlight-selector--bottom");
   });
 
-  it("hides Canada's Probability after selecting a match where Canada has a 0% chance", async () => {
+  it("updates URL and moves selector to bottom after selecting a valid spotlight country", async () => {
     render(<App />);
+    const select = await screen.findByLabelText("Country");
 
-    await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" });
-    fireEvent.click(screen.getByRole("button", { name: /Match 83/i }));
+    fireEvent.change(select, { target: { value: "CAN" } });
 
     await waitFor(() => {
       expect(
-        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
-      ).not.toBeInTheDocument();
+        screen.getByRole("heading", { name: "🇨🇦 Canada's Probability" })
+      ).toBeInTheDocument();
     });
+
+    const selectorHeading = screen.getByRole("heading", { name: "🌟 Spotlight Country" });
+    const selectorSection = selectorHeading.closest("section");
+    expect(selectorSection).toHaveClass("app__spotlight-selector--bottom");
+    expect(window.location.search).toContain("country=Canada");
   });
 
   it("updates Canada's Probability section based on simulator-entered scores", async () => {

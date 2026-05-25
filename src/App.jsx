@@ -17,10 +17,33 @@ import "./App.css";
 
 // Poll for new results every 5 minutes
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+const SPOTLIGHT_COUNTRY_PARAM = "country";
+const LEGACY_SPOTLIGHT_COUNTRY_PARAM = "spotlightCountry";
+
+const normalizeCountryName = (value = "") => value.trim().toLowerCase();
+
+const getSpotlightCodeFromSearchParams = (params) => {
+  const rawCountry =
+    params.get(SPOTLIGHT_COUNTRY_PARAM) ??
+    params.get(LEGACY_SPOTLIGHT_COUNTRY_PARAM) ??
+    "";
+  const normalizedCountry = normalizeCountryName(rawCountry);
+  if (!normalizedCountry) return null;
+
+  const spotlightTeam = TEAM_DATA.find(
+    (team) => normalizeCountryName(team.name) === normalizedCountry
+  );
+  return spotlightTeam?.code ?? null;
+};
+
+const getSpotlightCodeFromUrl = () => {
+  if (typeof window === "undefined") return null;
+  return getSpotlightCodeFromSearchParams(new URLSearchParams(window.location.search));
+};
 
 function App() {
   const [teams, setTeams] = useState([]);
-  const [canada, setCanada] = useState(null);
+  const [allTeams, setAllTeams] = useState([]);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [matchesCompleted, setMatchesCompleted] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -29,16 +52,17 @@ function App() {
   // simulatedResults: matchKey → { homeScore: string, awayScore: string }
   const [simulatedResults, setSimulatedResults] = useState({});
   const [activeTab, setActiveTab] = useState(1);
+  const [spotlightCode, setSpotlightCode] = useState(() => getSpotlightCodeFromUrl());
 
   const matchConfig = MATCH_CONFIGS[selectedMatchNumber];
   // Track whether any data has been received yet so we only show the full
   // loading spinner on the very first load, not on subsequent match switches.
   const hasReceivedDataRef = useRef(false);
 
-  const handleData = useCallback(({ teams: t, canada: c, matchesCompleted: mc, lastUpdated: lu }) => {
+  const handleData = useCallback(({ teams: t, allTeams: at, matchesCompleted: mc, lastUpdated: lu }) => {
     hasReceivedDataRef.current = true;
     setTeams(t);
-    setCanada(c);
+    setAllTeams(Array.isArray(at) && at.length > 0 ? at : t);
     setMatchesCompleted(mc);
     setLastUpdated(lu);
     setLoading(false);
@@ -64,6 +88,17 @@ function App() {
   }, [handleData, selectedMatchNumber]);
 
   const availableMatches = Object.values(MATCH_CONFIGS);
+  const spotlightCountryOptions = useMemo(
+    () => [...TEAM_DATA].sort((a, b) => a.name.localeCompare(b.name)),
+    []
+  );
+
+  const selectedSpotlightTeamMeta = useMemo(
+    () => spotlightCountryOptions.find((team) => team.code === spotlightCode) ?? null,
+    [spotlightCountryOptions, spotlightCode]
+  );
+
+  const hasValidSpotlightSelection = Boolean(selectedSpotlightTeamMeta);
 
   const bracketSlots = useMemo(
     () =>
@@ -104,6 +139,45 @@ function App() {
     setSimulatedResults(results);
   }, []);
 
+  // Reset simulated results when the selected match changes
+  useEffect(() => {
+    setSimulatedResults({});
+  }, [selectedMatchNumber]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const handlePopState = () => {
+      setSpotlightCode(getSpotlightCodeFromUrl());
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const handleSpotlightCountryChange = useCallback((event) => {
+    const nextSpotlightCode = event.target.value || null;
+    setSpotlightCode(nextSpotlightCode);
+
+    if (typeof window === "undefined") return;
+
+    const searchParams = new URLSearchParams(window.location.search);
+    if (!nextSpotlightCode) {
+      searchParams.delete(SPOTLIGHT_COUNTRY_PARAM);
+      searchParams.delete(LEGACY_SPOTLIGHT_COUNTRY_PARAM);
+    } else {
+      const selectedTeam = TEAM_DATA.find((team) => team.code === nextSpotlightCode);
+      if (selectedTeam) {
+        searchParams.set(SPOTLIGHT_COUNTRY_PARAM, selectedTeam.name);
+      }
+      searchParams.delete(LEGACY_SPOTLIGHT_COUNTRY_PARAM);
+    }
+
+    const search = searchParams.toString();
+    const nextUrl = `${window.location.pathname}${search ? `?${search}` : ""}${window.location.hash}`;
+    window.history.replaceState({}, "", nextUrl);
+  }, []);
+
   // ── Simulated probability display ────────────────────────────────────────
   const isSimulating = useMemo(
     () => Object.values(simulatedResults).some((r) => r.homeScore !== "" || r.awayScore !== ""),
@@ -132,9 +206,9 @@ function App() {
 
   // When the simulator is active, recalculate probabilities from entered scores.
   // Otherwise fall back to the live (polled) data.
-  const displayTeams = useMemo(() => {
+  const displayAllTeams = useMemo(() => {
     if (!isSimulating) {
-      return teams.map((t) => ({
+      return allTeams.map((t) => ({
         ...t,
         team1Probability: computeProbabilityForMatch(t, team1Bracket),
         team2Probability: computeProbabilityForMatch(t, team2Bracket),
@@ -151,28 +225,57 @@ function App() {
       team2Probability: simTeam2Probs[t.code] ?? 0,
     }));
     all.sort((a, b) => b.probability - a.probability);
+    return all;
+  }, [isSimulating, simulatedResults, matchConfig, allTeams, team1Bracket, team2Bracket]);
 
-    const notable = all.filter((t) => t.probability > 1);
-    return notable;
-  }, [isSimulating, simulatedResults, matchConfig, teams, team1Bracket, team2Bracket]);
+  const displayTeams = useMemo(
+    () => displayAllTeams.filter((team) => team.probability > 1),
+    [displayAllTeams]
+  );
 
-  const displayCanada = useMemo(() => {
-    if (!isSimulating) return canada;
+  const displaySpotlightTeam = useMemo(() => {
+    if (!selectedSpotlightTeamMeta) return null;
 
-    const simProbs = computeSimulatedProbabilities(simulatedResults, matchConfig.bracket);
-    const canadaTeam = TEAM_DATA.find((t) => t.code === "CAN");
-
-    if (!canadaTeam && !canada) return null;
+    const spotlightTeam = displayAllTeams.find((team) => team.code === selectedSpotlightTeamMeta.code);
+    if (spotlightTeam) return spotlightTeam;
 
     return {
-      ...(canadaTeam ?? {}),
-      ...(canada ?? {}),
-      code: "CAN",
-      probability: simProbs.CAN ?? 0,
+      ...selectedSpotlightTeamMeta,
+      probability: 0,
+      team1Probability: 0,
+      team2Probability: 0,
     };
-  }, [isSimulating, simulatedResults, matchConfig.bracket, canada]);
+  }, [displayAllTeams, selectedSpotlightTeamMeta]);
 
-  const showCanadaSection = !displayCanada || displayCanada.probability > 0;
+  const renderSpotlightSelector = (position) => (
+    <section
+      className={`app__section app__spotlight-selector app__spotlight-selector--${position}`}
+      aria-labelledby="spotlight-country-selector-heading"
+    >
+      <h2 id="spotlight-country-selector-heading" className="app__section-title">
+        🌟 Spotlight Country
+      </h2>
+      <p className="app__section-desc">
+        Select a World Cup country to spotlight its probability for Match {matchConfig.matchNumber}.
+      </p>
+      <label htmlFor="spotlight-country-select" className="app__spotlight-label">
+        Country
+      </label>
+      <select
+        id="spotlight-country-select"
+        className="app__spotlight-select"
+        value={spotlightCode ?? ""}
+        onChange={handleSpotlightCountryChange}
+      >
+        <option value="">Select a spotlight country</option>
+        {spotlightCountryOptions.map((team) => (
+          <option key={team.code} value={team.code}>
+            {team.flag} {team.name}
+          </option>
+        ))}
+      </select>
+    </section>
+  );
 
   return (
     <div className="app">
@@ -195,6 +298,8 @@ function App() {
       </header>
 
       <main className="app__main">
+        {!hasValidSpotlightSelection && renderSpotlightSelector("top")}
+
         {/* ── Match selector ── */}
         <section className="app__section app__match-selector" aria-labelledby="match-selector-heading">
           <h2 id="match-selector-heading" className="app__section-title">
@@ -236,13 +341,13 @@ function App() {
 
         {!loading && !error && (
           <>
-            {/* ── Canada spotlight ── */}
-            {showCanadaSection && (
-              <section className="app__section" aria-labelledby="canada-heading">
-                <h2 id="canada-heading" className="app__section-title">
-                  🇨🇦 Canada's Probability
+            {/* ── Spotlight country ── */}
+            {hasValidSpotlightSelection && displaySpotlightTeam && (
+              <section className="app__section" aria-labelledby="spotlight-heading">
+                <h2 id="spotlight-heading" className="app__section-title">
+                  {displaySpotlightTeam.flag} {displaySpotlightTeam.name}&apos;s Probability
                 </h2>
-                <CanadaHighlight canada={displayCanada} matchInfo={matchConfig} />
+                <CanadaHighlight canada={displaySpotlightTeam} matchInfo={matchConfig} />
               </section>
             )}
 
@@ -363,8 +468,11 @@ function App() {
               refreshInterval={REFRESH_INTERVAL_MS}
               onRefresh={handleRefresh}
             />
+
           </>
         )}
+
+        {hasValidSpotlightSelection && renderSpotlightSelector("bottom")}
       </main>
 
       <footer className="app__footer">
