@@ -32,13 +32,13 @@ describe("useSpotlightCountry", () => {
   it("hydrates from the country query parameter", () => {
     window.history.replaceState({}, "", "/?country=Portugal");
     render(<Harness />);
-    expect(screen.getByText("Portugal")).toBeInTheDocument();
+    expect(screen.getByText("Portugal", { selector: "div" })).toBeInTheDocument();
   });
 
   it("updates the URL when quick-selecting Canada", () => {
     render(<Harness />);
     fireEvent.click(screen.getByRole("button", { name: "quick" }));
-    expect(screen.getByText("Canada")).toBeInTheDocument();
+    expect(screen.getByText("Canada", { selector: "div" })).toBeInTheDocument();
     expect(window.location.search).toContain("country=Canada");
   });
 });

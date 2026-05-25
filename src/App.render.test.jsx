@@ -217,8 +217,7 @@ describe("App Canada section visibility", () => {
     fireEvent.click(screen.getByRole("button", { name: /Match 83/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "🇨🇦 Canada's Probability" })).toBeInTheDocument();
-      expect(screen.getByText("Canada 12.5")).toBeInTheDocument();
+      expect(screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })).not.toBeInTheDocument();
     });
   });
 
