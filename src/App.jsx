@@ -193,8 +193,7 @@ function App() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  const handleSpotlightCountryChange = useCallback((event) => {
-    const nextSpotlightCode = event.target.value || null;
+  const setSpotlightCountry = useCallback((nextSpotlightCode) => {
     setSpotlightCode(nextSpotlightCode);
 
     if (typeof window === "undefined") return;
@@ -215,6 +214,14 @@ function App() {
     const nextUrl = `${window.location.pathname}${search ? `?${search}` : ""}${window.location.hash}`;
     window.history.replaceState({}, "", nextUrl);
   }, []);
+
+  const handleSpotlightCountryChange = useCallback((event) => {
+    setSpotlightCountry(event.target.value || null);
+  }, [setSpotlightCountry]);
+
+  const handleQuickSelectCanada = useCallback(() => {
+    setSpotlightCountry("CAN");
+  }, [setSpotlightCountry]);
 
   // ── Simulated probability display ────────────────────────────────────────
   const isSimulating = useMemo(
@@ -300,19 +307,28 @@ function App() {
       <label htmlFor="spotlight-country-select" className="app__spotlight-label">
         Country
       </label>
-      <select
-        id="spotlight-country-select"
-        className="app__spotlight-select"
-        value={spotlightCode ?? ""}
-        onChange={handleSpotlightCountryChange}
-      >
-        <option value="">Select a spotlight country</option>
-        {spotlightCountryOptions.map((team) => (
-          <option key={team.code} value={team.code}>
-            {team.flag} {team.name}
-          </option>
-        ))}
-      </select>
+      <div className="app__spotlight-controls">
+        <select
+          id="spotlight-country-select"
+          className="app__spotlight-select"
+          value={spotlightCode ?? ""}
+          onChange={handleSpotlightCountryChange}
+        >
+          <option value="">Select a spotlight country</option>
+          {spotlightCountryOptions.map((team) => (
+            <option key={team.code} value={team.code}>
+              {team.flag} {team.name}
+            </option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className="app__spotlight-quick-link"
+          onClick={handleQuickSelectCanada}
+        >
+          Quick select Canada
+        </button>
+      </div>
     </section>
   );
 
