@@ -139,10 +139,10 @@ function App() {
     setSimulatedResults(results);
   }, []);
 
-  // Reset simulated results when the selected match changes
-  useEffect(() => {
+  const handleMatchSelection = useCallback((matchNumber) => {
     setSimulatedResults({});
-  }, [selectedMatchNumber]);
+    setSelectedMatchNumber(matchNumber);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -210,6 +210,7 @@ function App() {
     if (!isSimulating) {
       return allTeams.map((t) => ({
         ...t,
+        probability: computeProbabilityForMatch(t, matchConfig.bracket),
         team1Probability: computeProbabilityForMatch(t, team1Bracket),
         team2Probability: computeProbabilityForMatch(t, team2Bracket),
       }));
@@ -314,7 +315,7 @@ function App() {
               <button
                 key={cfg.matchNumber}
                 className={`match-selector__btn${selectedMatchNumber === cfg.matchNumber ? " match-selector__btn--active" : ""}`}
-                onClick={() => setSelectedMatchNumber(cfg.matchNumber)}
+                onClick={() => handleMatchSelection(cfg.matchNumber)}
                 aria-pressed={selectedMatchNumber === cfg.matchNumber}
               >
                 <span className="match-selector__match-num">Match {cfg.matchNumber}</span>
@@ -433,7 +434,7 @@ function App() {
                     probability.
                   </p>
                   <TournamentPathSection
-                    teamPaths={getTournamentPaths(displayTeams, matchConfig.bracket)}
+                    teamPaths={getTournamentPaths(displayTeams, matchConfig.bracket, simulatedResults)}
                     matchInfo={matchConfig}
                   />
                 </section>

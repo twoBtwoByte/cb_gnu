@@ -237,6 +237,27 @@ describe("worldCupService", () => {
       });
     });
 
+    it("uses simulator-entered group outcomes to update path probabilities", () => {
+      const canada = { code: "CAN", group: "B", probability: 12.5 };
+      const qatar = { code: "QAT", group: "B", probability: 12.5 };
+      const simulatedResults = {
+        "B-CAN-BIH": { homeScore: "0", awayScore: "1" },
+        "B-CAN-QAT": { homeScore: "0", awayScore: "2" },
+        "B-CAN-SUI": { homeScore: "0", awayScore: "1" },
+        "B-BIH-QAT": { homeScore: "0", awayScore: "1" },
+        "B-BIH-SUI": { homeScore: "1", awayScore: "0" },
+        "B-QAT-SUI": { homeScore: "2", awayScore: "0" },
+      };
+
+      const canadaPaths = buildTeamPaths(canada, MATCH_96_BRACKET, simulatedResults);
+      const qatarPaths = buildTeamPaths(qatar, MATCH_96_BRACKET, simulatedResults);
+
+      expect(canadaPaths).toHaveLength(1);
+      expect(qatarPaths).toHaveLength(1);
+      expect(canadaPaths[0].probability).toBe(0);
+      expect(qatarPaths[0].probability).toBe(50);
+    });
+
     it("scenario probability for Group B equals (1/ownGroupSize) x 0.5 x 100 against 3rd-place qualifier", () => {
       // Canada: Group B has 4 teams, opponent is a single 3rd-place qualifier
       // P = 1/4 x 0.5 x 100 = 12.5%

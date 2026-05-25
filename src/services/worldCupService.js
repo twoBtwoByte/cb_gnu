@@ -229,6 +229,45 @@ export async function getNotableProbabilities(bracket = MATCH_96_BRACKET) {
   return { teams: notable, allTeams: teams, canada, matchesCompleted, lastUpdated };
 }
 
+function getPositionProbability(team, group, position, simulatedResults) {
+  const groupSize = GROUP_SIZES[group] ?? 4;
+  if (!simulatedResults || !isGroupComplete(group, simulatedResults)) {
+    return 1 / groupSize;
+  }
+
+  const standings = computeGroupStandings(group, simulatedResults);
+  return standings[position - 1]?.code === team.code ? 1 : 0;
+}
+
+function getSpecificQualifierProbability(team, side, simulatedResults) {
+  if (!side?.group || !side?.position) return 0;
+  return getPositionProbability(team, side.group, side.position, simulatedResults);
+}
+
+function getThirdPlaceSelectionProbability(team, slot, simulatedResults) {
+  if (!slot?.sideB?.thirdPlace || !Array.isArray(slot.sideB.eligibleGroups)) return 0;
+  if (!slot.sideB.eligibleGroups.includes(team.group)) return 0;
+  if (slot.hostTeamSlot) return 0;
+
+  const eligibleGroups = slot.sideB.eligibleGroups;
+  const allComplete = simulatedResults && eligibleGroups.every((g) => isGroupComplete(g, simulatedResults));
+  if (!allComplete) {
+    return 1 / eligibleGroups.length;
+  }
+
+  const thirdPlaceTeams = eligibleGroups
+    .map((g) => computeGroupStandings(g, simulatedResults)[2])
+    .filter(Boolean)
+    .sort((a, b) =>
+      b.pts !== a.pts ? b.pts - a.pts :
+      b.gd !== a.gd ? b.gd - a.gd :
+      b.gf !== a.gf ? b.gf - a.gf :
+      a.name.localeCompare(b.name)
+    );
+
+  return thirdPlaceTeams[0]?.code === team.code ? 1 : 0;
+}
+
 // ---------------------------------------------------------------------------
 // Tournament bracket paths
 //
@@ -258,9 +297,8 @@ export async function getNotableProbabilities(bracket = MATCH_96_BRACKET) {
  *                           Defaults to MATCH_96_BRACKET.
  * @returns {Array}  Array of path scenario objects, empty if no route exists.
  */
-export function buildTeamPaths(team, bracket = MATCH_96_BRACKET) {
+export function buildTeamPaths(team, bracket = MATCH_96_BRACKET, simulatedResults = null) {
   const { group } = team;
-  const ownGroupSize = GROUP_SIZES[group] ?? 4;
   const paths = [];
 
   for (const slot of Object.values(bracket)) {
@@ -268,7 +306,8 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET) {
     if (group === slot.sideA.group) {
       const pos = slot.sideA.position;
       const posLabel = pos === 1 ? "1st" : pos === 2 ? "2nd" : `${pos}th`;
-      const scenarioProbPct = Math.round((1 / ownGroupSize) * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
+      const sideAQualifyProb = getPositionProbability(team, group, pos, simulatedResults);
+      const scenarioProbPct = Math.round(sideAQualifyProb * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
 
       if (slot.sideB.thirdPlace) {
         paths.push({
@@ -284,9 +323,9 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET) {
         });
       } else {
         // Specific-group opponent (for future bracket slots without 3rd-place)
-        const oppGroupSize = GROUP_SIZES[slot.sideB.group] ?? 4;
-        const probPct = Math.round((1 / ownGroupSize) * (1 / oppGroupSize) * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
         TEAM_DATA.filter((t) => t.group === slot.sideB.group).forEach((opp) => {
+          const oppQualifierProb = getSpecificQualifierProbability(opp, slot.sideB, simulatedResults);
+          const probPct = Math.round(sideAQualifyProb * oppQualifierProb * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
           paths.push({
             groupFinishLabel: `${posLabel} in Group ${group}`,
             requiredPosition: pos,
@@ -302,8 +341,9 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET) {
     // Skip host-team slots: sideB teams in that slot would play Canada in the
     // R32 match (not in Match 96), so the path doesn't lead to playing Canada.
     if (!slot.hostTeamSlot && slot.sideB.thirdPlace && slot.sideB.eligibleGroups.includes(group)) {
-      const poolSize = slot.sideB.eligibleGroups.length;
-      const scenarioProbPct = Math.round((1 / ownGroupSize) * (1 / poolSize) * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
+      const thirdPlaceFinishProb = getPositionProbability(team, group, 3, simulatedResults);
+      const thirdPlaceSelectionProb = getThirdPlaceSelectionProbability(team, slot, simulatedResults);
+      const scenarioProbPct = Math.round(thirdPlaceFinishProb * thirdPlaceSelectionProb * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
       paths.push({
         groupFinishLabel: `3rd in Group ${group}`,
         requiredPosition: 3,
@@ -320,9 +360,10 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET) {
     if (slot.sideB.group === group) {
       const pos = slot.sideB.position;
       const posLabel = pos === 1 ? "1st" : pos === 2 ? "2nd" : `${pos}th`;
-      const oppGroupSize = GROUP_SIZES[slot.sideA.group] ?? 4;
-      const probPct = Math.round((1 / ownGroupSize) * (1 / oppGroupSize) * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
+      const sideBQualifyProb = getPositionProbability(team, group, pos, simulatedResults);
       TEAM_DATA.filter((t) => t.group === slot.sideA.group).forEach((opp) => {
+        const oppQualifierProb = getSpecificQualifierProbability(opp, slot.sideA, simulatedResults);
+        const probPct = Math.round(sideBQualifyProb * oppQualifierProb * KNOCKOUT_WIN_PROB * 100 * 1000) / 1000;
         paths.push({
           groupFinishLabel: `${posLabel} in Group ${group}`,
           requiredPosition: pos,
@@ -345,9 +386,9 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET) {
  * @param {Object} [bracket] Bracket config. Defaults to MATCH_96_BRACKET.
  * @returns {Array}  Array of { team, paths } objects sorted by probability desc.
  */
-export function getTournamentPaths(teams, bracket = MATCH_96_BRACKET) {
+export function getTournamentPaths(teams, bracket = MATCH_96_BRACKET, simulatedResults = null) {
   return teams
-    .map((team) => ({ team, paths: buildTeamPaths(team, bracket) }))
+    .map((team) => ({ team, paths: buildTeamPaths(team, bracket, simulatedResults) }))
     .filter(({ paths }) => paths.length > 0)
     .sort((a, b) => b.team.probability - a.team.probability);
 }

@@ -149,6 +149,7 @@ describe("App Canada section visibility", () => {
   it("updates Canada's Probability section based on simulator-entered scores", async () => {
     render(<App />);
 
+    fireEvent.change(await screen.findByLabelText("Country"), { target: { value: "CAN" } });
     await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" });
     fireEvent.click(screen.getByRole("tab", { name: /Simulator/i }));
     fireEvent.click(screen.getByRole("button", { name: "Simulate Canada eliminated" }));
@@ -160,7 +161,7 @@ describe("App Canada section visibility", () => {
     });
   });
 
-  it("preserves simulator-entered scores when switching to another match", async () => {
+  it("updates Canada's Probability value when switching to another match", async () => {
     subscribeToUpdates.mockImplementation((callback, intervalMs, bracket) => {
       const matchNumber = Object.values(MATCH_CONFIGS).find((config) => config.bracket === bracket)?.matchNumber ?? 96;
       if (matchNumber === 83) {
@@ -169,6 +170,11 @@ describe("App Canada section visibility", () => {
             { code: "CAN", name: "Canada", group: "B", probability: 12.5 },
             { code: "POR", name: "Portugal", group: "K", probability: 12.5 },
             { code: "ENG", name: "England", group: "L", probability: 12.5 },
+          ],
+          allTeams: [
+            { code: "CAN", name: "Canada", flag: "🇨🇦", group: "B", probability: 12.5 },
+            { code: "POR", name: "Portugal", flag: "🇵🇹", group: "K", probability: 12.5 },
+            { code: "ENG", name: "England", flag: "🏴", group: "L", probability: 12.5 },
           ],
           canada: { code: "CAN", name: "Canada", group: "B", probability: 12.5 },
           matchesCompleted: 0,
@@ -182,22 +188,23 @@ describe("App Canada section visibility", () => {
 
     render(<App />);
 
+    fireEvent.change(await screen.findByLabelText("Country"), { target: { value: "CAN" } });
     await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" });
+    expect(screen.getByText("Canada 12.5")).toBeInTheDocument();
+
     fireEvent.click(screen.getByRole("tab", { name: /Simulator/i }));
     fireEvent.click(screen.getByRole("button", { name: "Simulate Canada eliminated" }));
 
     await waitFor(() => {
       expect(
-        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
-      ).not.toBeInTheDocument();
+        screen.getByText("Canada 0")
+      ).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByRole("button", { name: /Match 83/i }));
 
     await waitFor(() => {
-      expect(
-        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
-      ).not.toBeInTheDocument();
+      expect(screen.getByText("Canada 0")).toBeInTheDocument();
     });
   });
 });
