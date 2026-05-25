@@ -2,7 +2,7 @@ import React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import App from "./App.jsx";
-import { MATCH_CONFIGS, subscribeToUpdates } from "./services/worldCupService.js";
+import { MATCH_CONFIGS, generateGroupMatches, subscribeToUpdates } from "./services/worldCupService.js";
 
 vi.mock("./components/CanadaHighlight.jsx", () => ({
   default: ({ canada }) => <div>{canada ? `${canada.name} ${canada.probability}` : "No Canada"}</div>,
@@ -21,7 +21,28 @@ vi.mock("./components/LastUpdated.jsx", () => ({
 }));
 
 vi.mock("./components/GroupSimulator.jsx", () => ({
-  default: () => <div>Group simulator</div>,
+  default: ({ onAutoPopulate }) => (
+    <div>
+      Group simulator
+      <button
+        onClick={() => {
+          const results = {};
+          generateGroupMatches(["B"]).forEach((m) => {
+            if (m.homeTeam.code === "QAT" || m.awayTeam.code === "QAT") {
+              results[m.key] = m.homeTeam.code === "QAT"
+                ? { homeScore: "3", awayScore: "0" }
+                : { homeScore: "0", awayScore: "3" };
+            } else {
+              results[m.key] = { homeScore: "1", awayScore: "1" };
+            }
+          });
+          onAutoPopulate(results);
+        }}
+      >
+        Simulate Canada eliminated
+      </button>
+    </div>
+  ),
 }));
 
 vi.mock("./services/worldCupService.js", async () => {
@@ -78,6 +99,20 @@ describe("App Canada section visibility", () => {
 
     await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" });
     fireEvent.click(screen.getByRole("button", { name: /Match 83/i }));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it("updates Canada's Probability section based on simulator-entered scores", async () => {
+    render(<App />);
+
+    await screen.findByRole("heading", { name: "🇨🇦 Canada's Probability" });
+    fireEvent.click(screen.getByRole("tab", { name: /Simulator/i }));
+    fireEvent.click(screen.getByRole("button", { name: "Simulate Canada eliminated" }));
 
     await waitFor(() => {
       expect(
