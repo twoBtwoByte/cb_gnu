@@ -54,7 +54,8 @@ const formatGroupQualifier = (side) => {
 };
 
 const formatWinnerFromR32Label = (r32Label = "") => {
-  const matchNumber = r32Label.match(/\d+/)?.[0];
+  const numericParts = r32Label.match(/\d+/g) ?? [];
+  const matchNumber = numericParts[numericParts.length - 1];
   return matchNumber ? `W${matchNumber}` : "";
 };
 
