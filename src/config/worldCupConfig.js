@@ -41,7 +41,7 @@ export const MATCH_CONFIGS = {
     venue: "Toronto Stadium",
     city: "Toronto",
     country: "Canada",
-    scheduledDate: "TBD",
+    scheduledDate: "July 2, 2026",
     description: "FIFA World Cup 2026 – Match 83 (Round of 32) at Toronto Stadium, Toronto",
     bracket: {
       slot1: {
