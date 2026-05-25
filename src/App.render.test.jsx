@@ -170,7 +170,10 @@ describe("App Canada section visibility", () => {
     fireEvent.click(screen.getByRole("button", { name: "Simulate Canada eliminated" }));
 
     await waitFor(() => {
-      expect(screen.getByText("Canada 0")).toBeInTheDocument();
+      expect(
+        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText("Canada 0")).not.toBeInTheDocument();
     });
   });
 
@@ -210,14 +213,16 @@ describe("App Canada section visibility", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Canada 0")
-      ).toBeInTheDocument();
+        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
+      ).not.toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByRole("button", { name: /Match 83/i }));
 
     await waitFor(() => {
-      expect(screen.getByText("Canada 0")).toBeInTheDocument();
+      expect(
+        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
+      ).not.toBeInTheDocument();
     });
   });
 
