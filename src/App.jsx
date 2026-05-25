@@ -225,9 +225,7 @@ function App() {
       team2Probability: simTeam2Probs[t.code] ?? 0,
     }));
     all.sort((a, b) => b.probability - a.probability);
-
-    const notable = all.filter((t) => t.probability > 1);
-    return notable;
+    return all;
   }, [isSimulating, simulatedResults, matchConfig, allTeams, team1Bracket, team2Bracket]);
 
   const displayTeams = useMemo(
