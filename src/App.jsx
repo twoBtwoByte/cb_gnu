@@ -127,11 +127,6 @@ function App() {
     all.sort((a, b) => b.probability - a.probability);
 
     const notable = all.filter((t) => t.probability > 1);
-    const simulatedCanada = all.find((t) => t.code === "CAN");
-    if (simulatedCanada && !notable.find((t) => t.code === "CAN")) {
-      notable.push(simulatedCanada);
-      notable.sort((a, b) => b.probability - a.probability);
-    }
     return notable;
   }, [isSimulating, simulatedResults, matchConfig, teams]);
 

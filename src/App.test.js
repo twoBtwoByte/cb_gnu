@@ -119,18 +119,18 @@ describe("worldCupService", () => {
   });
 
   describe("getNotableProbabilities", () => {
-    it("only returns teams with probability > 1 % (except Canada)", async () => {
+    it("only returns teams with probability > 1 %", async () => {
       const { teams } = await getNotableProbabilities();
-      const nonCanadaLow = teams.filter((t) => t.code !== "CAN" && t.probability <= 1);
-      expect(nonCanadaLow.length).toBe(0);
+      const lowProbTeams = teams.filter((t) => t.probability <= 1);
+      expect(lowProbTeams.length).toBe(0);
     });
 
-    it("always includes Canada in notable teams", async () => {
+    it("returns the Canada record and includes it only when above threshold", async () => {
       const { canada, teams } = await getNotableProbabilities();
       expect(canada).toBeDefined();
       expect(canada.code).toBe("CAN");
       const canadaInList = teams.find((t) => t.code === "CAN");
-      expect(canadaInList).toBeDefined();
+      expect(Boolean(canadaInList)).toBe(canada.probability > 1);
     });
 
     it("returns teams sorted by probability descending", async () => {
