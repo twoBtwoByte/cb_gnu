@@ -155,9 +155,7 @@ describe("App Canada section visibility", () => {
     fireEvent.click(screen.getByRole("button", { name: "Simulate Canada eliminated" }));
 
     await waitFor(() => {
-      expect(
-        screen.queryByRole("heading", { name: "🇨🇦 Canada's Probability" })
-      ).not.toBeInTheDocument();
+      expect(screen.getByText("Canada 0")).toBeInTheDocument();
     });
   });
 
