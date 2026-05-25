@@ -7,15 +7,18 @@ describe("ProbabilityList", () => {
   it("renders the additional Match Side column", () => {
     render(
       <ProbabilityList
-        teams={[
+        rows={[
           {
-            code: "CAN",
+            id: "CAN",
+            rank: 1,
             name: "Canada",
             flag: "🇨🇦",
             confederation: "CONCACAF",
-            probability: 12.5,
-            team1Probability: 12.5,
-            team2Probability: 0,
+            probabilityLabel: "12.5%",
+            roleLines: ["team 1 (12.5%)"],
+            isHighlighted: true,
+            isHost: true,
+            barWidth: 12.5,
           },
         ]}
       />
@@ -25,18 +28,21 @@ describe("ProbabilityList", () => {
     expect(screen.getByText("team 1 (12.5%)")).toBeInTheDocument();
   });
 
-  it("renders both sides on separate lines when team 1 and team 2 probabilities differ", () => {
+  it("renders both sides on separate lines when probabilities differ", () => {
     render(
       <ProbabilityList
-        teams={[
+        rows={[
           {
-            code: "GER",
+            id: "GER",
+            rank: 1,
             name: "Germany",
             flag: "🇩🇪",
             confederation: "UEFA",
-            probability: 3.0,
-            team1Probability: 2.0,
-            team2Probability: 1.0,
+            probabilityLabel: "3.0%",
+            roleLines: ["team 1 (2.0%)", "team 2 (1.0%)"],
+            isHighlighted: false,
+            isHost: false,
+            barWidth: 3,
           },
         ]}
       />
@@ -49,15 +55,18 @@ describe("ProbabilityList", () => {
   it("shows both team 1 & 2 when role probabilities are equal and above threshold", () => {
     render(
       <ProbabilityList
-        teams={[
+        rows={[
           {
-            code: "POR",
+            id: "POR",
+            rank: 1,
             name: "Portugal",
             flag: "🇵🇹",
             confederation: "UEFA",
-            probability: 5.0,
-            team1Probability: 2.5,
-            team2Probability: 2.5,
+            probabilityLabel: "5.0%",
+            roleLines: ["both team 1 & 2 (2.5%)"],
+            isHighlighted: false,
+            isHost: false,
+            barWidth: 5,
           },
         ]}
       />
