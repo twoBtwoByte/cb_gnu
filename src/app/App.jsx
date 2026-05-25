@@ -210,14 +210,11 @@ function App() {
       <div className="app__footer-actions">
         <a
           className="app__footer-btn"
-          href="https://www.buymeacoffee.com/"
+          href="https://buymeacoffee.com/copiesarlo"
           target="_blank"
           rel="noopener noreferrer"
         >
           ☕ Buy Me a Coffee
-        </a>
-        <a className="app__footer-link" href="/contact.html">
-          Contact &amp; Suggestions (coming soon)
         </a>
       </div>
     </footer>
