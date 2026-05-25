@@ -163,8 +163,19 @@ function App() {
 
   const displayCanada = useMemo(() => {
     if (!isSimulating) return canada;
-    return displayTeams.find((t) => t.code === "CAN") ?? canada;
-  }, [isSimulating, displayTeams, canada]);
+
+    const simProbs = computeSimulatedProbabilities(simulatedResults, matchConfig.bracket);
+    const canadaTeam = TEAM_DATA.find((t) => t.code === "CAN");
+
+    if (!canadaTeam && !canada) return null;
+
+    return {
+      ...(canadaTeam ?? {}),
+      ...(canada ?? {}),
+      code: "CAN",
+      probability: simProbs.CAN ?? 0,
+    };
+  }, [isSimulating, simulatedResults, matchConfig.bracket, canada]);
 
   const showCanadaSection = !displayCanada || displayCanada.probability > 0;
 
