@@ -169,7 +169,7 @@ describe("App Canada section visibility", () => {
   it("quick-select link sets spotlight country to Canada", async () => {
     renderApp();
 
-    fireEvent.click(await screen.findByRole("button", { name: "Quick select Canada" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Default: Canada" }));
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "🇨🇦 Canada's Probability" })).toBeInTheDocument();
