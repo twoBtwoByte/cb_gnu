@@ -30,7 +30,7 @@ function SpotlightCountrySelector({ position, matchNumber, countryOptions, value
           ))}
         </select>
         <button type="button" className="app__spotlight-quick-link" onClick={onQuickSelect}>
-          Quick select Canada
+          Default: Canada
         </button>
       </div>
     </section>
