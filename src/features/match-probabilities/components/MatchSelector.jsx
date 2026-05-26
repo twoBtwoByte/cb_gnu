@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 
 const formatGroupQualifier = (side) => {
   if (!side) return "";
@@ -39,6 +39,21 @@ const getMatchupLabel = (config) => {
 };
 
 function MatchSelector({ matches, selectedMatchNumber, onSelect }) {
+  const [selectedVenue, setSelectedVenue] = useState("");
+
+  const venueOptions = useMemo(
+    () =>
+      [...new Map(matches.map((config) => [`${config.venue}, ${config.city}`, config])).keys()].sort((left, right) =>
+        left.localeCompare(right)
+      ),
+    [matches]
+  );
+
+  const filteredMatches = useMemo(
+    () => matches.filter((config) => !selectedVenue || `${config.venue}, ${config.city}` === selectedVenue),
+    [matches, selectedVenue]
+  );
+
   return (
     <section className="app__section app__match-selector" aria-labelledby="match-selector-heading">
       <h2 id="match-selector-heading" className="app__section-title">
@@ -47,8 +62,26 @@ function MatchSelector({ matches, selectedMatchNumber, onSelect }) {
       <p className="app__section-desc">
         Choose a match to see which countries have a path to that game and their estimated probability of playing in it.
       </p>
+      <div className="match-selector__filter">
+        <label className="match-selector__filter-label" htmlFor="match-selector-venue">
+          Venue
+        </label>
+        <select
+          id="match-selector-venue"
+          className="match-selector__filter-select"
+          value={selectedVenue}
+          onChange={(event) => setSelectedVenue(event.target.value)}
+        >
+          <option value="">Select venue</option>
+          {venueOptions.map((venue) => (
+            <option key={venue} value={venue}>
+              {venue}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="match-selector__options">
-        {matches.map((config) => (
+        {filteredMatches.map((config) => (
           <button
             key={config.matchNumber}
             className={`match-selector__btn${selectedMatchNumber === config.matchNumber ? " match-selector__btn--active" : ""}`}
