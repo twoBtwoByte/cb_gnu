@@ -221,6 +221,28 @@ describe("App Canada section visibility", () => {
     });
   });
 
+  it("defaults venue filter to no selection and shows all matches", async () => {
+    renderApp();
+
+    const venueSelect = await screen.findByLabelText("Venue");
+
+    expect(venueSelect).toHaveValue("");
+    expect(screen.getByRole("button", { name: /Match 83/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Match 85/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Match 96/i })).toBeInTheDocument();
+  });
+
+  it("filters matches to selected venue", async () => {
+    renderApp();
+
+    const venueSelect = await screen.findByLabelText("Venue");
+    fireEvent.change(venueSelect, { target: { value: "Toronto Stadium, Toronto" } });
+
+    expect(screen.getByRole("button", { name: /Match 83/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Match 85/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Match 96/i })).not.toBeInTheDocument();
+  });
+
   it("shows matchup participants in each match selector button", async () => {
     renderApp();
 

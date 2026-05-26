@@ -960,6 +960,31 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-
 
 
 
+
+.match-selector__filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.match-selector__filter-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #3c3c4d;
+}
+
+.match-selector__filter-select {
+  width: 100%;
+  max-width: 260px;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  color: #1a1a2e;
+}
+
 .match-selector__options {
   display: flex;
   flex-wrap: wrap;
