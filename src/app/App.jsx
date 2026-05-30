@@ -216,34 +216,31 @@ function App() {
         >
           ☕ Buy Me a Coffee
         </a>
+        <details className="app__feedback">
+          <summary className="app__feedback-summary">💡 suggest improvements?</summary>
+          <div className="app__feedback-content">
+            <p className="app__feedback-copy">Help improve this website</p>
+            <form
+              className="app__feedback-form"
+              action="https://github.com/twoBtwoByte/cb_gnu/issues/new"
+              method="get"
+              target="_blank"
+            >
+              <input type="hidden" name="title" value="Feedback: improvement suggestion" />
+              <textarea
+                className="app__feedback-input"
+                name="body"
+                rows="4"
+                placeholder="What would you like to suggest?"
+                required
+              />
+              <button type="submit" className="app__feedback-submit">
+                Share
+              </button>
+            </form>
+          </div>
+        </details>
       </div>
-      <details className="app__feedback">
-        <summary className="app__feedback-summary">💡 Do you have improvement suggestions?</summary>
-        <div className="app__feedback-content">
-          <h3 className="app__feedback-title">Help improve this tracker</h3>
-          <p className="app__feedback-copy">
-            Share ideas, bugs, or requests and open a pre-filled GitHub issue.
-          </p>
-          <form
-            className="app__feedback-form"
-            action="https://github.com/twoBtwoByte/cb_gnu/issues/new"
-            method="get"
-            target="_blank"
-          >
-            <input type="hidden" name="title" value="Feedback: improvement suggestion" />
-            <textarea
-              className="app__feedback-input"
-              name="body"
-              rows="4"
-              placeholder="What would you like to improve?\n\nContext:\n- Match number:\n- What you expected:\n- What happened:"
-              required
-            />
-            <button type="submit" className="app__feedback-submit">
-              Open feedback issue
-            </button>
-          </form>
-        </div>
-      </details>
     </footer>
   );
 
