@@ -18,7 +18,7 @@ describe("worldCupService", () => {
       expect(MATCH_INFO.stage).toBe("Round of 16");
       expect(MATCH_INFO.venue).toBe("BC Place Vancouver");
       expect(MATCH_INFO.city).toBe("Vancouver");
-      expect(MATCH_INFO.scheduledDate).toBe("TBD");
+      expect(MATCH_INFO.scheduledDate).toBe("July 7, 2026");
     });
   });
 
