@@ -41,7 +41,7 @@ export const MATCH_CONFIGS = {
     venue: "Los Angeles Stadium",
     city: "Los Angeles",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "June 28, 2026",
     description: "FIFA World Cup 2026 – Match 73 (Round of 32) at Los Angeles Stadium, Los Angeles",
     bracket: {
       slot1: {
@@ -58,7 +58,7 @@ export const MATCH_CONFIGS = {
     venue: "Boston Stadium",
     city: "Boston",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "June 29, 2026",
     description: "FIFA World Cup 2026 – Match 74 (Round of 32) at Boston Stadium, Boston",
     bracket: {
       slot1: {
@@ -75,7 +75,7 @@ export const MATCH_CONFIGS = {
     venue: "Estadio Monterrey",
     city: "Monterrey",
     country: "Mexico",
-    scheduledDate: "TBD",
+    scheduledDate: "June 29, 2026",
     description: "FIFA World Cup 2026 – Match 75 (Round of 32) at Estadio Monterrey, Monterrey",
     bracket: {
       slot1: {
@@ -92,7 +92,7 @@ export const MATCH_CONFIGS = {
     venue: "Houston Stadium",
     city: "Houston",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "June 29, 2026",
     description: "FIFA World Cup 2026 – Match 76 (Round of 32) at Houston Stadium, Houston",
     bracket: {
       slot1: {
@@ -109,7 +109,7 @@ export const MATCH_CONFIGS = {
     venue: "New York New Jersey Stadium",
     city: "New York / New Jersey",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "June 30, 2026",
     description: "FIFA World Cup 2026 – Match 77 (Round of 32) at New York New Jersey Stadium, New York / New Jersey",
     bracket: {
       slot1: {
@@ -126,7 +126,7 @@ export const MATCH_CONFIGS = {
     venue: "Dallas Stadium",
     city: "Dallas",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "June 30, 2026",
     description: "FIFA World Cup 2026 – Match 78 (Round of 32) at Dallas Stadium, Dallas",
     bracket: {
       slot1: {
@@ -143,7 +143,7 @@ export const MATCH_CONFIGS = {
     venue: "Mexico City Stadium",
     city: "Mexico City",
     country: "Mexico",
-    scheduledDate: "TBD",
+    scheduledDate: "June 30, 2026",
     description: "FIFA World Cup 2026 – Match 79 (Round of 32) at Mexico City Stadium, Mexico City",
     bracket: {
       slot1: {
@@ -160,7 +160,7 @@ export const MATCH_CONFIGS = {
     venue: "Atlanta Stadium",
     city: "Atlanta",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 1, 2026",
     description: "FIFA World Cup 2026 – Match 80 (Round of 32) at Atlanta Stadium, Atlanta",
     bracket: {
       slot1: {
@@ -177,7 +177,7 @@ export const MATCH_CONFIGS = {
     venue: "San Francisco Bay Area Stadium",
     city: "San Francisco Bay Area",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 1, 2026",
     description: "FIFA World Cup 2026 – Match 81 (Round of 32) at San Francisco Bay Area Stadium, San Francisco Bay Area",
     bracket: {
       slot1: {
@@ -194,7 +194,7 @@ export const MATCH_CONFIGS = {
     venue: "Seattle Stadium",
     city: "Seattle",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 1, 2026",
     description: "FIFA World Cup 2026 – Match 82 (Round of 32) at Seattle Stadium, Seattle",
     bracket: {
       slot1: {
@@ -211,7 +211,7 @@ export const MATCH_CONFIGS = {
     venue: "Toronto Stadium",
     city: "Toronto",
     country: "Canada",
-    scheduledDate: "TBD",
+    scheduledDate: "July 2, 2026",
     description: "FIFA World Cup 2026 – Match 83 (Round of 32) at Toronto Stadium, Toronto",
     bracket: {
       slot1: {
@@ -228,7 +228,7 @@ export const MATCH_CONFIGS = {
     venue: "Philadelphia Stadium",
     city: "Philadelphia",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 2, 2026",
     description: "FIFA World Cup 2026 – Match 84 (Round of 32) at Philadelphia Stadium, Philadelphia",
     bracket: {
       slot1: {
@@ -245,7 +245,7 @@ export const MATCH_CONFIGS = {
     venue: "Kansas City Stadium",
     city: "Kansas City",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 2, 2026",
     description: "FIFA World Cup 2026 – Match 85 (Round of 32) at Kansas City Stadium, Kansas City",
     bracket: {
       slot1: {
@@ -262,7 +262,7 @@ export const MATCH_CONFIGS = {
     venue: "Miami Stadium",
     city: "Miami",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 3, 2026",
     description: "FIFA World Cup 2026 – Match 86 (Round of 32) at Miami Stadium, Miami",
     bracket: {
       slot1: {
@@ -279,7 +279,7 @@ export const MATCH_CONFIGS = {
     venue: "BC Place Vancouver",
     city: "Vancouver",
     country: "Canada",
-    scheduledDate: "TBD",
+    scheduledDate: "July 3, 2026",
     description: "FIFA World Cup 2026 – Match 87 (Round of 32) at BC Place Vancouver, Vancouver",
     bracket: {
       slot1: {
@@ -296,7 +296,7 @@ export const MATCH_CONFIGS = {
     venue: "Estadio Guadalajara",
     city: "Guadalajara",
     country: "Mexico",
-    scheduledDate: "TBD",
+    scheduledDate: "July 3, 2026",
     description: "FIFA World Cup 2026 – Match 88 (Round of 32) at Estadio Guadalajara, Guadalajara",
     bracket: {
       slot1: {
@@ -313,7 +313,7 @@ export const MATCH_CONFIGS = {
     venue: "Philadelphia Stadium",
     city: "Philadelphia",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 4, 2026",
     description: "FIFA World Cup 2026 – Match 89 (Round of 16) at Philadelphia Stadium, Philadelphia",
     bracket: {
       slot1: {
@@ -332,7 +332,7 @@ export const MATCH_CONFIGS = {
     venue: "Houston Stadium",
     city: "Houston",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 4, 2026",
     description: "FIFA World Cup 2026 – Match 90 (Round of 16) at Houston Stadium, Houston",
     bracket: {
       slot1: {
@@ -351,7 +351,7 @@ export const MATCH_CONFIGS = {
     venue: "New York New Jersey Stadium",
     city: "New York / New Jersey",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 5, 2026",
     description: "FIFA World Cup 2026 – Match 91 (Round of 16) at New York New Jersey Stadium, New York / New Jersey",
     bracket: {
       slot1: {
@@ -370,7 +370,7 @@ export const MATCH_CONFIGS = {
     venue: "Mexico City Stadium",
     city: "Mexico City",
     country: "Mexico",
-    scheduledDate: "TBD",
+    scheduledDate: "July 5, 2026",
     description: "FIFA World Cup 2026 – Match 92 (Round of 16) at Mexico City Stadium, Mexico City",
     bracket: {
       slot1: {
@@ -389,7 +389,7 @@ export const MATCH_CONFIGS = {
     venue: "Dallas Stadium",
     city: "Dallas",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 6, 2026",
     description: "FIFA World Cup 2026 – Match 93 (Round of 16) at Dallas Stadium, Dallas",
     bracket: {
       slot1: {
@@ -408,7 +408,7 @@ export const MATCH_CONFIGS = {
     venue: "Seattle Stadium",
     city: "Seattle",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 6, 2026",
     description: "FIFA World Cup 2026 – Match 94 (Round of 16) at Seattle Stadium, Seattle",
     bracket: {
       slot1: {
@@ -427,7 +427,7 @@ export const MATCH_CONFIGS = {
     venue: "Atlanta Stadium",
     city: "Atlanta",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 7, 2026",
     description: "FIFA World Cup 2026 – Match 95 (Round of 16) at Atlanta Stadium, Atlanta",
     bracket: {
       slot1: {
@@ -446,7 +446,7 @@ export const MATCH_CONFIGS = {
     venue: "BC Place Vancouver",
     city: "Vancouver",
     country: "Canada",
-    scheduledDate: "TBD",
+    scheduledDate: "July 7, 2026",
     description: "FIFA World Cup 2026 – Match 96 (Round of 16) at BC Place Vancouver, Vancouver",
     bracket: {
       slot1: {
@@ -465,7 +465,7 @@ export const MATCH_CONFIGS = {
     venue: "Boston Stadium",
     city: "Boston",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 9, 2026",
     description: "FIFA World Cup 2026 – Match 97 (Quarter-final) at Boston Stadium, Boston",
     bracket: {
       slot1: {
@@ -484,7 +484,7 @@ export const MATCH_CONFIGS = {
     venue: "Los Angeles Stadium",
     city: "Los Angeles",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 10, 2026",
     description: "FIFA World Cup 2026 – Match 98 (Quarter-final) at Los Angeles Stadium, Los Angeles",
     bracket: {
       slot1: {
@@ -503,7 +503,7 @@ export const MATCH_CONFIGS = {
     venue: "Miami Stadium",
     city: "Miami",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 11, 2026",
     description: "FIFA World Cup 2026 – Match 99 (Quarter-final) at Miami Stadium, Miami",
     bracket: {
       slot1: {
@@ -522,7 +522,7 @@ export const MATCH_CONFIGS = {
     venue: "Kansas City Stadium",
     city: "Kansas City",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 11, 2026",
     description: "FIFA World Cup 2026 – Match 100 (Quarter-final) at Kansas City Stadium, Kansas City",
     bracket: {
       slot1: {
@@ -541,7 +541,7 @@ export const MATCH_CONFIGS = {
     venue: "Dallas Stadium",
     city: "Dallas",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 14, 2026",
     description: "FIFA World Cup 2026 – Match 101 (Semi-final) at Dallas Stadium, Dallas",
     bracket: {
       slot1: {
@@ -560,7 +560,7 @@ export const MATCH_CONFIGS = {
     venue: "Atlanta Stadium",
     city: "Atlanta",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 15, 2026",
     description: "FIFA World Cup 2026 – Match 102 (Semi-final) at Atlanta Stadium, Atlanta",
     bracket: {
       slot1: {
@@ -579,7 +579,7 @@ export const MATCH_CONFIGS = {
     venue: "Miami Stadium",
     city: "Miami",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 18, 2026",
     description: "FIFA World Cup 2026 – Match 103 (Third Place Play-off) at Miami Stadium, Miami",
     bracket: {
       slot1: {
@@ -598,7 +598,7 @@ export const MATCH_CONFIGS = {
     venue: "New York New Jersey Stadium",
     city: "New York / New Jersey",
     country: "USA",
-    scheduledDate: "TBD",
+    scheduledDate: "July 19, 2026",
     description: "FIFA World Cup 2026 – Match 104 (Final) at New York New Jersey Stadium, New York / New Jersey",
     bracket: {
       slot1: {
