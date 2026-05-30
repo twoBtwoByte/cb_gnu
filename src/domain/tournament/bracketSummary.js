@@ -12,7 +12,7 @@ function describeBracketSide(side) {
 
 export function buildBracketSummary(matchInfo) {
   return Object.values(matchInfo?.bracket ?? {}).map((slot) => ({
-    label: slot.r32Label,
+    label: slot.r32Label ?? slot.label ?? "Bracket slot",
     description: `${describeBracketSide(slot.sideA)} vs ${describeBracketSide(slot.sideB)} → winner plays in Match ${matchInfo.matchNumber}`,
   }));
 }

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 
 const formatGroupQualifier = (side) => {
   if (!side) return "";
+  if (typeof side.label === "string" && side.label.trim().length > 0) return side.label;
   if (side.thirdPlace) {
     if (side.label) return side.label;
     return `3${(side.eligibleGroups ?? []).join("")}`;
@@ -24,6 +25,10 @@ const getMatchupLabel = (config) => {
     .map(([, slot]) => slot);
 
   if (slots.length >= 2) {
+    const labelA = formatGroupQualifier(slots[0]);
+    const labelB = formatGroupQualifier(slots[1]);
+    if (labelA && labelB) return `${labelA} vs ${labelB}`;
+
     const winnerA = formatWinnerFromR32Label(slots[0].r32Label);
     const winnerB = formatWinnerFromR32Label(slots[1].r32Label);
     if (winnerA && winnerB) return `${winnerA} vs ${winnerB}`;
@@ -43,14 +48,14 @@ function MatchSelector({ matches, selectedMatchNumber, onSelect }) {
 
   const venueOptions = useMemo(
     () =>
-      [...new Map(matches.map((config) => [`${config.venue}, ${config.city}`, config])).keys()].sort((left, right) =>
-        left.localeCompare(right)
-      ),
+      [...new Set(matches.map((config) => config.venue))]
+        .filter(Boolean)
+        .sort((left, right) => left.localeCompare(right)),
     [matches]
   );
 
   const filteredMatches = useMemo(
-    () => matches.filter((config) => !selectedVenue || `${config.venue}, ${config.city}` === selectedVenue),
+    () => matches.filter((config) => !selectedVenue || config.venue === selectedVenue),
     [matches, selectedVenue]
   );
 
