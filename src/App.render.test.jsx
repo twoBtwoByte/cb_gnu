@@ -252,4 +252,27 @@ describe("App Canada section visibility", () => {
     expect(screen.getByText("1B vs 3EFGIJ")).toBeInTheDocument();
     expect(screen.getByText("W85 vs W87")).toBeInTheDocument();
   });
+
+  it("renders the improvement suggestions form collapsed by default", async () => {
+    renderApp();
+
+    await screen.findByRole("heading", { name: "🎯 Select a Match" });
+
+    expect(
+      screen.getByText("💡 Do you have improvement suggestions?")
+    ).toBeInTheDocument();
+    const feedbackHeading = screen.getByRole("heading", { name: "Help improve this tracker" });
+    const feedbackButton = screen.getByRole("button", { name: "Open feedback issue" });
+    expect(feedbackHeading).not.toBeVisible();
+    expect(feedbackButton).not.toBeVisible();
+    const feedbackDetails = screen
+      .getByPlaceholderText(/What would you like to improve\?/i)
+      .closest("details");
+    expect(feedbackDetails).not.toHaveAttribute("open");
+
+    fireEvent.click(screen.getByText("💡 Do you have improvement suggestions?"));
+    expect(feedbackDetails).toHaveAttribute("open");
+    expect(feedbackHeading).toBeVisible();
+    expect(feedbackButton).toBeVisible();
+  });
 });
