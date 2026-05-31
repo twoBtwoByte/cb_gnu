@@ -249,10 +249,9 @@ export const MATCH_CONFIGS = {
     description: "FIFA World Cup 2026 – Match 85 (Round of 32) at BC Place Vancouver, Vancouver",
     bracket: {
       slot1: {
-        label: "1B",
-      },
-      slot2: {
-        label: "3AEHIJ",
+        // 1st place Group B vs best 3rd-place team from pool A/E/H/I/J.
+        sideA: { group: "B", position: 1 },
+        sideB: { thirdPlace: true, eligibleGroups: ["A", "E", "H", "I", "J"] },
       },
     },
   },
