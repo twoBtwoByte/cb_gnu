@@ -55,7 +55,7 @@ function MatchSelector({ matches, defaultVenue = "", selectedMatchNumber, onSele
   );
 
   const filteredMatches = useMemo(
-    () => matches.filter((config) => !selectedVenue || config.venue === selectedVenue),
+    () => (selectedVenue ? matches.filter((config) => config.venue === selectedVenue) : []),
     [matches, selectedVenue]
   );
 

@@ -5,6 +5,19 @@ import MatchSelector from "./MatchSelector.jsx";
 import { MATCH_CONFIGS } from "../../../config/worldCupConfig.js";
 
 describe("MatchSelector", () => {
+  it("hides all match buttons when no venue is selected", () => {
+    render(
+      <MatchSelector
+        matches={Object.values(MATCH_CONFIGS)}
+        defaultVenue=""
+        selectedMatchNumber={null}
+        onSelect={vi.fn()}
+      />
+    );
+
+    expect(screen.queryAllByRole("button")).toHaveLength(0);
+  });
+
   it("defaults the venue filter to Toronto Stadium on first render", () => {
     render(
       <MatchSelector
