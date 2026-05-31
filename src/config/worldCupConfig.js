@@ -215,10 +215,10 @@ export const MATCH_CONFIGS = {
     description: "FIFA World Cup 2026 – Match 83 (Round of 32) at Toronto Stadium, Toronto",
     bracket: {
       slot1: {
-        label: "1B",
+        label: "2K",
       },
       slot2: {
-        label: "3rd Place",
+        label: "2L",
       },
     },
   },
@@ -242,17 +242,17 @@ export const MATCH_CONFIGS = {
   85: {
     matchNumber: 85,
     stage: "Round of 32",
-    venue: "Kansas City Stadium",
-    city: "Kansas City",
-    country: "USA",
+    venue: "BC Place Vancouver",
+    city: "Vancouver",
+    country: "Canada",
     scheduledDate: "July 2, 2026",
-    description: "FIFA World Cup 2026 – Match 85 (Round of 32) at Kansas City Stadium, Kansas City",
+    description: "FIFA World Cup 2026 – Match 85 (Round of 32) at BC Place Vancouver, Vancouver",
     bracket: {
       slot1: {
-        label: "1K",
+        label: "1B",
       },
       slot2: {
-        label: "2J",
+        label: "3AEHIJ",
       },
     },
   },
@@ -276,17 +276,17 @@ export const MATCH_CONFIGS = {
   87: {
     matchNumber: 87,
     stage: "Round of 32",
-    venue: "BC Place Vancouver",
-    city: "Vancouver",
-    country: "Canada",
+    venue: "Kansas City Stadium",
+    city: "Kansas City",
+    country: "USA",
     scheduledDate: "July 3, 2026",
-    description: "FIFA World Cup 2026 – Match 87 (Round of 32) at BC Place Vancouver, Vancouver",
+    description: "FIFA World Cup 2026 – Match 87 (Round of 32) at Kansas City Stadium, Kansas City",
     bracket: {
       slot1: {
-        label: "1M",
+        label: "1K",
       },
       slot2: {
-        label: "2L",
+        label: "3DEIJL",
       },
     },
   },
