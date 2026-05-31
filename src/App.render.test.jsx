@@ -11,7 +11,7 @@ describe('App rendering', () => {
   test('renders filter controls', async () => {
     render(<App />);
     expect(screen.getByRole('heading', { name: /Spotlight Country/i })).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: /Venue/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Select a Match/i })).toBeInTheDocument();
   });
 
   test('renders probability table', async () => {
@@ -26,7 +26,7 @@ describe('App rendering', () => {
 
   test('renders match selector', async () => {
     render(<App />);
-    expect(screen.getByRole('combobox', { name: /Venue/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Select a Match/i })).toBeInTheDocument();
   });
 
   test('renders loading state initially', async () => {
