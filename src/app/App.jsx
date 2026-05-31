@@ -28,9 +28,10 @@ import {
 import "../App.css";
 
 const DEFAULT_INITIAL_VENUE = "Toronto Stadium";
+const FALLBACK_MATCH_NUMBER = 96;
 const DEFAULT_MATCH_NUMBER =
   Object.values(MATCH_CONFIGS).find((config) => config.venue === DEFAULT_INITIAL_VENUE)?.matchNumber ??
-  96;
+  FALLBACK_MATCH_NUMBER;
 
 function App() {
   const [selectedMatchNumber, setSelectedMatchNumber] = useState(DEFAULT_MATCH_NUMBER);
