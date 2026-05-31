@@ -27,8 +27,14 @@ import {
 } from "../features/match-probabilities/selectors/probabilityViewModels.js";
 import "../App.css";
 
+const DEFAULT_INITIAL_VENUE = "Toronto Stadium";
+const FALLBACK_MATCH_NUMBER = 96;
+const DEFAULT_MATCH_NUMBER =
+  Object.values(MATCH_CONFIGS).find((config) => config.venue === DEFAULT_INITIAL_VENUE)?.matchNumber ??
+  FALLBACK_MATCH_NUMBER;
+
 function App() {
-  const [selectedMatchNumber, setSelectedMatchNumber] = useState(96);
+  const [selectedMatchNumber, setSelectedMatchNumber] = useState(DEFAULT_MATCH_NUMBER);
   const [activeTab, setActiveTab] = useState("countries");
   const { probabilityEngine, simulatorEngine, pathBuilder } = useServices();
   const { matchConfig, teams, allTeams, lastUpdated, matchesCompleted, loading, error, refresh } =
@@ -259,6 +265,7 @@ function App() {
 
       <MatchSelector
         matches={availableMatches}
+        defaultVenue={DEFAULT_INITIAL_VENUE}
         selectedMatchNumber={selectedMatchNumber}
         onSelect={handleMatchSelection}
       />

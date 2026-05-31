@@ -43,8 +43,8 @@ const getMatchupLabel = (config) => {
   return "";
 };
 
-function MatchSelector({ matches, selectedMatchNumber, onSelect }) {
-  const [selectedVenue, setSelectedVenue] = useState("");
+function MatchSelector({ matches, defaultVenue = "", selectedMatchNumber, onSelect }) {
+  const [selectedVenue, setSelectedVenue] = useState(defaultVenue);
 
   const venueOptions = useMemo(
     () =>
