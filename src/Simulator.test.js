@@ -24,8 +24,8 @@ const customBracket = {
 
 describe("Group Stage Simulator", () => {
   describe("getSimulatorGroups", () => {
-    it("returns no simulator groups for label-only Match 96 bracket", () => {
-      expect(getSimulatorGroups(MATCH_96_BRACKET)).toEqual([]);
+    it("extracts groups from Match 96 bracket", () => {
+      expect(getSimulatorGroups(MATCH_96_BRACKET)).toEqual(["B", "D", "E", "I", "J", "K", "L"]);
     });
 
     it("extracts sideA/sideB groups from legacy bracket structure", () => {
@@ -80,9 +80,11 @@ describe("Group Stage Simulator", () => {
   });
 
   describe("computeSimulatedProbabilities", () => {
-    it("returns 0 probabilities for label-only default bracket", () => {
+    it("returns non-zero probabilities for Match 96 bracket teams", () => {
       const probs = computeSimulatedProbabilities({}, MATCH_96_BRACKET);
-      expect(Object.values(probs).every((value) => value === 0)).toBe(true);
+      expect(probs.CAN).toBeCloseTo(12.5, 5);
+      expect(probs.POR).toBeCloseTo(12.5, 5);
+      expect(probs.USA).toBeCloseTo(2.5, 5);
     });
 
     it("supports sideA/sideB custom brackets", () => {
