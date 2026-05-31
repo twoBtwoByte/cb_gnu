@@ -69,17 +69,17 @@ describe("worldCupService", () => {
       }
     });
 
-    it("returns no notable teams above 1% for Match 96", async () => {
+    it("returns notable teams above 1% for Match 96", async () => {
       const { teams, canada } = await getNotableProbabilities();
-      expect(teams).toEqual([]);
+      expect(teams.length).toBeGreaterThan(0);
       expect(canada).toBeDefined();
-      expect(canada.probability).toBe(0);
+      expect(canada.probability).toBeCloseTo(12.5, 5);
     });
 
-    it("buildTeamPaths and getTournamentPaths return no paths for default Match 96 bracket", async () => {
+    it("buildTeamPaths and getTournamentPaths return paths for Match 96 bracket", async () => {
       const { allTeams } = await getNotableProbabilities();
-      expect(buildTeamPaths({ code: "CAN", group: "B" })).toEqual([]);
-      expect(getTournamentPaths(allTeams, MATCH_96_BRACKET)).toEqual([]);
+      expect(buildTeamPaths({ code: "CAN", group: "B" }).length).toBeGreaterThan(0);
+      expect(getTournamentPaths(allTeams, MATCH_96_BRACKET).length).toBeGreaterThan(0);
     });
   });
 

@@ -452,10 +452,18 @@ export const MATCH_CONFIGS = {
       slot1: {
         matchNumber: 85,
         label: "W85",
+        // Via R32 M85: 1st place Group B vs 3rd-place best (pool A/E/H/I/J).
+        // hostTeamSlot suppresses 3rd-place probability here (Group B host).
+        sideA: { group: "B" },
+        sideB: { thirdPlace: true, eligibleGroups: ["A", "E", "H", "I", "J"] },
+        hostTeamSlot: true,
       },
       slot2: {
         matchNumber: 87,
         label: "W87",
+        // Via R32 M87: 1st place Group K vs 3rd-place best (pool D/E/I/J/L).
+        sideA: { group: "K" },
+        sideB: { thirdPlace: true, eligibleGroups: ["D", "E", "I", "J", "L"] },
       },
     },
   },
