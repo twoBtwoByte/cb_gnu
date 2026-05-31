@@ -159,19 +159,21 @@ describe("App match selector and spotlight behavior", () => {
 
     await screen.findByRole("heading", { name: "🎯 Select a Match" });
 
-    expect(screen.getByText("💡 Do you have improvement suggestions?")).toBeInTheDocument();
-    const feedbackHeading = screen.getByRole("heading", { name: "Help improve this tracker" });
-    const feedbackButton = screen.getByRole("button", { name: "Open feedback issue" });
-    expect(feedbackHeading).not.toBeVisible();
+    expect(
+      screen.getByText("💡 suggest improvements?")
+    ).toBeInTheDocument();
+    const feedbackCopy = screen.getByText("Help improve this website");
+    const feedbackButton = screen.getByRole("button", { name: "Share" });
+    expect(feedbackCopy).not.toBeVisible();
     expect(feedbackButton).not.toBeVisible();
     const feedbackDetails = screen
-      .getByPlaceholderText(/What would you like to improve\?/i)
+      .getByPlaceholderText(/What would you like to suggest\?/i)
       .closest("details");
     expect(feedbackDetails).not.toHaveAttribute("open");
 
-    fireEvent.click(screen.getByText("💡 Do you have improvement suggestions?"));
+    fireEvent.click(screen.getByText("💡 suggest improvements?"));
     expect(feedbackDetails).toHaveAttribute("open");
-    expect(feedbackHeading).toBeVisible();
+    expect(feedbackCopy).toBeVisible();
     expect(feedbackButton).toBeVisible();
   });
 });
