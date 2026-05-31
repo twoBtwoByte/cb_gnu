@@ -51,27 +51,31 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET, simulatedResult
   const paths = [];
 
   for (const slot of Object.values(bracket ?? {})) {
-    if (group === slot.sideA.group) {
-      const position = slot.sideA.position;
+    const sideA = slot?.sideA;
+    const sideB = slot?.sideB;
+    if (!sideA || !sideB) continue;
+
+    if (group === sideA.group) {
+      const position = sideA.position;
       const positionLabel = position === 1 ? "1st" : position === 2 ? "2nd" : `${position}th`;
       const sideAQualifyProbability = getPositionProbability(team, group, position, simulatedResults);
       const scenarioProbability = roundProbability(sideAQualifyProbability * KNOCKOUT_WIN_PROB * 100);
 
-      if (slot.sideB.thirdPlace) {
+      if (sideB.thirdPlace) {
         paths.push({
           groupFinishLabel: `${positionLabel} in Group ${group}`,
           requiredPosition: position,
           r32Label: slot.r32Label,
           r32Opponent: {
-            name: `Best 3rd-place team (${slot.sideB.label})`,
-            code: slot.sideB.label,
+            name: `Best 3rd-place team (${sideB.label})`,
+            code: sideB.label,
             flag: "🏳️",
           },
           probability: scenarioProbability,
         });
       } else {
-        TEAM_DATA.filter((candidate) => candidate.group === slot.sideB.group).forEach((opponent) => {
-          const opponentQualifierProbability = getSpecificQualifierProbability(opponent, slot.sideB, simulatedResults);
+        TEAM_DATA.filter((candidate) => candidate.group === sideB.group).forEach((opponent) => {
+          const opponentQualifierProbability = getSpecificQualifierProbability(opponent, sideB, simulatedResults);
           paths.push({
             groupFinishLabel: `${positionLabel} in Group ${group}`,
             requiredPosition: position,
@@ -85,7 +89,7 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET, simulatedResult
       }
     }
 
-    if (!slot.hostTeamSlot && slot.sideB.thirdPlace && slot.sideB.eligibleGroups.includes(group)) {
+    if (!slot.hostTeamSlot && sideB.thirdPlace && sideB.eligibleGroups.includes(group)) {
       const thirdPlaceFinishProbability = getPositionProbability(team, group, 3, simulatedResults);
       const thirdPlaceSelectionProbability = getThirdPlaceSelectionProbability(team, slot, simulatedResults);
       paths.push({
@@ -93,8 +97,8 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET, simulatedResult
         requiredPosition: 3,
         r32Label: slot.r32Label,
         r32Opponent: {
-          name: `1st place Group ${slot.sideA.group}`,
-          code: `1${slot.sideA.group}`,
+          name: `1st place Group ${sideA.group}`,
+          code: `1${sideA.group}`,
           flag: "🏳️",
         },
         probability: roundProbability(
@@ -103,12 +107,12 @@ export function buildTeamPaths(team, bracket = MATCH_96_BRACKET, simulatedResult
       });
     }
 
-    if (slot.sideB.group === group) {
-      const position = slot.sideB.position;
+    if (sideB.group === group) {
+      const position = sideB.position;
       const positionLabel = position === 1 ? "1st" : position === 2 ? "2nd" : `${position}th`;
       const sideBQualifyProbability = getPositionProbability(team, group, position, simulatedResults);
-      TEAM_DATA.filter((candidate) => candidate.group === slot.sideA.group).forEach((opponent) => {
-        const opponentQualifierProbability = getSpecificQualifierProbability(opponent, slot.sideA, simulatedResults);
+      TEAM_DATA.filter((candidate) => candidate.group === sideA.group).forEach((opponent) => {
+        const opponentQualifierProbability = getSpecificQualifierProbability(opponent, sideA, simulatedResults);
         paths.push({
           groupFinishLabel: `${positionLabel} in Group ${group}`,
           requiredPosition: position,

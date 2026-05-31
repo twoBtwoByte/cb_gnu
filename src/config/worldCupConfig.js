@@ -35,6 +35,176 @@
 // ---------------------------------------------------------------------------
 
 export const MATCH_CONFIGS = {
+  73: {
+    matchNumber: 73,
+    stage: "Round of 32",
+    venue: "Los Angeles Stadium",
+    city: "Los Angeles",
+    country: "USA",
+    scheduledDate: "June 28, 2026",
+    description: "FIFA World Cup 2026 – Match 73 (Round of 32) at Los Angeles Stadium, Los Angeles",
+    bracket: {
+      slot1: {
+        label: "2A",
+      },
+      slot2: {
+        label: "2B",
+      },
+    },
+  },
+  74: {
+    matchNumber: 74,
+    stage: "Round of 32",
+    venue: "Boston Stadium",
+    city: "Boston",
+    country: "USA",
+    scheduledDate: "June 29, 2026",
+    description: "FIFA World Cup 2026 – Match 74 (Round of 32) at Boston Stadium, Boston",
+    bracket: {
+      slot1: {
+        label: "1E",
+      },
+      slot2: {
+        label: "3rd Place",
+      },
+    },
+  },
+  75: {
+    matchNumber: 75,
+    stage: "Round of 32",
+    venue: "Estadio Monterrey",
+    city: "Monterrey",
+    country: "Mexico",
+    scheduledDate: "June 29, 2026",
+    description: "FIFA World Cup 2026 – Match 75 (Round of 32) at Estadio Monterrey, Monterrey",
+    bracket: {
+      slot1: {
+        label: "1F",
+      },
+      slot2: {
+        label: "2C",
+      },
+    },
+  },
+  76: {
+    matchNumber: 76,
+    stage: "Round of 32",
+    venue: "Houston Stadium",
+    city: "Houston",
+    country: "USA",
+    scheduledDate: "June 29, 2026",
+    description: "FIFA World Cup 2026 – Match 76 (Round of 32) at Houston Stadium, Houston",
+    bracket: {
+      slot1: {
+        label: "1C",
+      },
+      slot2: {
+        label: "2F",
+      },
+    },
+  },
+  77: {
+    matchNumber: 77,
+    stage: "Round of 32",
+    venue: "New York New Jersey Stadium",
+    city: "New York / New Jersey",
+    country: "USA",
+    scheduledDate: "June 30, 2026",
+    description: "FIFA World Cup 2026 – Match 77 (Round of 32) at New York New Jersey Stadium, New York / New Jersey",
+    bracket: {
+      slot1: {
+        label: "1I",
+      },
+      slot2: {
+        label: "3rd Place",
+      },
+    },
+  },
+  78: {
+    matchNumber: 78,
+    stage: "Round of 32",
+    venue: "Dallas Stadium",
+    city: "Dallas",
+    country: "USA",
+    scheduledDate: "June 30, 2026",
+    description: "FIFA World Cup 2026 – Match 78 (Round of 32) at Dallas Stadium, Dallas",
+    bracket: {
+      slot1: {
+        label: "2E",
+      },
+      slot2: {
+        label: "2I",
+      },
+    },
+  },
+  79: {
+    matchNumber: 79,
+    stage: "Round of 32",
+    venue: "Mexico City Stadium",
+    city: "Mexico City",
+    country: "Mexico",
+    scheduledDate: "June 30, 2026",
+    description: "FIFA World Cup 2026 – Match 79 (Round of 32) at Mexico City Stadium, Mexico City",
+    bracket: {
+      slot1: {
+        label: "1A",
+      },
+      slot2: {
+        label: "3rd Place",
+      },
+    },
+  },
+  80: {
+    matchNumber: 80,
+    stage: "Round of 32",
+    venue: "Atlanta Stadium",
+    city: "Atlanta",
+    country: "USA",
+    scheduledDate: "July 1, 2026",
+    description: "FIFA World Cup 2026 – Match 80 (Round of 32) at Atlanta Stadium, Atlanta",
+    bracket: {
+      slot1: {
+        label: "1L",
+      },
+      slot2: {
+        label: "2H",
+      },
+    },
+  },
+  81: {
+    matchNumber: 81,
+    stage: "Round of 32",
+    venue: "San Francisco Bay Area Stadium",
+    city: "San Francisco Bay Area",
+    country: "USA",
+    scheduledDate: "July 1, 2026",
+    description: "FIFA World Cup 2026 – Match 81 (Round of 32) at San Francisco Bay Area Stadium, San Francisco Bay Area",
+    bracket: {
+      slot1: {
+        label: "1D",
+      },
+      slot2: {
+        label: "3rd Place",
+      },
+    },
+  },
+  82: {
+    matchNumber: 82,
+    stage: "Round of 32",
+    venue: "Seattle Stadium",
+    city: "Seattle",
+    country: "USA",
+    scheduledDate: "July 1, 2026",
+    description: "FIFA World Cup 2026 – Match 82 (Round of 32) at Seattle Stadium, Seattle",
+    bracket: {
+      slot1: {
+        label: "1G",
+      },
+      slot2: {
+        label: "3rd Place",
+      },
+    },
+  },
   83: {
     matchNumber: 83,
     stage: "Round of 32",
@@ -45,52 +215,399 @@ export const MATCH_CONFIGS = {
     description: "FIFA World Cup 2026 – Match 83 (Round of 32) at Toronto Stadium, Toronto",
     bracket: {
       slot1: {
-        r32Label: "Match 83",
-        sideA: { group: "K", position: 2 }, // 2nd Group K
-        sideB: { group: "L", position: 2 }, // 2nd Group L
+        label: "1B",
+      },
+      slot2: {
+        label: "3rd Place",
+      },
+    },
+  },
+  84: {
+    matchNumber: 84,
+    stage: "Round of 32",
+    venue: "Philadelphia Stadium",
+    city: "Philadelphia",
+    country: "USA",
+    scheduledDate: "July 2, 2026",
+    description: "FIFA World Cup 2026 – Match 84 (Round of 32) at Philadelphia Stadium, Philadelphia",
+    bracket: {
+      slot1: {
+        label: "1J",
+      },
+      slot2: {
+        label: "2K",
       },
     },
   },
   85: {
     matchNumber: 85,
     stage: "Round of 32",
-    venue: "BC Place",
-    city: "Vancouver",
-    country: "Canada",
+    venue: "Kansas City Stadium",
+    city: "Kansas City",
+    country: "USA",
     scheduledDate: "July 2, 2026",
-    description: "FIFA World Cup 2026 – Match 85 (Round of 32) at BC Place, Vancouver",
+    description: "FIFA World Cup 2026 – Match 85 (Round of 32) at Kansas City Stadium, Kansas City",
     bracket: {
       slot1: {
-        r32Label: "Match 85",
-        sideA: { group: "B", position: 1 }, // 1st Group B
-        sideB: { thirdPlace: true, eligibleGroups: ["E", "F", "G", "I", "J"], label: "3EFGIJ" }, // Best 3rd from E/F/G/I/J
+        label: "1K",
+      },
+      slot2: {
+        label: "2J",
+      },
+    },
+  },
+  86: {
+    matchNumber: 86,
+    stage: "Round of 32",
+    venue: "Miami Stadium",
+    city: "Miami",
+    country: "USA",
+    scheduledDate: "July 3, 2026",
+    description: "FIFA World Cup 2026 – Match 86 (Round of 32) at Miami Stadium, Miami",
+    bracket: {
+      slot1: {
+        label: "1H",
+      },
+      slot2: {
+        label: "3rd Place",
+      },
+    },
+  },
+  87: {
+    matchNumber: 87,
+    stage: "Round of 32",
+    venue: "BC Place Vancouver",
+    city: "Vancouver",
+    country: "Canada",
+    scheduledDate: "July 3, 2026",
+    description: "FIFA World Cup 2026 – Match 87 (Round of 32) at BC Place Vancouver, Vancouver",
+    bracket: {
+      slot1: {
+        label: "1M",
+      },
+      slot2: {
+        label: "2L",
+      },
+    },
+  },
+  88: {
+    matchNumber: 88,
+    stage: "Round of 32",
+    venue: "Estadio Guadalajara",
+    city: "Guadalajara",
+    country: "Mexico",
+    scheduledDate: "July 3, 2026",
+    description: "FIFA World Cup 2026 – Match 88 (Round of 32) at Estadio Guadalajara, Guadalajara",
+    bracket: {
+      slot1: {
+        label: "2G",
+      },
+      slot2: {
+        label: "2D",
+      },
+    },
+  },
+  89: {
+    matchNumber: 89,
+    stage: "Round of 16",
+    venue: "Philadelphia Stadium",
+    city: "Philadelphia",
+    country: "USA",
+    scheduledDate: "July 4, 2026",
+    description: "FIFA World Cup 2026 – Match 89 (Round of 16) at Philadelphia Stadium, Philadelphia",
+    bracket: {
+      slot1: {
+        matchNumber: 74,
+        label: "W74",
+      },
+      slot2: {
+        matchNumber: 77,
+        label: "W77",
+      },
+    },
+  },
+  90: {
+    matchNumber: 90,
+    stage: "Round of 16",
+    venue: "Houston Stadium",
+    city: "Houston",
+    country: "USA",
+    scheduledDate: "July 4, 2026",
+    description: "FIFA World Cup 2026 – Match 90 (Round of 16) at Houston Stadium, Houston",
+    bracket: {
+      slot1: {
+        matchNumber: 73,
+        label: "W73",
+      },
+      slot2: {
+        matchNumber: 75,
+        label: "W75",
+      },
+    },
+  },
+  91: {
+    matchNumber: 91,
+    stage: "Round of 16",
+    venue: "New York New Jersey Stadium",
+    city: "New York / New Jersey",
+    country: "USA",
+    scheduledDate: "July 5, 2026",
+    description: "FIFA World Cup 2026 – Match 91 (Round of 16) at New York New Jersey Stadium, New York / New Jersey",
+    bracket: {
+      slot1: {
+        matchNumber: 76,
+        label: "W76",
+      },
+      slot2: {
+        matchNumber: 78,
+        label: "W78",
+      },
+    },
+  },
+  92: {
+    matchNumber: 92,
+    stage: "Round of 16",
+    venue: "Mexico City Stadium",
+    city: "Mexico City",
+    country: "Mexico",
+    scheduledDate: "July 5, 2026",
+    description: "FIFA World Cup 2026 – Match 92 (Round of 16) at Mexico City Stadium, Mexico City",
+    bracket: {
+      slot1: {
+        matchNumber: 79,
+        label: "W79",
+      },
+      slot2: {
+        matchNumber: 80,
+        label: "W80",
+      },
+    },
+  },
+  93: {
+    matchNumber: 93,
+    stage: "Round of 16",
+    venue: "Dallas Stadium",
+    city: "Dallas",
+    country: "USA",
+    scheduledDate: "July 6, 2026",
+    description: "FIFA World Cup 2026 – Match 93 (Round of 16) at Dallas Stadium, Dallas",
+    bracket: {
+      slot1: {
+        matchNumber: 83,
+        label: "W83",
+      },
+      slot2: {
+        matchNumber: 84,
+        label: "W84",
+      },
+    },
+  },
+  94: {
+    matchNumber: 94,
+    stage: "Round of 16",
+    venue: "Seattle Stadium",
+    city: "Seattle",
+    country: "USA",
+    scheduledDate: "July 6, 2026",
+    description: "FIFA World Cup 2026 – Match 94 (Round of 16) at Seattle Stadium, Seattle",
+    bracket: {
+      slot1: {
+        matchNumber: 81,
+        label: "W81",
+      },
+      slot2: {
+        matchNumber: 82,
+        label: "W82",
+      },
+    },
+  },
+  95: {
+    matchNumber: 95,
+    stage: "Round of 16",
+    venue: "Atlanta Stadium",
+    city: "Atlanta",
+    country: "USA",
+    scheduledDate: "July 7, 2026",
+    description: "FIFA World Cup 2026 – Match 95 (Round of 16) at Atlanta Stadium, Atlanta",
+    bracket: {
+      slot1: {
+        matchNumber: 86,
+        label: "W86",
+      },
+      slot2: {
+        matchNumber: 88,
+        label: "W88",
       },
     },
   },
   96: {
     matchNumber: 96,
     stage: "Round of 16",
-    venue: "BC Place",
+    venue: "BC Place Vancouver",
     city: "Vancouver",
     country: "Canada",
     scheduledDate: "July 7, 2026",
-    description: "FIFA World Cup 2026 – Match 96 (Round of 16) at BC Place, Vancouver",
+    description: "FIFA World Cup 2026 – Match 96 (Round of 16) at BC Place Vancouver, Vancouver",
     bracket: {
-      // Slot 1 enters Match 96 via R32 Match 85
-      // hostTeamSlot: true – Canada (Group B) plays the sideB team here in R32 M85.
-      // A sideB team that wins M85 eliminates Canada and cannot then play Canada in M96.
-      // Therefore sideB paths for this slot are excluded from the M96 probability calculation.
       slot1: {
-        r32Label: "R32 Match 85",
-        sideA: { group: "B", position: 1 }, // 1st Group B plays best 3rd from EFGIJ
-        sideB: { thirdPlace: true, eligibleGroups: ["E", "F", "G", "I", "J"], label: "3EFGIJ" },
-        hostTeamSlot: true,
+        matchNumber: 85,
+        label: "W85",
       },
-      // Slot 2 enters Match 96 via R32 Match 87
       slot2: {
-        r32Label: "R32 Match 87",
-        sideA: { group: "K", position: 1 }, // 1st Group K plays best 3rd from DEIJL
-        sideB: { thirdPlace: true, eligibleGroups: ["D", "E", "I", "J", "L"], label: "3DEIJL" },
+        matchNumber: 87,
+        label: "W87",
+      },
+    },
+  },
+  97: {
+    matchNumber: 97,
+    stage: "Quarter-final",
+    venue: "Boston Stadium",
+    city: "Boston",
+    country: "USA",
+    scheduledDate: "July 9, 2026",
+    description: "FIFA World Cup 2026 – Match 97 (Quarter-final) at Boston Stadium, Boston",
+    bracket: {
+      slot1: {
+        matchNumber: 89,
+        label: "W89",
+      },
+      slot2: {
+        matchNumber: 90,
+        label: "W90",
+      },
+    },
+  },
+  98: {
+    matchNumber: 98,
+    stage: "Quarter-final",
+    venue: "Los Angeles Stadium",
+    city: "Los Angeles",
+    country: "USA",
+    scheduledDate: "July 10, 2026",
+    description: "FIFA World Cup 2026 – Match 98 (Quarter-final) at Los Angeles Stadium, Los Angeles",
+    bracket: {
+      slot1: {
+        matchNumber: 93,
+        label: "W93",
+      },
+      slot2: {
+        matchNumber: 94,
+        label: "W94",
+      },
+    },
+  },
+  99: {
+    matchNumber: 99,
+    stage: "Quarter-final",
+    venue: "Miami Stadium",
+    city: "Miami",
+    country: "USA",
+    scheduledDate: "July 11, 2026",
+    description: "FIFA World Cup 2026 – Match 99 (Quarter-final) at Miami Stadium, Miami",
+    bracket: {
+      slot1: {
+        matchNumber: 91,
+        label: "W91",
+      },
+      slot2: {
+        matchNumber: 92,
+        label: "W92",
+      },
+    },
+  },
+  100: {
+    matchNumber: 100,
+    stage: "Quarter-final",
+    venue: "Kansas City Stadium",
+    city: "Kansas City",
+    country: "USA",
+    scheduledDate: "July 11, 2026",
+    description: "FIFA World Cup 2026 – Match 100 (Quarter-final) at Kansas City Stadium, Kansas City",
+    bracket: {
+      slot1: {
+        matchNumber: 95,
+        label: "W95",
+      },
+      slot2: {
+        matchNumber: 96,
+        label: "W96",
+      },
+    },
+  },
+  101: {
+    matchNumber: 101,
+    stage: "Semi-final",
+    venue: "Dallas Stadium",
+    city: "Dallas",
+    country: "USA",
+    scheduledDate: "July 14, 2026",
+    description: "FIFA World Cup 2026 – Match 101 (Semi-final) at Dallas Stadium, Dallas",
+    bracket: {
+      slot1: {
+        matchNumber: 97,
+        label: "W97",
+      },
+      slot2: {
+        matchNumber: 98,
+        label: "W98",
+      },
+    },
+  },
+  102: {
+    matchNumber: 102,
+    stage: "Semi-final",
+    venue: "Atlanta Stadium",
+    city: "Atlanta",
+    country: "USA",
+    scheduledDate: "July 15, 2026",
+    description: "FIFA World Cup 2026 – Match 102 (Semi-final) at Atlanta Stadium, Atlanta",
+    bracket: {
+      slot1: {
+        matchNumber: 99,
+        label: "W99",
+      },
+      slot2: {
+        matchNumber: 100,
+        label: "W100",
+      },
+    },
+  },
+  103: {
+    matchNumber: 103,
+    stage: "Third Place Play-off",
+    venue: "Miami Stadium",
+    city: "Miami",
+    country: "USA",
+    scheduledDate: "July 18, 2026",
+    description: "FIFA World Cup 2026 – Match 103 (Third Place Play-off) at Miami Stadium, Miami",
+    bracket: {
+      slot1: {
+        matchNumber: 101,
+        label: "L101",
+      },
+      slot2: {
+        matchNumber: 102,
+        label: "L102",
+      },
+    },
+  },
+  104: {
+    matchNumber: 104,
+    stage: "Final",
+    venue: "New York New Jersey Stadium",
+    city: "New York / New Jersey",
+    country: "USA",
+    scheduledDate: "July 19, 2026",
+    description: "FIFA World Cup 2026 – Match 104 (Final) at New York New Jersey Stadium, New York / New Jersey",
+    bracket: {
+      slot1: {
+        matchNumber: 101,
+        label: "W101",
+      },
+      slot2: {
+        matchNumber: 102,
+        label: "W102",
       },
     },
   },
