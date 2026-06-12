@@ -1,0 +1,1666 @@
+[
+  {
+    "matchNumber": 1,
+    "stage": "Group Stage",
+    "venue": "Mexico City Stadium",
+    "city": "Mexico City",
+    "country": "Mexico",
+    "scheduledDate": "June 11, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Mexico"
+      },
+      "slot2": {
+        "label": "South Africa"
+      }
+    }
+  },
+  {
+    "matchNumber": 2,
+    "stage": "Group Stage",
+    "venue": "Estadio Guadalajara",
+    "city": "Guadalajara",
+    "country": "Mexico",
+    "scheduledDate": "June 11, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Korea Republic"
+      },
+      "slot2": {
+        "label": "Czechia"
+      }
+    }
+  },
+  {
+    "matchNumber": 3,
+    "stage": "Group Stage",
+    "venue": "Toronto Stadium",
+    "city": "Toronto",
+    "country": "Canada",
+    "scheduledDate": "June 12, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Canada"
+      },
+      "slot2": {
+        "label": "Bosnia and Herzegovina"
+      }
+    }
+  },
+  {
+    "matchNumber": 4,
+    "stage": "Group Stage",
+    "venue": "Los Angeles Stadium",
+    "city": "Los Angeles",
+    "country": "USA",
+    "scheduledDate": "June 12, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "USA"
+      },
+      "slot2": {
+        "label": "Paraguay"
+      }
+    }
+  },
+  {
+    "matchNumber": 5,
+    "stage": "Group Stage",
+    "venue": "Boston Stadium",
+    "city": "Boston",
+    "country": "USA",
+    "scheduledDate": "June 13, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Haiti"
+      },
+      "slot2": {
+        "label": "Scotland"
+      }
+    }
+  },
+  {
+    "matchNumber": 6,
+    "stage": "Group Stage",
+    "venue": "BC Place Vancouver",
+    "city": "Vancouver",
+    "country": "Canada",
+    "scheduledDate": "June 13, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Australia"
+      },
+      "slot2": {
+        "label": "Türkiye"
+      }
+    }
+  },
+  {
+    "matchNumber": 7,
+    "stage": "Group Stage",
+    "venue": "New York New Jersey Stadium",
+    "city": "New York / New Jersey",
+    "country": "USA",
+    "scheduledDate": "June 13, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Brazil"
+      },
+      "slot2": {
+        "label": "Morocco"
+      }
+    }
+  },
+  {
+    "matchNumber": 8,
+    "stage": "Group Stage",
+    "venue": "San Francisco Bay Area Stadium",
+    "city": "San Francisco Bay Area",
+    "country": "USA",
+    "scheduledDate": "June 13, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Qatar"
+      },
+      "slot2": {
+        "label": "Switzerland"
+      }
+    }
+  },
+  {
+    "matchNumber": 9,
+    "stage": "Group Stage",
+    "venue": "Philadelphia Stadium",
+    "city": "Philadelphia",
+    "country": "USA",
+    "scheduledDate": "June 14, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Côte d'Ivoire"
+      },
+      "slot2": {
+        "label": "Ecuador"
+      }
+    }
+  },
+  {
+    "matchNumber": 10,
+    "stage": "Group Stage",
+    "venue": "Houston Stadium",
+    "city": "Houston",
+    "country": "USA",
+    "scheduledDate": "June 14, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Germany"
+      },
+      "slot2": {
+        "label": "Curaçao"
+      }
+    }
+  },
+  {
+    "matchNumber": 11,
+    "stage": "Group Stage",
+    "venue": "Dallas Stadium",
+    "city": "Dallas",
+    "country": "USA",
+    "scheduledDate": "June 14, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Netherlands"
+      },
+      "slot2": {
+        "label": "Japan"
+      }
+    }
+  },
+  {
+    "matchNumber": 12,
+    "stage": "Group Stage",
+    "venue": "Estadio Monterrey",
+    "city": "Monterrey",
+    "country": "Mexico",
+    "scheduledDate": "June 14, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Sweden"
+      },
+      "slot2": {
+        "label": "Tunisia"
+      }
+    }
+  },
+  {
+    "matchNumber": 13,
+    "stage": "Group Stage",
+    "venue": "Miami Stadium",
+    "city": "Miami",
+    "country": "USA",
+    "scheduledDate": "June 15, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Saudi Arabia"
+      },
+      "slot2": {
+        "label": "Uruguay"
+      }
+    }
+  },
+  {
+    "matchNumber": 14,
+    "stage": "Group Stage",
+    "venue": "Atlanta Stadium",
+    "city": "Atlanta",
+    "country": "USA",
+    "scheduledDate": "June 15, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Spain"
+      },
+      "slot2": {
+        "label": "Cabo Verde"
+      }
+    }
+  },
+  {
+    "matchNumber": 15,
+    "stage": "Group Stage",
+    "venue": "Los Angeles Stadium",
+    "city": "Los Angeles",
+    "country": "USA",
+    "scheduledDate": "June 15, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "IR Iran"
+      },
+      "slot2": {
+        "label": "New Zealand"
+      }
+    }
+  },
+  {
+    "matchNumber": 16,
+    "stage": "Group Stage",
+    "venue": "Seattle Stadium",
+    "city": "Seattle",
+    "country": "USA",
+    "scheduledDate": "June 15, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Belgium"
+      },
+      "slot2": {
+        "label": "Egypt"
+      }
+    }
+  },
+  {
+    "matchNumber": 17,
+    "stage": "Group Stage",
+    "venue": "New York New Jersey Stadium",
+    "city": "New York / New Jersey",
+    "country": "USA",
+    "scheduledDate": "June 16, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "France"
+      },
+      "slot2": {
+        "label": "Senegal"
+      }
+    }
+  },
+  {
+    "matchNumber": 18,
+    "stage": "Group Stage",
+    "venue": "Boston Stadium",
+    "city": "Boston",
+    "country": "USA",
+    "scheduledDate": "June 16, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Iraq"
+      },
+      "slot2": {
+        "label": "Norway"
+      }
+    }
+  },
+  {
+    "matchNumber": 19,
+    "stage": "Group Stage",
+    "venue": "Kansas City Stadium",
+    "city": "Kansas City",
+    "country": "USA",
+    "scheduledDate": "June 16, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Argentina"
+      },
+      "slot2": {
+        "label": "Algeria"
+      }
+    }
+  },
+  {
+    "matchNumber": 20,
+    "stage": "Group Stage",
+    "venue": "San Francisco Bay Area Stadium",
+    "city": "San Francisco Bay Area",
+    "country": "USA",
+    "scheduledDate": "June 16, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Austria"
+      },
+      "slot2": {
+        "label": "Jordan"
+      }
+    }
+  },
+  {
+    "matchNumber": 21,
+    "stage": "Group Stage",
+    "venue": "Toronto Stadium",
+    "city": "Toronto",
+    "country": "Canada",
+    "scheduledDate": "June 17, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Ghana"
+      },
+      "slot2": {
+        "label": "Panama"
+      }
+    }
+  },
+  {
+    "matchNumber": 22,
+    "stage": "Group Stage",
+    "venue": "Dallas Stadium",
+    "city": "Dallas",
+    "country": "USA",
+    "scheduledDate": "June 17, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "England"
+      },
+      "slot2": {
+        "label": "Croatia"
+      }
+    }
+  },
+  {
+    "matchNumber": 23,
+    "stage": "Group Stage",
+    "venue": "Houston Stadium",
+    "city": "Houston",
+    "country": "USA",
+    "scheduledDate": "June 17, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Portugal"
+      },
+      "slot2": {
+        "label": "Congo DR"
+      }
+    }
+  },
+  {
+    "matchNumber": 24,
+    "stage": "Group Stage",
+    "venue": "Mexico City Stadium",
+    "city": "Mexico City",
+    "country": "Mexico",
+    "scheduledDate": "June 17, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Uzbekistan"
+      },
+      "slot2": {
+        "label": "Colombia"
+      }
+    }
+  },
+  {
+    "matchNumber": 25,
+    "stage": "Group Stage",
+    "venue": "Atlanta Stadium",
+    "city": "Atlanta",
+    "country": "USA",
+    "scheduledDate": "June 18, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Czechia"
+      },
+      "slot2": {
+        "label": "South Africa"
+      }
+    }
+  },
+  {
+    "matchNumber": 26,
+    "stage": "Group Stage",
+    "venue": "Los Angeles Stadium",
+    "city": "Los Angeles",
+    "country": "USA",
+    "scheduledDate": "June 18, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Switzerland"
+      },
+      "slot2": {
+        "label": "Bosnia and Herzegovina"
+      }
+    }
+  },
+  {
+    "matchNumber": 27,
+    "stage": "Group Stage",
+    "venue": "BC Place Vancouver",
+    "city": "Vancouver",
+    "country": "Canada",
+    "scheduledDate": "June 18, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Canada"
+      },
+      "slot2": {
+        "label": "Qatar"
+      }
+    }
+  },
+  {
+    "matchNumber": 28,
+    "stage": "Group Stage",
+    "venue": "Estadio Guadalajara",
+    "city": "Guadalajara",
+    "country": "Mexico",
+    "scheduledDate": "June 18, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Mexico"
+      },
+      "slot2": {
+        "label": "Korea Republic"
+      }
+    }
+  },
+  {
+    "matchNumber": 29,
+    "stage": "Group Stage",
+    "venue": "Philadelphia Stadium",
+    "city": "Philadelphia",
+    "country": "USA",
+    "scheduledDate": "June 19, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Brazil"
+      },
+      "slot2": {
+        "label": "Haiti"
+      }
+    }
+  },
+  {
+    "matchNumber": 30,
+    "stage": "Group Stage",
+    "venue": "Boston Stadium",
+    "city": "Boston",
+    "country": "USA",
+    "scheduledDate": "June 19, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Scotland"
+      },
+      "slot2": {
+        "label": "Morocco"
+      }
+    }
+  },
+  {
+    "matchNumber": 31,
+    "stage": "Group Stage",
+    "venue": "San Francisco Bay Area Stadium",
+    "city": "San Francisco Bay Area",
+    "country": "USA",
+    "scheduledDate": "June 19, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Türkiye"
+      },
+      "slot2": {
+        "label": "Paraguay"
+      }
+    }
+  },
+  {
+    "matchNumber": 32,
+    "stage": "Group Stage",
+    "venue": "Seattle Stadium",
+    "city": "Seattle",
+    "country": "USA",
+    "scheduledDate": "June 19, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "USA"
+      },
+      "slot2": {
+        "label": "Australia"
+      }
+    }
+  },
+  {
+    "matchNumber": 33,
+    "stage": "Group Stage",
+    "venue": "Toronto Stadium",
+    "city": "Toronto",
+    "country": "Canada",
+    "scheduledDate": "June 20, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Germany"
+      },
+      "slot2": {
+        "label": "Côte d'Ivoire"
+      }
+    }
+  },
+  {
+    "matchNumber": 34,
+    "stage": "Group Stage",
+    "venue": "Kansas City Stadium",
+    "city": "Kansas City",
+    "country": "USA",
+    "scheduledDate": "June 20, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Ecuador"
+      },
+      "slot2": {
+        "label": "Curaçao"
+      }
+    }
+  },
+  {
+    "matchNumber": 35,
+    "stage": "Group Stage",
+    "venue": "Houston Stadium",
+    "city": "Houston",
+    "country": "USA",
+    "scheduledDate": "June 20, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Netherlands"
+      },
+      "slot2": {
+        "label": "Sweden"
+      }
+    }
+  },
+  {
+    "matchNumber": 36,
+    "stage": "Group Stage",
+    "venue": "Estadio Monterrey",
+    "city": "Monterrey",
+    "country": "Mexico",
+    "scheduledDate": "June 20, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Tunisia"
+      },
+      "slot2": {
+        "label": "Japan"
+      }
+    }
+  },
+  {
+    "matchNumber": 37,
+    "stage": "Group Stage",
+    "venue": "Miami Stadium",
+    "city": "Miami",
+    "country": "USA",
+    "scheduledDate": "June 21, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Uruguay"
+      },
+      "slot2": {
+        "label": "Cabo Verde"
+      }
+    }
+  },
+  {
+    "matchNumber": 38,
+    "stage": "Group Stage",
+    "venue": "Atlanta Stadium",
+    "city": "Atlanta",
+    "country": "USA",
+    "scheduledDate": "June 21, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Spain"
+      },
+      "slot2": {
+        "label": "Saudi Arabia"
+      }
+    }
+  },
+  {
+    "matchNumber": 39,
+    "stage": "Group Stage",
+    "venue": "Los Angeles Stadium",
+    "city": "Los Angeles",
+    "country": "USA",
+    "scheduledDate": "June 21, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Belgium"
+      },
+      "slot2": {
+        "label": "IR Iran"
+      }
+    }
+  },
+  {
+    "matchNumber": 40,
+    "stage": "Group Stage",
+    "venue": "BC Place Vancouver",
+    "city": "Vancouver",
+    "country": "Canada",
+    "scheduledDate": "June 21, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "New Zealand"
+      },
+      "slot2": {
+        "label": "Egypt"
+      }
+    }
+  },
+  {
+    "matchNumber": 41,
+    "stage": "Group Stage",
+    "venue": "New York New Jersey Stadium",
+    "city": "New York / New Jersey",
+    "country": "USA",
+    "scheduledDate": "June 22, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Norway"
+      },
+      "slot2": {
+        "label": "Senegal"
+      }
+    }
+  },
+  {
+    "matchNumber": 42,
+    "stage": "Group Stage",
+    "venue": "Philadelphia Stadium",
+    "city": "Philadelphia",
+    "country": "USA",
+    "scheduledDate": "June 22, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "France"
+      },
+      "slot2": {
+        "label": "Iraq"
+      }
+    }
+  },
+  {
+    "matchNumber": 43,
+    "stage": "Group Stage",
+    "venue": "Dallas Stadium",
+    "city": "Dallas",
+    "country": "USA",
+    "scheduledDate": "June 22, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Argentina"
+      },
+      "slot2": {
+        "label": "Austria"
+      }
+    }
+  },
+  {
+    "matchNumber": 44,
+    "stage": "Group Stage",
+    "venue": "San Francisco Bay Area Stadium",
+    "city": "San Francisco Bay Area",
+    "country": "USA",
+    "scheduledDate": "June 22, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Jordan"
+      },
+      "slot2": {
+        "label": "Algeria"
+      }
+    }
+  },
+  {
+    "matchNumber": 45,
+    "stage": "Group Stage",
+    "venue": "Boston Stadium",
+    "city": "Boston",
+    "country": "USA",
+    "scheduledDate": "June 23, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "England"
+      },
+      "slot2": {
+        "label": "Ghana"
+      }
+    }
+  },
+  {
+    "matchNumber": 46,
+    "stage": "Group Stage",
+    "venue": "Toronto Stadium",
+    "city": "Toronto",
+    "country": "Canada",
+    "scheduledDate": "June 23, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Panama"
+      },
+      "slot2": {
+        "label": "Croatia"
+      }
+    }
+  },
+  {
+    "matchNumber": 47,
+    "stage": "Group Stage",
+    "venue": "Houston Stadium",
+    "city": "Houston",
+    "country": "USA",
+    "scheduledDate": "June 23, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Portugal"
+      },
+      "slot2": {
+        "label": "Uzbekistan"
+      }
+    }
+  },
+  {
+    "matchNumber": 48,
+    "stage": "Group Stage",
+    "venue": "Estadio Guadalajara",
+    "city": "Guadalajara",
+    "country": "Mexico",
+    "scheduledDate": "June 23, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Colombia"
+      },
+      "slot2": {
+        "label": "Congo DR"
+      }
+    }
+  },
+  {
+    "matchNumber": 49,
+    "stage": "Group Stage",
+    "venue": "Miami Stadium",
+    "city": "Miami",
+    "country": "USA",
+    "scheduledDate": "June 24, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Scotland"
+      },
+      "slot2": {
+        "label": "Brazil"
+      }
+    }
+  },
+  {
+    "matchNumber": 50,
+    "stage": "Group Stage",
+    "venue": "Atlanta Stadium",
+    "city": "Atlanta",
+    "country": "USA",
+    "scheduledDate": "June 24, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Morocco"
+      },
+      "slot2": {
+        "label": "Haiti"
+      }
+    }
+  },
+  {
+    "matchNumber": 51,
+    "stage": "Group Stage",
+    "venue": "BC Place Vancouver",
+    "city": "Vancouver",
+    "country": "Canada",
+    "scheduledDate": "June 24, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Switzerland"
+      },
+      "slot2": {
+        "label": "Canada"
+      }
+    }
+  },
+  {
+    "matchNumber": 52,
+    "stage": "Group Stage",
+    "venue": "Seattle Stadium",
+    "city": "Seattle",
+    "country": "USA",
+    "scheduledDate": "June 24, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Bosnia and Herzegovina"
+      },
+      "slot2": {
+        "label": "Qatar"
+      }
+    }
+  },
+  {
+    "matchNumber": 53,
+    "stage": "Group Stage",
+    "venue": "Mexico City Stadium",
+    "city": "Mexico City",
+    "country": "Mexico",
+    "scheduledDate": "June 24, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Czechia"
+      },
+      "slot2": {
+        "label": "Mexico"
+      }
+    }
+  },
+  {
+    "matchNumber": 54,
+    "stage": "Group Stage",
+    "venue": "Estadio Monterrey",
+    "city": "Monterrey",
+    "country": "Mexico",
+    "scheduledDate": "June 24, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "South Africa"
+      },
+      "slot2": {
+        "label": "Korea Republic"
+      }
+    }
+  },
+  {
+    "matchNumber": 55,
+    "stage": "Group Stage",
+    "venue": "Philadelphia Stadium",
+    "city": "Philadelphia",
+    "country": "USA",
+    "scheduledDate": "June 25, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Curaçao"
+      },
+      "slot2": {
+        "label": "Côte d'Ivoire"
+      }
+    }
+  },
+  {
+    "matchNumber": 56,
+    "stage": "Group Stage",
+    "venue": "New York New Jersey Stadium",
+    "city": "New York / New Jersey",
+    "country": "USA",
+    "scheduledDate": "June 25, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Ecuador"
+      },
+      "slot2": {
+        "label": "Germany"
+      }
+    }
+  },
+  {
+    "matchNumber": 57,
+    "stage": "Group Stage",
+    "venue": "Dallas Stadium",
+    "city": "Dallas",
+    "country": "USA",
+    "scheduledDate": "June 25, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Japan"
+      },
+      "slot2": {
+        "label": "Sweden"
+      }
+    }
+  },
+  {
+    "matchNumber": 58,
+    "stage": "Group Stage",
+    "venue": "Kansas City Stadium",
+    "city": "Kansas City",
+    "country": "USA",
+    "scheduledDate": "June 25, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Tunisia"
+      },
+      "slot2": {
+        "label": "Netherlands"
+      }
+    }
+  },
+  {
+    "matchNumber": 59,
+    "stage": "Group Stage",
+    "venue": "Los Angeles Stadium",
+    "city": "Los Angeles",
+    "country": "USA",
+    "scheduledDate": "June 25, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Türkiye"
+      },
+      "slot2": {
+        "label": "USA"
+      }
+    }
+  },
+  {
+    "matchNumber": 60,
+    "stage": "Group Stage",
+    "venue": "San Francisco Bay Area Stadium",
+    "city": "San Francisco Bay Area",
+    "country": "USA",
+    "scheduledDate": "June 25, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Paraguay"
+      },
+      "slot2": {
+        "label": "Australia"
+      }
+    }
+  },
+  {
+    "matchNumber": 61,
+    "stage": "Group Stage",
+    "venue": "Boston Stadium",
+    "city": "Boston",
+    "country": "USA",
+    "scheduledDate": "June 26, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Norway"
+      },
+      "slot2": {
+        "label": "France"
+      }
+    }
+  },
+  {
+    "matchNumber": 62,
+    "stage": "Group Stage",
+    "venue": "Toronto Stadium",
+    "city": "Toronto",
+    "country": "Canada",
+    "scheduledDate": "June 26, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Senegal"
+      },
+      "slot2": {
+        "label": "Iraq"
+      }
+    }
+  },
+  {
+    "matchNumber": 63,
+    "stage": "Group Stage",
+    "venue": "Seattle Stadium",
+    "city": "Seattle",
+    "country": "USA",
+    "scheduledDate": "June 26, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Egypt"
+      },
+      "slot2": {
+        "label": "IR Iran"
+      }
+    }
+  },
+  {
+    "matchNumber": 64,
+    "stage": "Group Stage",
+    "venue": "BC Place Vancouver",
+    "city": "Vancouver",
+    "country": "Canada",
+    "scheduledDate": "June 26, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "New Zealand"
+      },
+      "slot2": {
+        "label": "Belgium"
+      }
+    }
+  },
+  {
+    "matchNumber": 65,
+    "stage": "Group Stage",
+    "venue": "Houston Stadium",
+    "city": "Houston",
+    "country": "USA",
+    "scheduledDate": "June 26, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Cabo Verde"
+      },
+      "slot2": {
+        "label": "Saudi Arabia"
+      }
+    }
+  },
+  {
+    "matchNumber": 66,
+    "stage": "Group Stage",
+    "venue": "Estadio Guadalajara",
+    "city": "Guadalajara",
+    "country": "Mexico",
+    "scheduledDate": "June 26, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Uruguay"
+      },
+      "slot2": {
+        "label": "Spain"
+      }
+    }
+  },
+  {
+    "matchNumber": 67,
+    "stage": "Group Stage",
+    "venue": "New York New Jersey Stadium",
+    "city": "New York / New Jersey",
+    "country": "USA",
+    "scheduledDate": "June 27, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Panama"
+      },
+      "slot2": {
+        "label": "England"
+      }
+    }
+  },
+  {
+    "matchNumber": 68,
+    "stage": "Group Stage",
+    "venue": "Philadelphia Stadium",
+    "city": "Philadelphia",
+    "country": "USA",
+    "scheduledDate": "June 27, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Croatia"
+      },
+      "slot2": {
+        "label": "Ghana"
+      }
+    }
+  },
+  {
+    "matchNumber": 69,
+    "stage": "Group Stage",
+    "venue": "Kansas City Stadium",
+    "city": "Kansas City",
+    "country": "USA",
+    "scheduledDate": "June 27, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Algeria"
+      },
+      "slot2": {
+        "label": "Austria"
+      }
+    }
+  },
+  {
+    "matchNumber": 70,
+    "stage": "Group Stage",
+    "venue": "Dallas Stadium",
+    "city": "Dallas",
+    "country": "USA",
+    "scheduledDate": "June 27, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Jordan"
+      },
+      "slot2": {
+        "label": "Argentina"
+      }
+    }
+  },
+  {
+    "matchNumber": 71,
+    "stage": "Group Stage",
+    "venue": "Miami Stadium",
+    "city": "Miami",
+    "country": "USA",
+    "scheduledDate": "June 27, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Colombia"
+      },
+      "slot2": {
+        "label": "Portugal"
+      }
+    }
+  },
+  {
+    "matchNumber": 72,
+    "stage": "Group Stage",
+    "venue": "Atlanta Stadium",
+    "city": "Atlanta",
+    "country": "USA",
+    "scheduledDate": "June 27, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Congo DR"
+      },
+      "slot2": {
+        "label": "Uzbekistan"
+      }
+    }
+  },
+  {
+    "matchNumber": 73,
+    "stage": "Round of 32",
+    "venue": "Los Angeles Stadium",
+    "city": "Los Angeles",
+    "country": "USA",
+    "scheduledDate": "June 28, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group A runners-up"
+      },
+      "slot2": {
+        "label": "Group B runners-up"
+      }
+    }
+  },
+  {
+    "matchNumber": 74,
+    "stage": "Round of 32",
+    "venue": "Boston Stadium",
+    "city": "Boston",
+    "country": "USA",
+    "scheduledDate": "June 29, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group E winners"
+      },
+      "slot2": {
+        "label": "Group A/B/C/D/F third place"
+      }
+    }
+  },
+  {
+    "matchNumber": 75,
+    "stage": "Round of 32",
+    "venue": "Estadio Monterrey",
+    "city": "Monterrey",
+    "country": "Mexico",
+    "scheduledDate": "June 29, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group F winners"
+      },
+      "slot2": {
+        "label": "Group C runners-up"
+      }
+    }
+  },
+  {
+    "matchNumber": 76,
+    "stage": "Round of 32",
+    "venue": "Houston Stadium",
+    "city": "Houston",
+    "country": "USA",
+    "scheduledDate": "June 29, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group C winners"
+      },
+      "slot2": {
+        "label": "Group F runners-up"
+      }
+    }
+  },
+  {
+    "matchNumber": 77,
+    "stage": "Round of 32",
+    "venue": "New York New Jersey Stadium",
+    "city": "New York / New Jersey",
+    "country": "USA",
+    "scheduledDate": "June 30, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group I winners"
+      },
+      "slot2": {
+        "label": "Group C/D/F/G/H third place"
+      }
+    }
+  },
+  {
+    "matchNumber": 78,
+    "stage": "Round of 32",
+    "venue": "Dallas Stadium",
+    "city": "Dallas",
+    "country": "USA",
+    "scheduledDate": "June 30, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group E runners-up"
+      },
+      "slot2": {
+        "label": "Group I runners-up"
+      }
+    }
+  },
+  {
+    "matchNumber": 79,
+    "stage": "Round of 32",
+    "venue": "Mexico City Stadium",
+    "city": "Mexico City",
+    "country": "Mexico",
+    "scheduledDate": "June 30, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group A winners"
+      },
+      "slot2": {
+        "label": "Group C/E/F/H/I third place"
+      }
+    }
+  },
+  {
+    "matchNumber": 80,
+    "stage": "Round of 32",
+    "venue": "Atlanta Stadium",
+    "city": "Atlanta",
+    "country": "USA",
+    "scheduledDate": "July 1, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group L winners"
+      },
+      "slot2": {
+        "label": "Group E/H/I/J/K third place"
+      }
+    }
+  },
+  {
+    "matchNumber": 81,
+    "stage": "Round of 32",
+    "venue": "San Francisco Bay Area Stadium",
+    "city": "San Francisco Bay Area",
+    "country": "USA",
+    "scheduledDate": "July 1, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group D winners"
+      },
+      "slot2": {
+        "label": "Group B/E/F/I/J third place"
+      }
+    }
+  },
+  {
+    "matchNumber": 82,
+    "stage": "Round of 32",
+    "venue": "Seattle Stadium",
+    "city": "Seattle",
+    "country": "USA",
+    "scheduledDate": "July 1, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group G winners"
+      },
+      "slot2": {
+        "label": "Group A/E/H/I/J third place"
+      }
+    }
+  },
+  {
+    "matchNumber": 83,
+    "stage": "Round of 32",
+    "venue": "Toronto Stadium",
+    "city": "Toronto",
+    "country": "Canada",
+    "scheduledDate": "July 2, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group K runners-up"
+      },
+      "slot2": {
+        "label": "Group L runners-up"
+      }
+    }
+  },
+  {
+    "matchNumber": 84,
+    "stage": "Round of 32",
+    "venue": "Los Angeles Stadium",
+    "city": "Los Angeles",
+    "country": "USA",
+    "scheduledDate": "July 2, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group H winners"
+      },
+      "slot2": {
+        "label": "Group J runners-up"
+      }
+    }
+  },
+  {
+    "matchNumber": 85,
+    "stage": "Round of 32",
+    "venue": "BC Place Vancouver",
+    "city": "Vancouver",
+    "country": "Canada",
+    "scheduledDate": "July 2, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group B winners"
+      },
+      "slot2": {
+        "label": "Group E/F/G/I/J third place"
+      }
+    }
+  },
+  {
+    "matchNumber": 86,
+    "stage": "Round of 32",
+    "venue": "Miami Stadium",
+    "city": "Miami",
+    "country": "USA",
+    "scheduledDate": "July 3, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group J winners"
+      },
+      "slot2": {
+        "label": "Group H runners-up"
+      }
+    }
+  },
+  {
+    "matchNumber": 87,
+    "stage": "Round of 32",
+    "venue": "Kansas City Stadium",
+    "city": "Kansas City",
+    "country": "USA",
+    "scheduledDate": "July 3, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group K winners"
+      },
+      "slot2": {
+        "label": "Group D/E/I/J/L third place"
+      }
+    }
+  },
+  {
+    "matchNumber": 88,
+    "stage": "Round of 32",
+    "venue": "Dallas Stadium",
+    "city": "Dallas",
+    "country": "USA",
+    "scheduledDate": "July 3, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Group D runners-up"
+      },
+      "slot2": {
+        "label": "Group G runners-up"
+      }
+    }
+  },
+  {
+    "matchNumber": 89,
+    "stage": "Round of 16",
+    "venue": "Philadelphia Stadium",
+    "city": "Philadelphia",
+    "country": "USA",
+    "scheduledDate": "July 4, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 74"
+      },
+      "slot2": {
+        "label": "Winner match 77"
+      }
+    }
+  },
+  {
+    "matchNumber": 90,
+    "stage": "Round of 16",
+    "venue": "Houston Stadium",
+    "city": "Houston",
+    "country": "USA",
+    "scheduledDate": "July 4, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 73"
+      },
+      "slot2": {
+        "label": "Winner match 75"
+      }
+    }
+  },
+  {
+    "matchNumber": 91,
+    "stage": "Round of 16",
+    "venue": "New York New Jersey Stadium",
+    "city": "New York / New Jersey",
+    "country": "USA",
+    "scheduledDate": "July 5, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 76"
+      },
+      "slot2": {
+        "label": "Winner match 78"
+      }
+    }
+  },
+  {
+    "matchNumber": 92,
+    "stage": "Round of 16",
+    "venue": "Mexico City Stadium",
+    "city": "Mexico City",
+    "country": "Mexico",
+    "scheduledDate": "July 5, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 79"
+      },
+      "slot2": {
+        "label": "Winner match 80"
+      }
+    }
+  },
+  {
+    "matchNumber": 93,
+    "stage": "Round of 16",
+    "venue": "Dallas Stadium",
+    "city": "Dallas",
+    "country": "USA",
+    "scheduledDate": "July 6, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 83"
+      },
+      "slot2": {
+        "label": "Winner match 84"
+      }
+    }
+  },
+  {
+    "matchNumber": 94,
+    "stage": "Round of 16",
+    "venue": "Seattle Stadium",
+    "city": "Seattle",
+    "country": "USA",
+    "scheduledDate": "July 6, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 81"
+      },
+      "slot2": {
+        "label": "Winner match 82"
+      }
+    }
+  },
+  {
+    "matchNumber": 95,
+    "stage": "Round of 16",
+    "venue": "Atlanta Stadium",
+    "city": "Atlanta",
+    "country": "USA",
+    "scheduledDate": "July 7, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 86"
+      },
+      "slot2": {
+        "label": "Winner match 88"
+      }
+    }
+  },
+  {
+    "matchNumber": 96,
+    "stage": "Round of 16",
+    "venue": "BC Place Vancouver",
+    "city": "Vancouver",
+    "country": "Canada",
+    "scheduledDate": "July 7, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 85"
+      },
+      "slot2": {
+        "label": "Winner match 87"
+      }
+    }
+  },
+  {
+    "matchNumber": 97,
+    "stage": "Quarter-final",
+    "venue": "Boston Stadium",
+    "city": "Boston",
+    "country": "USA",
+    "scheduledDate": "July 9, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 89"
+      },
+      "slot2": {
+        "label": "Winner match 90"
+      }
+    }
+  },
+  {
+    "matchNumber": 98,
+    "stage": "Quarter-final",
+    "venue": "Los Angeles Stadium",
+    "city": "Los Angeles",
+    "country": "USA",
+    "scheduledDate": "July 10, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 93"
+      },
+      "slot2": {
+        "label": "Winner match 94"
+      }
+    }
+  },
+  {
+    "matchNumber": 99,
+    "stage": "Quarter-final",
+    "venue": "Miami Stadium",
+    "city": "Miami",
+    "country": "USA",
+    "scheduledDate": "July 11, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 91"
+      },
+      "slot2": {
+        "label": "Winner match 92"
+      }
+    }
+  },
+  {
+    "matchNumber": 100,
+    "stage": "Quarter-final",
+    "venue": "Kansas City Stadium",
+    "city": "Kansas City",
+    "country": "USA",
+    "scheduledDate": "July 11, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 95"
+      },
+      "slot2": {
+        "label": "Winner match 96"
+      }
+    }
+  },
+  {
+    "matchNumber": 101,
+    "stage": "Semi-final",
+    "venue": "Dallas Stadium",
+    "city": "Dallas",
+    "country": "USA",
+    "scheduledDate": "July 14, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 97"
+      },
+      "slot2": {
+        "label": "Winner match 98"
+      }
+    }
+  },
+  {
+    "matchNumber": 102,
+    "stage": "Semi-final",
+    "venue": "Atlanta Stadium",
+    "city": "Atlanta",
+    "country": "USA",
+    "scheduledDate": "July 15, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 99"
+      },
+      "slot2": {
+        "label": "Winner match 100"
+      }
+    }
+  },
+  {
+    "matchNumber": 103,
+    "stage": "Bronze Final",
+    "venue": "Miami Stadium",
+    "city": "Miami",
+    "country": "USA",
+    "scheduledDate": "July 18, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Runner-up match 101"
+      },
+      "slot2": {
+        "label": "Runner-up match 102"
+      }
+    }
+  },
+  {
+    "matchNumber": 104,
+    "stage": "Final",
+    "venue": "New York New Jersey Stadium",
+    "city": "New York / New Jersey",
+    "country": "USA",
+    "scheduledDate": "July 19, 2026",
+    "bracket": {
+      "slot1": {
+        "label": "Winner match 101"
+      },
+      "slot2": {
+        "label": "Winner match 102"
+      }
+    }
+  }
+]
