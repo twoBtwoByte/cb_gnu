@@ -1,0 +1,251 @@
+.planner {
+  min-height: 100vh;
+  background: #f5f8ff;
+  color: #16213e;
+  display: flex;
+  flex-direction: column;
+}
+
+.planner__hero {
+  background: linear-gradient(145deg, #13274f, #1b3f8b);
+  color: #fff;
+  padding: 1.5rem 1rem;
+}
+
+.planner__hero-content {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.planner__eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.planner__hero h1 {
+  font-size: 1.7rem;
+  margin: 0.35rem 0;
+}
+
+.planner__hero p {
+  margin: 0;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.planner__hero-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.planner__link-btn,
+.planner__ghost-btn {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.85rem;
+  color: #fff;
+  text-decoration: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.planner__link-btn {
+  background: #ffdd73;
+  border-color: #ffdd73;
+  color: #4f3600;
+  font-weight: 700;
+}
+
+.planner__main {
+  width: 100%;
+  max-width: 1080px;
+  margin: 1rem auto 1.5rem;
+  padding: 0 0.8rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.planner__panel {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 24px rgba(22, 33, 62, 0.08);
+  padding: 1rem;
+}
+
+.planner__panel h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.planner__panel p {
+  margin: 0.45rem 0 0;
+  color: #42526e;
+}
+
+.planner__filters {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.planner__field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.planner__field span {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.planner__field select {
+  border: 1px solid #c8d2eb;
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+}
+
+.planner__status {
+  margin-top: 0.85rem;
+  font-size: 0.8rem;
+  color: #42526e;
+}
+
+.planner__status--warning {
+  color: #9c3f17;
+}
+
+.planner__empty {
+  font-style: italic;
+  color: #60708f;
+}
+
+.planner__matches {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.planner__match-card {
+  border: 1px solid #d9e3f7;
+  border-radius: 12px;
+  padding: 0.75rem;
+  background: #fbfdff;
+  display: grid;
+  gap: 0.28rem;
+}
+
+.planner__match-number {
+  margin: 0;
+  font-weight: 800;
+  color: #1a3570;
+}
+
+.planner__match-stage {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4868ad;
+}
+
+.planner__footer {
+  margin-top: auto;
+  background: #10182f;
+  padding: 1rem;
+}
+
+.planner__footer-actions {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.planner__coffee {
+  text-decoration: none;
+  background: #ffdd73;
+  color: #4f3600;
+  border-radius: 999px;
+  padding: 0.42rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.planner__feedback {
+  flex: 1;
+  min-width: min(320px, 100%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.planner__feedback summary {
+  cursor: pointer;
+  list-style: none;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.65rem 0.8rem;
+}
+
+.planner__feedback summary::-webkit-details-marker {
+  display: none;
+}
+
+.planner__feedback-form {
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.7rem 0.8rem 0.8rem;
+}
+
+.planner__feedback-form textarea {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.planner__feedback-form button {
+  width: fit-content;
+  border: none;
+  border-radius: 999px;
+  background: #5f6fff;
+  color: #fff;
+  padding: 0.4rem 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+@media (min-width: 720px) {
+  .planner__hero {
+    padding: 2.2rem 1.4rem;
+  }
+
+  .planner__hero h1 {
+    font-size: 2.1rem;
+  }
+
+  .planner__main {
+    margin-top: 1.4rem;
+    padding: 0 1.1rem;
+    grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .planner__panel {
+    padding: 1.2rem;
+  }
+}
