@@ -15,6 +15,7 @@ const COUNTRY_ALIASES = new Map([
   ["bosnia & herzegovina", "bosnia and herzegovina"],
 ]);
 
+// Normalizes country labels so schedule names can be matched against TEAM_DATA names.
 const toSlug = (value = "") =>
   value
     .normalize("NFD")
@@ -94,6 +95,7 @@ const resolveCountriesForLabel = ({ label, matchMap, groupCountryMap, cache, res
     const [, , matchNumberString] = matchReference;
     const matchNumber = Number.parseInt(matchNumberString, 10);
 
+    // Guard against malformed circular references in match labels.
     if (resolving.has(matchNumber)) return new Set();
     resolving.add(matchNumber);
 

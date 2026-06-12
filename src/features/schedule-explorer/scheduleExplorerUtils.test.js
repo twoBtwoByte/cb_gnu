@@ -5,16 +5,18 @@ import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
 describe("buildScheduleExplorerModel", () => {
   it("builds unique country and venue options from schedule data", () => {
     const model = buildScheduleExplorerModel(schedule);
+    const uniqueCountries = new Set(model.countries);
 
     expect(model.countries).toContain("Mexico");
     expect(model.countries).toContain("Canada");
-    expect(model.countries.filter((country) => country === "Mexico")).toHaveLength(1);
+    expect(uniqueCountries.size).toBe(model.countries.length);
     expect(model.venues).toContain("Toronto Stadium");
   });
 
   it("maps knockout references so countries get full potential match paths", () => {
     const model = buildScheduleExplorerModel(schedule);
-    const mexicoMatchNumbers = (model.potentialMatchesByCountry.Mexico ?? []).map((match) => match.matchNumber);
+    expect(model.potentialMatchesByCountry.Mexico).toBeDefined();
+    const mexicoMatchNumbers = model.potentialMatchesByCountry.Mexico.map((match) => match.matchNumber);
 
     expect(mexicoMatchNumbers).toContain(1);
     expect(mexicoMatchNumbers).toContain(79);

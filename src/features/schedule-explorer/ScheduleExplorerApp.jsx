@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import fallbackSchedule from "../../data/worldCup2026Schedule.json";
 import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
 import "./ScheduleExplorerApp.css";
@@ -19,7 +19,7 @@ function useScheduleData() {
   const [error, setError] = useState("");
   const [lastLoadedAt, setLastLoadedAt] = useState("");
 
-  const refreshSchedule = async () => {
+  const refreshSchedule = useCallback(async () => {
     setLoading(true);
     setError("");
 
@@ -54,11 +54,11 @@ function useScheduleData() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     refreshSchedule();
-  }, []);
+  }, [refreshSchedule]);
 
   return { schedule, loading, error, lastLoadedAt, refreshSchedule };
 }
