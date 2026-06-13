@@ -30,6 +30,7 @@ const COUNTRY_ALIASES = new Map([
   ["iran", "ir iran"],
   ["cape verde", "cabo verde"],
   ["dr congo", "congo dr"],
+  ["bosnia herzegovina", "bosnia and herzegovina"],
 ]);
 
 const toCanonicalCountrySlug = (value = "") => {
