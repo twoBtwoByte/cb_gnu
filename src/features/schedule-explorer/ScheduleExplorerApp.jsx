@@ -127,6 +127,7 @@ function useScheduleData() {
   const [scoreLoading, setScoreLoading] = useState(false);
   const [lastScoreRequestAt, setLastScoreRequestAt] = useState("");
   const completedMatchResultsRef = useRef({});
+  const lastScoreRequestAtRef = useRef("");
 
   const refreshSchedule = useCallback(async () => {
     setLoading(true);
@@ -224,13 +225,17 @@ function useScheduleData() {
   }, [completedMatchResults]);
 
   useEffect(() => {
+    lastScoreRequestAtRef.current = lastScoreRequestAt;
+  }, [lastScoreRequestAt]);
+
+  useEffect(() => {
     refreshSchedule();
   }, [refreshSchedule]);
 
   useEffect(() => {
     if (schedule.length === 0) return;
 
-    const lastRequestTime = Date.parse(lastScoreRequestAt || "");
+    const lastRequestTime = Date.parse(lastScoreRequestAtRef.current || "");
     const needsImmediateRefresh =
       Number.isNaN(lastRequestTime) || Date.now() - lastRequestTime >= SCORE_REFRESH_INTERVAL_MS;
 
@@ -239,11 +244,14 @@ function useScheduleData() {
     }
 
     const intervalId = setInterval(() => {
-      refreshScores();
+      const previousRequestTime = Date.parse(lastScoreRequestAtRef.current || "");
+      if (Number.isNaN(previousRequestTime) || Date.now() - previousRequestTime >= SCORE_REFRESH_INTERVAL_MS) {
+        refreshScores();
+      }
     }, SCORE_REFRESH_INTERVAL_MS);
 
     return () => clearInterval(intervalId);
-  }, [lastScoreRequestAt, refreshScores, schedule.length]);
+  }, [refreshScores, schedule.length]);
 
   return {
     schedule,
