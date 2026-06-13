@@ -389,20 +389,6 @@ function ScheduleExplorerApp() {
             </label>
           </div>
 
-          {loading && <p className="planner__status">Loading latest schedule…</p>}
-          {!loading && error && <p className="planner__status planner__status--warning">{error}</p>}
-          {!loading && lastLoadedAt && (
-            <p className="planner__status">Last refreshed: {new Date(lastLoadedAt).toLocaleString()}</p>
-          )}
-          {scoreLoading && <p className="planner__status">Refreshing completed match scores…</p>}
-          {!scoreLoading && scoreError && (
-            <p className="planner__status planner__status--warning">{scoreError}</p>
-          )}
-          {lastScoreRequestAt && (
-            <p className="planner__status">
-              Scores last requested: {new Date(lastScoreRequestAt).toLocaleString()}
-            </p>
-          )}
         </section>
 
         <section className="planner__panel" aria-live="polite">
@@ -544,6 +530,20 @@ function ScheduleExplorerApp() {
             </form>
           </details>
         </div>
+        {loading && <p className="planner__status">Loading latest schedule…</p>}
+        {!loading && error && <p className="planner__status planner__status--warning">{error}</p>}
+        {!loading && lastLoadedAt && (
+          <p className="planner__status">Last refreshed: {new Date(lastLoadedAt).toLocaleString()}</p>
+        )}
+        {scoreLoading && <p className="planner__status">Refreshing completed match scores…</p>}
+        {!scoreLoading && scoreError && (
+          <p className="planner__status planner__status--warning">{scoreError}</p>
+        )}
+        {lastScoreRequestAt && (
+          <p className="planner__status">
+            Scores last requested: {new Date(lastScoreRequestAt).toLocaleString()}
+          </p>
+        )}
       </footer>
     </div>
   );
