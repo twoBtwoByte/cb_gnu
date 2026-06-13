@@ -143,6 +143,13 @@
   color: #b23b3b;
 }
 
+.planner__match-score {
+  margin: 0.2rem 0 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1f6a2b;
+}
+
 .planner__scenario-list {
   margin: 0.35rem 0 0;
   padding-left: 0;
@@ -199,6 +206,11 @@
   cursor: pointer;
   background: #ffdd73;
   color: #4f3600;
+}
+
+.planner__refresh-btn:disabled {
+  cursor: wait;
+  opacity: 0.75;
 }
 
 .planner__feedback {

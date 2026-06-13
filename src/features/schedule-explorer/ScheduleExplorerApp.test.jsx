@@ -7,6 +7,7 @@ describe("ScheduleExplorerApp", () => {
   beforeEach(() => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network error")));
     vi.spyOn(console, "error").mockImplementation(() => {});
+    window.localStorage.clear();
   });
 
   afterEach(() => {
@@ -25,6 +26,7 @@ describe("ScheduleExplorerApp", () => {
     expect(footerActions).not.toBeNull();
     expect(header).not.toBeNull();
     expect(within(footerActions).getByRole("link", { name: /buy me a coffee/i })).toBeInTheDocument();
+    expect(within(footerActions).getByRole("button", { name: /refresh scores/i })).toBeInTheDocument();
     expect(within(footerActions).getByRole("button", { name: /refresh schedule/i })).toBeInTheDocument();
     expect(within(header).queryByRole("button", { name: /refresh schedule/i })).not.toBeInTheDocument();
   });
@@ -37,7 +39,7 @@ describe("ScheduleExplorerApp", () => {
     fireEvent.change(screen.getByRole("combobox", { name: "Team country" }), {
       target: { value: "Canada" },
     });
-    expect(screen.getByText(/Canada has potentially \d+ matches/i)).toBeInTheDocument();
+    expect(screen.getByText(/Canada can potentially play \d+ matches/i)).toBeInTheDocument();
 
     fireEvent.change(screen.getByRole("combobox", { name: "Team country" }), {
       target: { value: "Bosnia and Herzegovina" },
@@ -49,5 +51,44 @@ describe("ScheduleExplorerApp", () => {
     expect(within(matchCard).queryByText(/Play probability: 100\.0%/i)).not.toBeInTheDocument();
     expect(within(scenarioList).getAllByRole("listitem")).toHaveLength(1);
     expect(within(scenarioList).queryByText(/Slot \d+:/i)).not.toBeInTheDocument();
+  });
+
+  it("shows completed match score data from football-data results", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((url) => {
+        const target = String(url);
+        if (target.includes("/competitions/WC/matches")) {
+          return Promise.resolve({
+            ok: true,
+            json: async () => ({
+              matches: [
+                {
+                  homeTeam: { name: "Canada" },
+                  awayTeam: { name: "Bosnia and Herzegovina" },
+                  score: { fullTime: { home: 2, away: 1 } },
+                },
+              ],
+            }),
+          });
+        }
+
+        return Promise.reject(new Error("network error"));
+      }))
+    );
+
+    render(<ScheduleExplorerApp />);
+
+    await waitFor(() => expect(screen.getByRole("combobox", { name: "Team country" })).toBeEnabled());
+    fireEvent.change(screen.getByRole("combobox", { name: "Team country" }), {
+      target: { value: "Canada" },
+    });
+
+    await waitFor(() =>
+      expect(
+        screen.getByText(/Final score: Canada 2 - 1 Bosnia and Herzegovina/i)
+      ).toBeInTheDocument()
+    );
+    expect(screen.getByText(/Scores last requested:/i)).toBeInTheDocument();
   });
 });
