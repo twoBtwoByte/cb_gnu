@@ -1,14 +1,33 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import fallbackSchedule from "../../data/worldCup2026Schedule.json";
+import seedMatchResults from "../../data/completedMatchResults.json";
 import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
 import "./ScheduleExplorerApp.css";
 
 const DEFAULT_SCHEDULE_URL =
   "https://raw.githubusercontent.com/twoBtwoByte/cb_gnu/main/src/data/worldCup2026Schedule.json";
+const DEFAULT_FOOTBALL_DATA_BASE_URL = "https://api.football-data.org/v4";
+const DEFAULT_FOOTBALL_DATA_COMPETITION = "WC";
+const SCORE_REFRESH_INTERVAL_MS = 6 * 60 * 60 * 1000;
+const STORED_RESULTS_KEY = "scheduleExplorer.completedMatchResults.v1";
 
 const getScheduleUrl = () => import.meta.env.VITE_WORLD_CUP_SCHEDULE_URL ?? DEFAULT_SCHEDULE_URL;
+const getCompletedMatchesApiUrl = () => {
+  const baseUrl = import.meta.env.VITE_FOOTBALL_DATA_API_BASE_URL ?? DEFAULT_FOOTBALL_DATA_BASE_URL;
+  const competitionCode =
+    import.meta.env.VITE_FOOTBALL_DATA_COMPETITION_CODE ?? DEFAULT_FOOTBALL_DATA_COMPETITION;
+  return `${baseUrl}/competitions/${competitionCode}/matches?status=FINISHED`;
+};
 
 const isCertainProbability = (probability) => Math.abs(probability - 100) < 0.0005;
+const COUNTRY_ALIASES = new Map([
+  ["south korea", "korea republic"],
+  ["united states", "usa"],
+  ["ivory coast", "cote d ivoire"],
+  ["iran", "ir iran"],
+  ["cape verde", "cabo verde"],
+  ["dr congo", "congo dr"],
+]);
 
 const formatSlotLabel = (slotNumbers = []) => {
   if (slotNumbers.length === 0) return "";
@@ -16,9 +35,87 @@ const formatSlotLabel = (slotNumbers = []) => {
   return `Slots ${slotNumbers.join(" & ")}`;
 };
 
+const toCanonicalCountrySlug = (value = "") => {
+  const slug = value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-zA-Z0-9]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+  return COUNTRY_ALIASES.get(slug) ?? slug;
+};
+
 const withNoCacheParam = (url) => {
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}ts=${Date.now()}`;
+};
+
+const getMatchLabels = (match) =>
+  Object.values(match?.bracket ?? {})
+    .map((slot) => (typeof slot?.label === "string" ? slot.label.trim() : ""))
+    .filter(Boolean)
+    .slice(0, 2);
+
+const parseStoredResults = () => {
+  try {
+    const raw = window.localStorage.getItem(STORED_RESULTS_KEY);
+    if (!raw) return { requestedAt: "", resultsByMatchNumber: {} };
+    const parsed = JSON.parse(raw);
+    return {
+      requestedAt: typeof parsed?.requestedAt === "string" ? parsed.requestedAt : "",
+      resultsByMatchNumber:
+        parsed?.resultsByMatchNumber && typeof parsed.resultsByMatchNumber === "object"
+          ? parsed.resultsByMatchNumber
+          : {},
+    };
+  } catch {
+    return { requestedAt: "", resultsByMatchNumber: {} };
+  }
+};
+
+const persistResults = (payload) => {
+  try {
+    window.localStorage.setItem(STORED_RESULTS_KEY, JSON.stringify(payload));
+  } catch {
+    // Ignore storage failures to keep the UI functional.
+  }
+};
+
+const mapCompletedMatchesByNumber = (schedule, apiMatches) => {
+  if (!Array.isArray(schedule) || schedule.length === 0 || !Array.isArray(apiMatches)) return {};
+
+  const matchLookup = new Map(
+    schedule.map((match) => {
+      const [slot1 = "", slot2 = ""] = getMatchLabels(match);
+      const key = [toCanonicalCountrySlug(slot1), toCanonicalCountrySlug(slot2)].sort().join("|");
+      return [key, match.matchNumber];
+    })
+  );
+
+  return apiMatches.reduce((accumulator, apiMatch) => {
+    const homeTeam = apiMatch?.homeTeam?.name ?? "";
+    const awayTeam = apiMatch?.awayTeam?.name ?? "";
+    const homeScore = apiMatch?.score?.fullTime?.home;
+    const awayScore = apiMatch?.score?.fullTime?.away;
+
+    if (typeof homeScore !== "number" || typeof awayScore !== "number" || !homeTeam || !awayTeam) {
+      return accumulator;
+    }
+
+    const key = [toCanonicalCountrySlug(homeTeam), toCanonicalCountrySlug(awayTeam)].sort().join("|");
+    const matchNumber = matchLookup.get(key);
+    if (!matchNumber) return accumulator;
+
+    accumulator[matchNumber] = {
+      homeTeam,
+      awayTeam,
+      homeScore,
+      awayScore,
+    };
+    return accumulator;
+  }, {});
 };
 
 function useScheduleData() {
@@ -26,6 +123,13 @@ function useScheduleData() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [lastLoadedAt, setLastLoadedAt] = useState("");
+  const [completedMatchResults, setCompletedMatchResults] = useState({});
+  const [scoreError, setScoreError] = useState("");
+  const [scoreLoading, setScoreLoading] = useState(false);
+  const [lastScoreRequestAt, setLastScoreRequestAt] = useState("");
+  const completedMatchResultsRef = useRef({});
+  const lastScoreRequestAtRef = useRef("");
+  const scheduleRef = useRef([]);
 
   const refreshSchedule = useCallback(async () => {
     setLoading(true);
@@ -64,17 +168,143 @@ function useScheduleData() {
     }
   }, []);
 
+  const refreshScores = useCallback(async () => {
+    const requestedAt = new Date().toISOString();
+    setScoreLoading(true);
+    setScoreError("");
+
+    try {
+      const response = await fetch(withNoCacheParam(getCompletedMatchesApiUrl()), {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+          ...(import.meta.env.VITE_FOOTBALL_DATA_API_TOKEN
+            ? {
+                "X-Auth-Token": import.meta.env.VITE_FOOTBALL_DATA_API_TOKEN,
+              }
+            : {}),
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Unable to load completed matches (${response.status})`);
+      }
+
+      const payload = await response.json();
+      const mappedResults = mapCompletedMatchesByNumber(scheduleRef.current, payload?.matches);
+      const nextValue = {
+        requestedAt,
+        resultsByMatchNumber: mappedResults,
+      };
+      setCompletedMatchResults(mappedResults);
+      setLastScoreRequestAt(requestedAt);
+      persistResults(nextValue);
+    } catch (loadError) {
+      setLastScoreRequestAt(requestedAt);
+      setScoreError("Could not refresh completed match scores. Showing the last stored values.");
+      persistResults({
+        requestedAt,
+        resultsByMatchNumber: completedMatchResultsRef.current,
+      });
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error(loadError);
+      }
+    } finally {
+      setScoreLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const stored = parseStoredResults();
+    const seedTime = Date.parse(seedMatchResults?.requestedAt || "");
+    const storedTime = Date.parse(stored.requestedAt || "");
+
+    // Prefer whichever source has the more recent requestedAt timestamp so the
+    // app starts with the freshest known results (CI-seeded file vs. localStorage).
+    const useSeed =
+      !Number.isNaN(seedTime) &&
+      (Number.isNaN(storedTime) || seedTime > storedTime);
+
+    const initial = useSeed
+      ? {
+          requestedAt: seedMatchResults.requestedAt,
+          resultsByMatchNumber: seedMatchResults.resultsByMatchNumber ?? {},
+        }
+      : stored;
+
+    setCompletedMatchResults(initial.resultsByMatchNumber);
+    setLastScoreRequestAt(initial.requestedAt);
+  }, []);
+
+  useEffect(() => {
+    completedMatchResultsRef.current = completedMatchResults;
+  }, [completedMatchResults]);
+
+  useEffect(() => {
+    scheduleRef.current = schedule;
+  }, [schedule]);
+
+  useEffect(() => {
+    lastScoreRequestAtRef.current = lastScoreRequestAt;
+  }, [lastScoreRequestAt]);
+
   useEffect(() => {
     refreshSchedule();
   }, [refreshSchedule]);
 
-  return { schedule, loading, error, lastLoadedAt, refreshSchedule };
+  useEffect(() => {
+    if (schedule.length === 0) return;
+
+    const lastRequestTime = Date.parse(lastScoreRequestAtRef.current || "");
+    const needsImmediateRefresh =
+      Number.isNaN(lastRequestTime) || Date.now() - lastRequestTime >= SCORE_REFRESH_INTERVAL_MS;
+
+    if (needsImmediateRefresh) {
+      refreshScores();
+    }
+
+    const intervalId = setInterval(() => {
+      const previousRequestTime = Date.parse(lastScoreRequestAtRef.current || "");
+      // Skip if a manual refresh already happened inside the current 6-hour window.
+      if (Number.isNaN(previousRequestTime) || Date.now() - previousRequestTime >= SCORE_REFRESH_INTERVAL_MS) {
+        refreshScores();
+      }
+    }, SCORE_REFRESH_INTERVAL_MS);
+
+    return () => clearInterval(intervalId);
+  }, [refreshScores, schedule.length]);
+
+  return {
+    schedule,
+    loading,
+    error,
+    lastLoadedAt,
+    refreshSchedule,
+    completedMatchResults,
+    scoreError,
+    scoreLoading,
+    lastScoreRequestAt,
+    refreshScores,
+  };
 }
 
 function ScheduleExplorerApp() {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedHostCountry, setSelectedHostCountry] = useState("");
-  const { schedule, loading, error, lastLoadedAt, refreshSchedule } = useScheduleData();
+  const {
+    schedule,
+    loading,
+    error,
+    lastLoadedAt,
+    refreshSchedule,
+    completedMatchResults,
+    scoreError,
+    scoreLoading,
+    lastScoreRequestAt,
+    refreshScores,
+  } = useScheduleData();
 
   const model = useMemo(() => buildScheduleExplorerModel(schedule), [schedule]);
 
@@ -164,6 +394,15 @@ function ScheduleExplorerApp() {
           {!loading && lastLoadedAt && (
             <p className="planner__status">Last refreshed: {new Date(lastLoadedAt).toLocaleString()}</p>
           )}
+          {scoreLoading && <p className="planner__status">Refreshing completed match scores…</p>}
+          {!scoreLoading && scoreError && (
+            <p className="planner__status planner__status--warning">{scoreError}</p>
+          )}
+          {lastScoreRequestAt && (
+            <p className="planner__status">
+              Scores last requested: {new Date(lastScoreRequestAt).toLocaleString()}
+            </p>
+          )}
         </section>
 
         <section className="planner__panel" aria-live="polite">
@@ -177,14 +416,12 @@ function ScheduleExplorerApp() {
 
           {selectedCountry && countryMatches.length > 0 && (
             <>
-              <h2>
-                Match
-                {countryMatches.length === 1 ? "" : "es"} {selectedCountry} may play in:
-              </h2>
+              <h2>Matches {selectedCountry} may play in</h2>
               <ul className="planner__matches">
                 {countryMatches.map((match) => {
                   const visibleScenarios = match.opponentScenarios.slice(0, 8);
                   const showScenarioSlot = visibleScenarios.length > 1;
+                  const completedResult = completedMatchResults[match.matchNumber];
 
                   return (
                     <li key={match.matchNumber} className="planner__match-card">
@@ -195,6 +432,12 @@ function ScheduleExplorerApp() {
                         )}
                         <p className="planner__match-stage">{match.stage}</p>
                       </div>
+                      {completedResult && (
+                        <p className="planner__match-score">
+                          Final score: {completedResult.homeTeam} {completedResult.homeScore} -{" "}
+                          {completedResult.awayScore} {completedResult.awayTeam}
+                        </p>
+                      )}
                       <p>
                         {match.venue}, {match.country}
                       </p>
@@ -229,32 +472,41 @@ function ScheduleExplorerApp() {
             <>
               <h2>Matches in {selectedHostCountry}</h2>
               <ul className="planner__matches">
-                {hostCountryMatches.map((match) => (
-                  <li key={match.matchNumber} className="planner__match-card">
-                    <div>
-                      <p className="planner__match-number">Match {match.matchNumber}</p>
-                      <p className="planner__match-stage">{match.stage}</p>
-                    </div>
-                    <p>
-                      {match.venue}, {match.country}
-                    </p>
-                    <p>{match.scheduledDate}</p>
-                    <ul className="planner__scenario-list">
-                      {match.possibleTeams.map((team) => (
-                        <li key={`${match.matchNumber}-${team.teamCountry}`}>
-                          <span className="planner__scenario-slot">{formatSlotLabel(team.slotNumbers)}:</span>
-                          <span>
-                            <strong>{team.teamCountry}</strong>
-                            {!isCertainProbability(team.probability) && `: ${team.probability.toFixed(1)}%`}
-                          </span>
-                          {!isCertainProbability(team.probability) && team.opponentScenarios.length > 0 && (
-                            <> (vs {team.opponentScenarios[0].opponentCountry} most likely)</>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
+                {hostCountryMatches.map((match) => {
+                  const completedResult = completedMatchResults[match.matchNumber];
+                  return (
+                    <li key={match.matchNumber} className="planner__match-card">
+                      <div>
+                        <p className="planner__match-number">Match {match.matchNumber}</p>
+                        <p className="planner__match-stage">{match.stage}</p>
+                      </div>
+                      {completedResult && (
+                        <p className="planner__match-score">
+                          Final score: {completedResult.homeTeam} {completedResult.homeScore} -{" "}
+                          {completedResult.awayScore} {completedResult.awayTeam}
+                        </p>
+                      )}
+                      <p>
+                        {match.venue}, {match.country}
+                      </p>
+                      <p>{match.scheduledDate}</p>
+                      <ul className="planner__scenario-list">
+                        {match.possibleTeams.map((team) => (
+                          <li key={`${match.matchNumber}-${team.teamCountry}`}>
+                            <span className="planner__scenario-slot">{formatSlotLabel(team.slotNumbers)}:</span>
+                            <span>
+                              <strong>{team.teamCountry}</strong>
+                              {!isCertainProbability(team.probability) && `: ${team.probability.toFixed(1)}%`}
+                            </span>
+                            {!isCertainProbability(team.probability) && team.opponentScenarios.length > 0 && (
+                              <> (vs {team.opponentScenarios[0].opponentCountry} most likely)</>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  );
+                })}
               </ul>
             </>
           )}
@@ -271,6 +523,9 @@ function ScheduleExplorerApp() {
           >
             ☕ Buy Me a Coffee
           </a>
+          <button className="planner__refresh-btn" type="button" onClick={refreshScores} disabled={scoreLoading}>
+            {scoreLoading ? "Refreshing scores…" : "Refresh scores"}
+          </button>
           <button className="planner__refresh-btn" type="button" onClick={refreshSchedule}>
             Refresh schedule
           </button>

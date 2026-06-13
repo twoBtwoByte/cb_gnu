@@ -19,6 +19,7 @@
     "start": "vite",
     "build": "vite build",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "fetch-results": "node scripts/fetchMatchResults.js"
   }
 }
