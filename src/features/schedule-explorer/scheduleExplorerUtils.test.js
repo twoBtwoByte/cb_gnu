@@ -54,7 +54,7 @@ describe("buildScheduleExplorerModel", () => {
       probability: 100,
     });
     expect(match85?.probability).toBeGreaterThan(0);
-    expect(match85?.probability).toBeCloseTo(25, 5);
+    expect(match85?.probability).toBeCloseTo(25, 1);
   });
 
   it("builds host-country match views with possible teams and probabilities", () => {

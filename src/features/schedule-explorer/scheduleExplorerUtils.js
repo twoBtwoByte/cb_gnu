@@ -86,9 +86,9 @@ const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, cache
   return toOpponentCode(opponentLabel);
 };
 
-const roundProbability = (value) => Math.round(value * 1000) / 1000;
+const roundToThreeDecimals = (value) => Math.round(value * 1000) / 1000;
 
-const withProbability = (probability) => roundProbability(probability * 100);
+const toPercentage = (probability) => roundToThreeDecimals(probability * 100);
 
 const addToProbabilityMap = (targetMap, sourceMap, multiplier = 1) => {
   sourceMap.forEach((value, key) => {
@@ -222,7 +222,7 @@ const buildOpponentScenarios = ({ country, slotProbabilities }) => {
   return [...jointProbabilities.entries()]
     .map(([opponentCountry, jointProbability]) => ({
       opponentCountry,
-      probability: withProbability(jointProbability / totalProbability),
+      probability: toPercentage(jointProbability / totalProbability),
     }))
     .sort((left, right) => right.probability - left.probability || left.opponentCountry.localeCompare(right.opponentCountry));
 };
@@ -238,7 +238,7 @@ const toTeamProbabilityEntry = ({ country, match, slotProbabilities, opponentLab
   return {
     ...match,
     teamCountry: country,
-    probability: withProbability(probability),
+    probability: toPercentage(probability),
     opponentScenarios,
     opponentLabel: opponentLabel || opponentScenarios[0]?.opponentCountry || "",
   };
