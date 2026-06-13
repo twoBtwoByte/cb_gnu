@@ -14,21 +14,40 @@ describe("ScheduleExplorerApp", () => {
     vi.restoreAllMocks();
   });
 
-  it("shows slot labels and hides 100% probability details in host-country scenarios", async () => {
+  it("renders refresh action in footer beside other actions", async () => {
     render(<ScheduleExplorerApp />);
 
     await waitFor(() => expect(screen.getByRole("combobox", { name: "Host country" })).toBeEnabled());
 
-    fireEvent.change(screen.getByRole("combobox", { name: "Host country" }), {
+    const footerActions = document.querySelector(".planner__footer-actions");
+    const header = document.querySelector(".planner__hero");
+
+    expect(footerActions).not.toBeNull();
+    expect(header).not.toBeNull();
+    expect(within(footerActions).getByRole("link", { name: /buy me a coffee/i })).toBeInTheDocument();
+    expect(within(footerActions).getByRole("button", { name: /refresh schedule/i })).toBeInTheDocument();
+    expect(within(header).queryByRole("button", { name: /refresh schedule/i })).not.toBeInTheDocument();
+  });
+
+  it("uses updated country heading and hides 100% probability and single-entry slot labels", async () => {
+    render(<ScheduleExplorerApp />);
+
+    await waitFor(() => expect(screen.getByRole("combobox", { name: "Team country" })).toBeEnabled());
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Team country" }), {
       target: { value: "Canada" },
+    });
+    expect(screen.getByText(/Canada has potentially \d+ matches/i)).toBeInTheDocument();
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Team country" }), {
+      target: { value: "Bosnia and Herzegovina" },
     });
 
     const matchCard = screen.getByText("Match 3").closest("li");
-
-    expect(screen.getByText("Matches in Canada")).toBeInTheDocument();
     expect(matchCard).not.toBeNull();
-    expect(within(matchCard).getByText(/Slot 2:/i)).toBeInTheDocument();
-    expect(within(matchCard).getByText("Bosnia and Herzegovina")).toBeInTheDocument();
-    expect(within(matchCard).queryByText(/100\.0%/i)).not.toBeInTheDocument();
+    const scenarioList = within(matchCard).getByRole("list");
+    expect(within(matchCard).queryByText(/Play probability: 100\.0%/i)).not.toBeInTheDocument();
+    expect(within(scenarioList).getAllByRole("listitem")).toHaveLength(1);
+    expect(within(scenarioList).queryByText(/Slot \d+:/i)).not.toBeInTheDocument();
   });
 });
