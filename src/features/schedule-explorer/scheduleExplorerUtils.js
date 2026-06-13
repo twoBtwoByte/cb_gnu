@@ -65,13 +65,15 @@ const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, cache
   if (labels.length < MATCH_PARTICIPANTS) return "";
 
   const slotCountrySets = labels.map((label) =>
-    resolveLabelProbabilities({
-      label,
-      matchMap,
-      groupCountryMap,
-      cache,
-      resolving: new Set(),
-    }).keys()
+    new Set(
+      resolveLabelProbabilities({
+        label,
+        matchMap,
+        groupCountryMap,
+        cache,
+        resolving: new Set(),
+      }).keys()
+    )
   );
 
   const countrySlotIndexes = slotCountrySets.reduce((indexes, countriesInSlot, slotIndex) => {
@@ -158,7 +160,7 @@ const resolveLabelProbabilities = ({ label, matchMap, groupCountryMap, cache, re
 
   const matchReference = label.match(MATCH_REFERENCE_PATTERN);
   if (matchReference) {
-    const [, , matchNumberString] = matchReference;
+    const [, referenceType, matchNumberString] = matchReference;
     const matchNumber = Number.parseInt(matchNumberString, 10);
 
     // Guard against malformed circular references in match labels.
