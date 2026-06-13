@@ -32,14 +32,15 @@ describe("ScheduleExplorerApp", () => {
   it("uses updated country heading and hides 100% probability and single-entry slot labels", async () => {
     render(<ScheduleExplorerApp />);
 
-    await waitFor(() => expect(screen.getByRole("combobox", { name: "Team country" })).toBeEnabled());
+    const teamCountrySelect = screen.getByRole("combobox", { name: "Team country" });
+    await waitFor(() => expect(within(teamCountrySelect).getByRole("option", { name: "Canada" })).toBeInTheDocument());
 
-    fireEvent.change(screen.getByRole("combobox", { name: "Team country" }), {
+    fireEvent.change(teamCountrySelect, {
       target: { value: "Canada" },
     });
     expect(screen.getByText(/Canada has potentially \d+ matches/i)).toBeInTheDocument();
 
-    fireEvent.change(screen.getByRole("combobox", { name: "Team country" }), {
+    fireEvent.change(teamCountrySelect, {
       target: { value: "Bosnia and Herzegovina" },
     });
 
