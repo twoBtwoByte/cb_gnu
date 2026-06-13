@@ -65,43 +65,32 @@ function useScheduleData() {
 
 function ScheduleExplorerApp() {
   const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedVenue, setSelectedVenue] = useState("");
+  const [selectedHostCountry, setSelectedHostCountry] = useState("");
   const { schedule, loading, error, lastLoadedAt, refreshSchedule } = useScheduleData();
 
   const model = useMemo(() => buildScheduleExplorerModel(schedule), [schedule]);
 
-  const countryOptions = useMemo(() => {
-    if (!selectedVenue) return model.countries;
-
-    return model.countries.filter((country) => model.countriesByVenue[selectedVenue]?.has(country));
-  }, [model.countries, model.countriesByVenue, selectedVenue]);
-
-  const venueOptions = useMemo(() => {
-    if (!selectedCountry) return model.venues;
-
-    return model.venues.filter((venue) => model.venuesByCountry[selectedCountry]?.has(venue));
-  }, [model.venues, model.venuesByCountry, selectedCountry]);
-
   useEffect(() => {
-    if (selectedCountry && !countryOptions.includes(selectedCountry)) {
+    if (selectedCountry && !model.countries.includes(selectedCountry)) {
       setSelectedCountry("");
     }
-  }, [countryOptions, selectedCountry]);
+  }, [model.countries, selectedCountry]);
 
   useEffect(() => {
-    if (selectedVenue && !venueOptions.includes(selectedVenue)) {
-      setSelectedVenue("");
+    if (selectedHostCountry && !model.hostCountries.includes(selectedHostCountry)) {
+      setSelectedHostCountry("");
     }
-  }, [selectedVenue, venueOptions]);
+  }, [model.hostCountries, selectedHostCountry]);
 
-  const selectedMatches = useMemo(() => {
+  const countryMatches = useMemo(() => {
     if (!selectedCountry) return [];
-    const countryMatches = model.potentialMatchesByCountry[selectedCountry] ?? [];
+    return model.potentialMatchesByCountry[selectedCountry] ?? [];
+  }, [model.potentialMatchesByCountry, selectedCountry]);
 
-    if (!selectedVenue) return countryMatches;
-
-    return countryMatches.filter((match) => match.venue === selectedVenue);
-  }, [model.potentialMatchesByCountry, selectedCountry, selectedVenue]);
+  const hostCountryMatches = useMemo(() => {
+    if (!selectedHostCountry) return [];
+    return model.matchesByHostCountry[selectedHostCountry] ?? [];
+  }, [model.matchesByHostCountry, selectedHostCountry]);
 
   return (
     <div className="planner">
@@ -124,20 +113,22 @@ function ScheduleExplorerApp() {
         <section className="planner__panel planner__panel--filters" aria-labelledby="planner-filters-heading">
           <h2 id="planner-filters-heading">Find potential matchups</h2>
           <p>
-            Countries are sourced from Group Stage bracket labels in the schedule JSON. Venues are sourced from all
-            scheduled matches.
+            Select either a team country or a host country to see all matches with probability greater than 0%.
           </p>
 
           <div className="planner__filters">
             <label className="planner__field" htmlFor="planner-country-select">
-              <span>Country</span>
+              <span>Team country</span>
               <select
                 id="planner-country-select"
                 value={selectedCountry}
-                onChange={(event) => setSelectedCountry(event.target.value)}
+                onChange={(event) => {
+                  setSelectedCountry(event.target.value);
+                  if (event.target.value) setSelectedHostCountry("");
+                }}
               >
                 <option value="">Select country</option>
-                {countryOptions.map((country) => (
+                {model.countries.map((country) => (
                   <option key={country} value={country}>
                     {country}
                   </option>
@@ -145,13 +136,20 @@ function ScheduleExplorerApp() {
               </select>
             </label>
 
-            <label className="planner__field" htmlFor="planner-venue-select">
-              <span>Venue</span>
-              <select id="planner-venue-select" value={selectedVenue} onChange={(event) => setSelectedVenue(event.target.value)}>
-                <option value="">Select venue</option>
-                {venueOptions.map((venue) => (
-                  <option key={venue} value={venue}>
-                    {venue}
+            <label className="planner__field" htmlFor="planner-host-country-select">
+              <span>Host country</span>
+              <select
+                id="planner-host-country-select"
+                value={selectedHostCountry}
+                onChange={(event) => {
+                  setSelectedHostCountry(event.target.value);
+                  if (event.target.value) setSelectedCountry("");
+                }}
+              >
+                <option value="">Select host country</option>
+                {model.hostCountries.map((country) => (
+                  <option key={country} value={country}>
+                    {country}
                   </option>
                 ))}
               </select>
@@ -166,30 +164,75 @@ function ScheduleExplorerApp() {
         </section>
 
         <section className="planner__panel" aria-live="polite">
-          {!selectedCountry && <p className="planner__empty">Choose a country to see possible matches.</p>}
-
-          {selectedCountry && selectedMatches.length === 0 && (
-            <p className="planner__empty">No potential matches found for this country at the selected venue.</p>
+          {!selectedCountry && !selectedHostCountry && (
+            <p className="planner__empty">Choose a team country or host country to see probability scenarios.</p>
           )}
 
-          {selectedCountry && selectedMatches.length > 0 && (
+          {selectedCountry && countryMatches.length === 0 && (
+            <p className="planner__empty">No matches with non-zero probability for this team country.</p>
+          )}
+
+          {selectedCountry && countryMatches.length > 0 && (
             <>
               <h2>
-                {selectedCountry} can potentially play {selectedMatches.length} match
-                {selectedMatches.length === 1 ? "" : "es"}
+                {selectedCountry} has {countryMatches.length} match
+                {countryMatches.length === 1 ? "" : "es"} with probability &gt; 0%
               </h2>
               <ul className="planner__matches">
-                {selectedMatches.map((match) => (
+                {countryMatches.map((match) => (
                   <li key={match.matchNumber} className="planner__match-card">
                     <div>
                       <p className="planner__match-number">Match {match.matchNumber}</p>
-                      <p className="planner__match-opponent">vs {match.opponentLabel}</p>
+                      <p className="planner__match-opponent">Play probability: {match.probability.toFixed(1)}%</p>
                       <p className="planner__match-stage">{match.stage}</p>
                     </div>
                     <p>
                       {match.venue}, {match.city}, {match.country}
                     </p>
                     <p>{match.scheduledDate}</p>
+                    {match.opponentScenarios.length > 0 && (
+                      <ul className="planner__scenario-list">
+                        {match.opponentScenarios.slice(0, 8).map((scenario) => (
+                          <li key={`${match.matchNumber}-${scenario.opponentCountry}`}>
+                            vs {scenario.opponentCountry} ({scenario.probability.toFixed(1)}%)
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {selectedHostCountry && hostCountryMatches.length === 0 && (
+            <p className="planner__empty">No matches found for this host country.</p>
+          )}
+
+          {selectedHostCountry && hostCountryMatches.length > 0 && (
+            <>
+              <h2>Matches in {selectedHostCountry}</h2>
+              <ul className="planner__matches">
+                {hostCountryMatches.map((match) => (
+                  <li key={match.matchNumber} className="planner__match-card">
+                    <div>
+                      <p className="planner__match-number">Match {match.matchNumber}</p>
+                      <p className="planner__match-stage">{match.stage}</p>
+                    </div>
+                    <p>
+                      {match.venue}, {match.city}, {match.country}
+                    </p>
+                    <p>{match.scheduledDate}</p>
+                    <ul className="planner__scenario-list">
+                      {match.possibleTeams.map((team) => (
+                        <li key={`${match.matchNumber}-${team.teamCountry}`}>
+                          <strong>{team.teamCountry}</strong>: {team.probability.toFixed(1)}%
+                          {team.opponentScenarios.length > 0 && (
+                            <> (vs {team.opponentScenarios[0].opponentCountry} most likely)</>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
                   </li>
                 ))}
               </ul>
