@@ -196,7 +196,7 @@ function ScheduleExplorerApp() {
                         <p className="planner__match-stage">{match.stage}</p>
                       </div>
                       <p>
-                        {match.venue}, {match.city}, {match.country}
+                        {match.venue}, {match.country}
                       </p>
                       <p>{match.scheduledDate}</p>
                       {visibleScenarios.length > 0 && (
@@ -236,7 +236,7 @@ function ScheduleExplorerApp() {
                       <p className="planner__match-stage">{match.stage}</p>
                     </div>
                     <p>
-                      {match.venue}, {match.city}, {match.country}
+                      {match.venue}, {match.country}
                     </p>
                     <p>{match.scheduledDate}</p>
                     <ul className="planner__scenario-list">
