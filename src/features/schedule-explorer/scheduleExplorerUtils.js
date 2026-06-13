@@ -36,6 +36,51 @@ const extractBracketLabels = (match) =>
     .map((slot) => (typeof slot?.label === "string" ? slot.label.trim() : ""))
     .filter(Boolean);
 
+const toOpponentCode = (label = "") => {
+  const qualifierMatch = label.match(GROUP_QUALIFIER_PATTERN);
+  if (qualifierMatch) {
+    const [, group, position] = qualifierMatch;
+    return `${position.toLowerCase() === "winners" ? "1" : "2"}${group.toUpperCase()}`;
+  }
+
+  const thirdPlaceMatch = label.match(GROUP_THIRD_PLACE_PATTERN);
+  if (thirdPlaceMatch) {
+    const [, groupsExpression] = thirdPlaceMatch;
+    return `3${groupsExpression.toUpperCase().replace(/\//g, "")}`;
+  }
+
+  const matchReference = label.match(MATCH_REFERENCE_PATTERN);
+  if (matchReference) {
+    const [, referenceType, matchNumber] = matchReference;
+    return `${referenceType.toLowerCase() === "winner" ? "W" : "RU"}${matchNumber}`;
+  }
+
+  return label;
+};
+
+const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, cache }) => {
+  const labels = extractBracketLabels(match).slice(0, 2);
+  if (labels.length < 2) return "";
+
+  const slotCountrySets = labels.map((label) =>
+    resolveCountriesForLabel({
+      label,
+      matchMap,
+      groupCountryMap,
+      cache,
+      resolving: new Set(),
+    })
+  );
+
+  const countrySlotIndexes = slotCountrySets.reduce((indexes, countriesInSlot, slotIndex) => {
+    if (countriesInSlot.has(country)) indexes.push(slotIndex);
+    return indexes;
+  }, []);
+  const inferredCountrySlotIndex = countrySlotIndexes.length === 1 ? countrySlotIndexes[0] : 0;
+  const opponentLabel = labels[inferredCountrySlotIndex === 0 ? 1 : 0];
+  return toOpponentCode(opponentLabel);
+};
+
 const extractCountryOptions = (matches) => {
   const countries = new Set();
 
@@ -166,7 +211,16 @@ export function buildScheduleExplorerModel(schedule) {
 
     matchCountries.forEach((country) => {
       if (!potentialMatchesByCountry[country]) return;
-      potentialMatchesByCountry[country].push(match);
+      potentialMatchesByCountry[country].push({
+        ...match,
+        opponentLabel: resolveOpponentLabel({
+          country,
+          match,
+          matchMap,
+          groupCountryMap,
+          cache,
+        }),
+      });
       if (match.venue) {
         venuesByCountry[country].add(match.venue);
         countriesByVenue[match.venue]?.add(country);

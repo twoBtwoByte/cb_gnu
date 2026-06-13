@@ -113,9 +113,6 @@ function ScheduleExplorerApp() {
             Select a country and venue to view every possible match path based on the official schedule mappings.
           </p>
           <div className="planner__hero-actions">
-            <a className="planner__link-btn" href="/v1">
-              Open v1 tracker
-            </a>
             <button className="planner__ghost-btn" type="button" onClick={refreshSchedule}>
               Refresh schedule
             </button>
@@ -186,6 +183,7 @@ function ScheduleExplorerApp() {
                   <li key={match.matchNumber} className="planner__match-card">
                     <div>
                       <p className="planner__match-number">Match {match.matchNumber}</p>
+                      <p className="planner__match-opponent">vs {match.opponentLabel}</p>
                       <p className="planner__match-stage">{match.stage}</p>
                     </div>
                     <p>
@@ -212,7 +210,7 @@ function ScheduleExplorerApp() {
           </a>
 
           <details className="planner__feedback">
-            <summary>💡 Suggest Improvements</summary>
+            <summary className="planner__feedback-summary">💡 Suggest Improvements</summary>
             <form
               className="planner__feedback-form"
               action="https://github.com/twoBtwoByte/cb_gnu/issues/new"

@@ -31,4 +31,14 @@ describe("buildScheduleExplorerModel", () => {
     expect(model.countriesByVenue["Toronto Stadium"].has("Canada")).toBe(true);
     expect(model.countriesByVenue["Toronto Stadium"].has("Mexico")).toBe(false);
   });
+
+  it("adds opponent labels for potential match cards", () => {
+    const model = buildScheduleExplorerModel(schedule);
+    const canadaMatches = model.potentialMatchesByCountry.Canada;
+    const match27 = canadaMatches.find((match) => match.matchNumber === 27);
+    const match85 = canadaMatches.find((match) => match.matchNumber === 85);
+
+    expect(match27?.opponentLabel).toBe("Qatar");
+    expect(match85?.opponentLabel).toBe("3EFGIJ");
+  });
 });
