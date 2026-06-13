@@ -1,4 +1,36 @@
 {
-  "requestedAt": "",
-  "resultsByMatchNumber": {}
+  "requestedAt": "2026-06-13T22:43:40.839Z",
+  "resultsByMatchNumber": {
+    "1": {
+      "homeTeam": "Mexico",
+      "awayTeam": "South Africa",
+      "homeScore": 2,
+      "awayScore": 0
+    },
+    "2": {
+      "homeTeam": "South Korea",
+      "awayTeam": "Czechia",
+      "homeScore": 2,
+      "awayScore": 1
+    },
+    "3": {
+      "homeTeam": "Canada",
+      "awayTeam": "Bosnia-Herzegovina",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    "4": {
+      "homeTeam": "United States",
+      "awayTeam": "Paraguay",
+      "homeScore": 4,
+      "awayScore": 1
+    },
+    "8": {
+      "homeTeam": "Qatar",
+      "awayTeam": "Switzerland",
+      "homeScore": 1,
+      "awayScore": 1
+    }
+  }
 }
+
