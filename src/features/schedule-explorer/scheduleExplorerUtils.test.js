@@ -50,23 +50,38 @@ describe("buildScheduleExplorerModel", () => {
 
     expect(match3?.probability).toBe(100);
     expect(match3?.opponentScenarios[0]).toEqual({
+      slotNumber: 1,
       opponentCountry: "Bosnia and Herzegovina",
       probability: 100,
     });
     expect(match85?.probability).toBeGreaterThan(0);
     expect(match85?.probability).toBeCloseTo(25, 1);
     expect(match85?.opponentScenarios.length).toBeGreaterThan(0);
-    expect(match85?.opponentScenarios[0]).toEqual({
-      opponentCountry: "Curaçao",
-      probability: 6.667,
-    });
+    expect(match85?.opponentScenarios[0].slotNumber).toBe(1);
+    expect(match85?.opponentScenarios[0].opponentCountry).toBe("Curaçao");
+    expect(match85?.opponentScenarios[0].probability).toBeCloseTo(6.667, 3);
   });
 
-  it("builds host-country match views with possible teams and probabilities", () => {
+  it("builds host-country match views with slot-aware possible teams ordered by slot", () => {
     const model = buildScheduleExplorerModel(schedule);
+    const canadaHostedMatch3 = model.matchesByHostCountry.Canada.find((match) => match.matchNumber === 3);
     const canadaHostedMatch85 = model.matchesByHostCountry.Canada.find((match) => match.matchNumber === 85);
 
     expect(model.hostCountries).toContain("Canada");
+    expect(canadaHostedMatch3?.possibleTeams).toEqual([
+      expect.objectContaining({
+        teamCountry: "Canada",
+        probability: 100,
+        slotNumbers: [1],
+        primarySlotNumber: 1,
+      }),
+      expect.objectContaining({
+        teamCountry: "Bosnia and Herzegovina",
+        probability: 100,
+        slotNumbers: [2],
+        primarySlotNumber: 2,
+      }),
+    ]);
     expect(canadaHostedMatch85).toBeDefined();
     expect(canadaHostedMatch85?.possibleTeams.length).toBeGreaterThan(0);
     expect(

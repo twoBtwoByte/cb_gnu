@@ -90,6 +90,18 @@ const roundToThreeDecimals = (value) => Math.round(value * 1000) / 1000;
 
 const toPercentage = (probability) => roundToThreeDecimals(probability * 100);
 
+const getSlotEntries = ({ country, slotProbabilities }) =>
+  slotProbabilities.reduce((entries, probabilityMap, slotIndex) => {
+    const probability = probabilityMap?.get(country) ?? 0;
+    if (probability > 0) {
+      entries.push({
+        slotNumber: slotIndex + 1,
+        probability,
+      });
+    }
+    return entries;
+  }, []);
+
 const addToProbabilityMap = (targetMap, sourceMap, multiplier = 1) => {
   sourceMap.forEach((value, key) => {
     targetMap.set(key, (targetMap.get(key) ?? 0) + value * multiplier);
@@ -201,36 +213,32 @@ const resolveLabelProbabilities = ({ label, matchMap, groupCountryMap, cache, re
 };
 
 const buildOpponentScenarios = ({ country, slotProbabilities }) => {
-  const [slot1Map, slot2Map] = slotProbabilities;
-  const slot1Probability = slot1Map?.get(country) ?? 0;
-  const slot2Probability = slot2Map?.get(country) ?? 0;
-  const totalProbability = slot1Probability + slot2Probability;
+  const slotEntries = getSlotEntries({ country, slotProbabilities });
+  const totalProbability = slotEntries.reduce((sum, entry) => sum + entry.probability, 0);
   if (!totalProbability) return [];
 
-  const jointProbabilities = new Map();
-
-  (slot2Map ?? new Map()).forEach((opponentProbability, opponentCountry) => {
-    if (!slot1Probability || opponentCountry === country) return;
-    jointProbabilities.set(opponentCountry, (jointProbabilities.get(opponentCountry) ?? 0) + slot1Probability * opponentProbability);
-  });
-
-  (slot1Map ?? new Map()).forEach((opponentProbability, opponentCountry) => {
-    if (!slot2Probability || opponentCountry === country) return;
-    jointProbabilities.set(opponentCountry, (jointProbabilities.get(opponentCountry) ?? 0) + slot2Probability * opponentProbability);
-  });
-
-  return [...jointProbabilities.entries()]
-    .map(([opponentCountry, jointProbability]) => ({
-      opponentCountry,
-      probability: toPercentage(jointProbability / totalProbability),
-    }))
-    .sort((left, right) => right.probability - left.probability || left.opponentCountry.localeCompare(right.opponentCountry));
+  return slotEntries
+    .flatMap(({ slotNumber, probability }) => {
+      const opponentSlotIndex = slotNumber === 1 ? 1 : 0;
+      return [...(slotProbabilities[opponentSlotIndex] ?? new Map()).entries()]
+        .filter(([opponentCountry]) => opponentCountry !== country)
+        .map(([opponentCountry, opponentProbability]) => ({
+          slotNumber,
+          opponentCountry,
+          probability: toPercentage((probability * opponentProbability) / totalProbability),
+        }));
+    })
+    .sort(
+      (left, right) =>
+        left.slotNumber - right.slotNumber ||
+        right.probability - left.probability ||
+        left.opponentCountry.localeCompare(right.opponentCountry)
+    );
 };
 
 const toTeamProbabilityEntry = ({ country, match, slotProbabilities, opponentLabel }) => {
-  const slot1Probability = slotProbabilities[0]?.get(country) ?? 0;
-  const slot2Probability = slotProbabilities[1]?.get(country) ?? 0;
-  const probability = slot1Probability + slot2Probability;
+  const slotEntries = getSlotEntries({ country, slotProbabilities });
+  const probability = slotEntries.reduce((sum, entry) => sum + entry.probability, 0);
   if (!probability) return null;
 
   const opponentScenarios = buildOpponentScenarios({ country, slotProbabilities });
@@ -239,6 +247,8 @@ const toTeamProbabilityEntry = ({ country, match, slotProbabilities, opponentLab
     ...match,
     teamCountry: country,
     probability: toPercentage(probability),
+    slotNumbers: slotEntries.map((entry) => entry.slotNumber),
+    primarySlotNumber: slotEntries[0]?.slotNumber ?? null,
     opponentScenarios,
     opponentLabel: opponentLabel || opponentScenarios[0]?.opponentCountry || "",
   };
@@ -315,7 +325,10 @@ export function buildScheduleExplorerModel(schedule) {
       )
       .filter(Boolean)
       .sort(
-        (left, right) => right.probability - left.probability || left.teamCountry.localeCompare(right.teamCountry)
+        (left, right) =>
+          (left.primarySlotNumber ?? Number.MAX_SAFE_INTEGER) - (right.primarySlotNumber ?? Number.MAX_SAFE_INTEGER) ||
+          right.probability - left.probability ||
+          left.teamCountry.localeCompare(right.teamCountry)
       );
 
     possibleTeams.forEach((teamMatch) => {

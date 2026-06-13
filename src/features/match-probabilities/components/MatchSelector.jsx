@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 const formatGroupQualifier = (side) => {
   if (!side) return "";
@@ -45,6 +45,7 @@ const getMatchupLabel = (config) => {
 
 function MatchSelector({ matches, defaultVenue = "", selectedMatchNumber, onSelect }) {
   const [selectedVenue, setSelectedVenue] = useState(defaultVenue);
+  const [selectedStage, setSelectedStage] = useState("");
 
   const venueOptions = useMemo(
     () =>
@@ -54,9 +55,25 @@ function MatchSelector({ matches, defaultVenue = "", selectedMatchNumber, onSele
     [matches]
   );
 
+  const stageOptions = useMemo(() => {
+    const visibleMatches = selectedVenue ? matches.filter((config) => config.venue === selectedVenue) : [];
+    return [...new Set(visibleMatches.map((config) => config.stage).filter(Boolean))];
+  }, [matches, selectedVenue]);
+
+  useEffect(() => {
+    if (selectedStage && !stageOptions.includes(selectedStage)) {
+      setSelectedStage("");
+    }
+  }, [selectedStage, stageOptions]);
+
   const filteredMatches = useMemo(
-    () => (selectedVenue ? matches.filter((config) => config.venue === selectedVenue) : []),
-    [matches, selectedVenue]
+    () =>
+      selectedVenue
+        ? matches.filter(
+            (config) => config.venue === selectedVenue && (!selectedStage || config.stage === selectedStage)
+          )
+        : [],
+    [matches, selectedStage, selectedVenue]
   );
 
   return (
@@ -81,6 +98,23 @@ function MatchSelector({ matches, defaultVenue = "", selectedMatchNumber, onSele
           {venueOptions.map((venue) => (
             <option key={venue} value={venue}>
               {venue}
+            </option>
+          ))}
+        </select>
+        <label className="match-selector__filter-label" htmlFor="match-selector-stage">
+          Match stage
+        </label>
+        <select
+          id="match-selector-stage"
+          className="match-selector__filter-select"
+          value={selectedStage}
+          onChange={(event) => setSelectedStage(event.target.value)}
+          disabled={!selectedVenue}
+        >
+          <option value="">All stages</option>
+          {stageOptions.map((stage) => (
+            <option key={stage} value={stage}>
+              {stage}
             </option>
           ))}
         </select>

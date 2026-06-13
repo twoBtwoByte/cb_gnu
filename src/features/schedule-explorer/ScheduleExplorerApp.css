@@ -97,7 +97,7 @@
 }
 
 .planner__field select {
-  border: 1px solid #efb2b2;
+  border: 1px solid #fff;
   border-radius: 10px;
   padding: 0.55rem 0.65rem;
   font: inherit;
@@ -163,11 +163,24 @@
 
 .planner__scenario-list {
   margin: 0.35rem 0 0;
-  padding-left: 1rem;
+  padding-left: 0;
+  list-style: none;
   display: grid;
   gap: 0.2rem;
   color: #654040;
   font-size: 0.82rem;
+}
+
+.planner__scenario-list li {
+  display: flex;
+  gap: 0.45rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.planner__scenario-slot {
+  font-weight: 700;
+  color: #8d1a1a;
 }
 
 .planner__footer {
