@@ -407,13 +407,7 @@ function ScheduleExplorerApp() {
 
           {selectedCountry && countryMatches.length > 0 && (
             <>
-              <h2>
-                {selectedCountry} can potentially play {countryMatches.length} match
-                {countryMatches.length === 1 ? "" : "es"}
-                {` (${completedCountryMatchCount} completed match${
-                  completedCountryMatchCount === 1 ? "" : "es"
-                })`}
-              </h2>
+              <h2>Matches {selectedCountry} may play in</h2>
               <ul className="planner__matches">
                 {countryMatches.map((match) => {
                   const visibleScenarios = match.opponentScenarios.slice(0, 8);
