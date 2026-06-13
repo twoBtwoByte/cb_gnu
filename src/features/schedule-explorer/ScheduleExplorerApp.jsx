@@ -408,16 +408,11 @@ function ScheduleExplorerApp() {
           {selectedCountry && countryMatches.length > 0 && (
             <>
               <h2>
-<<<<<<< HEAD
                 {selectedCountry} can potentially play {countryMatches.length} match
                 {countryMatches.length === 1 ? "" : "es"}
                 {` (${completedCountryMatchCount} completed match${
                   completedCountryMatchCount === 1 ? "" : "es"
                 })`}
-=======
-                Match
-                {countryMatches.length === 1 ? "" : "es"} {selectedCountry} may play in:
->>>>>>> origin/main
               </h2>
               <ul className="planner__matches">
                 {countryMatches.map((match) => {
@@ -474,7 +469,6 @@ function ScheduleExplorerApp() {
             <>
               <h2>Matches in {selectedHostCountry}</h2>
               <ul className="planner__matches">
-<<<<<<< HEAD
                 {hostCountryMatches.map((match) => {
                   const completedResult = completedMatchResults[match.matchNumber];
                   return (
@@ -490,7 +484,7 @@ function ScheduleExplorerApp() {
                         </p>
                       )}
                       <p>
-                        {match.venue}, {match.city}, {match.country}
+                        {match.venue}, {match.country}
                       </p>
                       <p>{match.scheduledDate}</p>
                       <ul className="planner__scenario-list">
@@ -510,34 +504,6 @@ function ScheduleExplorerApp() {
                     </li>
                   );
                 })}
-=======
-                {hostCountryMatches.map((match) => (
-                  <li key={match.matchNumber} className="planner__match-card">
-                    <div>
-                      <p className="planner__match-number">Match {match.matchNumber}</p>
-                      <p className="planner__match-stage">{match.stage}</p>
-                    </div>
-                    <p>
-                      {match.venue}, {match.country}
-                    </p>
-                    <p>{match.scheduledDate}</p>
-                    <ul className="planner__scenario-list">
-                      {match.possibleTeams.map((team) => (
-                        <li key={`${match.matchNumber}-${team.teamCountry}`}>
-                          <span className="planner__scenario-slot">{formatSlotLabel(team.slotNumbers)}:</span>
-                          <span>
-                            <strong>{team.teamCountry}</strong>
-                            {!isCertainProbability(team.probability) && `: ${team.probability.toFixed(1)}%`}
-                          </span>
-                          {!isCertainProbability(team.probability) && team.opponentScenarios.length > 0 && (
-                            <> (vs {team.opponentScenarios[0].opponentCountry} most likely)</>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                ))}
->>>>>>> origin/main
               </ul>
             </>
           )}

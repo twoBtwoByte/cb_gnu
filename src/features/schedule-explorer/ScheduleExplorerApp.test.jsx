@@ -40,11 +40,7 @@ describe("ScheduleExplorerApp", () => {
     fireEvent.change(teamCountrySelect, {
       target: { value: "Canada" },
     });
-<<<<<<< HEAD
     expect(screen.getByText(/Canada can potentially play \d+ matches/i)).toBeInTheDocument();
-=======
-    expect(screen.getByText(/Matches Canada may play in:/i)).toBeInTheDocument();
->>>>>>> origin/main
 
     fireEvent.change(teamCountrySelect, {
       target: { value: "Bosnia and Herzegovina" },
