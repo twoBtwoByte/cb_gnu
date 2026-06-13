@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import MatchSelector from "./MatchSelector.jsx";
 import { MATCH_CONFIGS } from "../../../config/worldCupConfig.js";
 
@@ -37,6 +37,32 @@ describe("MatchSelector", () => {
     expect(
       screen.queryByRole("button", {
         name: /match 96 round of 16 · bc place vancouver, vancouver/i,
+      })
+    ).not.toBeInTheDocument();
+  });
+
+  it("filters the selected venue by match stage", () => {
+    render(
+      <MatchSelector
+        matches={Object.values(MATCH_CONFIGS)}
+        defaultVenue="Toronto Stadium"
+        selectedMatchNumber={83}
+        onSelect={vi.fn()}
+      />
+    );
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Match stage" }), {
+      target: { value: "Round of 32" },
+    });
+
+    expect(
+      screen.getByRole("button", {
+        name: /match 83 round of 32 · toronto stadium, toronto/i,
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: /match 3 group stage · toronto stadium, toronto/i,
       })
     ).not.toBeInTheDocument();
   });

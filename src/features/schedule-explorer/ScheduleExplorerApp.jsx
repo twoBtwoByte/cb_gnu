@@ -8,6 +8,14 @@ const DEFAULT_SCHEDULE_URL =
 
 const getScheduleUrl = () => import.meta.env.VITE_WORLD_CUP_SCHEDULE_URL ?? DEFAULT_SCHEDULE_URL;
 
+const isCertainProbability = (probability) => Math.abs(probability - 100) < 0.0005;
+
+const formatSlotLabel = (slotNumbers = []) => {
+  if (slotNumbers.length === 0) return "";
+  if (slotNumbers.length === 1) return `Slot ${slotNumbers[0]}`;
+  return `Slots ${slotNumbers.join(" & ")}`;
+};
+
 const withNoCacheParam = (url) => {
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}ts=${Date.now()}`;
@@ -193,8 +201,12 @@ function ScheduleExplorerApp() {
                     {match.opponentScenarios.length > 0 && (
                       <ul className="planner__scenario-list">
                         {match.opponentScenarios.slice(0, 8).map((scenario) => (
-                          <li key={`${match.matchNumber}-${scenario.opponentCountry}`}>
-                            vs {scenario.opponentCountry} ({scenario.probability.toFixed(1)}%)
+                          <li key={`${match.matchNumber}-${scenario.slotNumber}-${scenario.opponentCountry}`}>
+                            <span className="planner__scenario-slot">Slot {scenario.slotNumber}:</span>
+                            <span>
+                              vs {scenario.opponentCountry}
+                              {!isCertainProbability(scenario.probability) && ` (${scenario.probability.toFixed(1)}%)`}
+                            </span>
                           </li>
                         ))}
                       </ul>
@@ -226,8 +238,12 @@ function ScheduleExplorerApp() {
                     <ul className="planner__scenario-list">
                       {match.possibleTeams.map((team) => (
                         <li key={`${match.matchNumber}-${team.teamCountry}`}>
-                          <strong>{team.teamCountry}</strong>: {team.probability.toFixed(1)}%
-                          {team.opponentScenarios.length > 0 && (
+                          <span className="planner__scenario-slot">{formatSlotLabel(team.slotNumbers)}:</span>
+                          <span>
+                            <strong>{team.teamCountry}</strong>
+                            {!isCertainProbability(team.probability) && `: ${team.probability.toFixed(1)}%`}
+                          </span>
+                          {!isCertainProbability(team.probability) && team.opponentScenarios.length > 0 && (
                             <> (vs {team.opponentScenarios[0].opponentCountry} most likely)</>
                           )}
                         </li>
