@@ -105,7 +105,7 @@ function ScheduleExplorerApp() {
       <header className="planner__hero">
         <div className="planner__hero-content">
           <p className="planner__eyebrow">FIFA World Cup 2026</p>
-          <h1>Potential Match Planner</h1>
+          <h1>World Cup 2026 Match Planner</h1>
           <p>
             Select a country and venue to view every possible match path based on the official schedule mappings.
           </p>
