@@ -77,7 +77,7 @@ const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, cache
     if (countriesInSlot.has(country)) indexes.push(slotIndex);
     return indexes;
   }, []);
-  // Default to slot 1 as the country side when the country cannot be unambiguously inferred.
+  // Default to the first slot as the country side when it cannot be unambiguously inferred.
   const inferredCountrySlotIndex = countrySlotIndexes.length === 1 ? countrySlotIndexes[0] : 0;
   const opponentLabel = labels[inferredCountrySlotIndex === 0 ? 1 : 0];
   return toOpponentCode(opponentLabel);
