@@ -41,4 +41,31 @@ describe("buildScheduleExplorerModel", () => {
     expect(match27?.opponentLabel).toBe("Qatar");
     expect(match85?.opponentLabel).toBe("3EFGIJ");
   });
+
+  it("computes non-zero match probabilities and opponent scenarios for a country", () => {
+    const model = buildScheduleExplorerModel(schedule);
+    const canadaMatches = model.potentialMatchesByCountry.Canada;
+    const match3 = canadaMatches.find((match) => match.matchNumber === 3);
+    const match85 = canadaMatches.find((match) => match.matchNumber === 85);
+
+    expect(match3?.probability).toBe(100);
+    expect(match3?.opponentScenarios[0]).toEqual({
+      opponentCountry: "Bosnia and Herzegovina",
+      probability: 100,
+    });
+    expect(match85?.probability).toBeGreaterThan(0);
+    expect(match85?.probability).toBeCloseTo(25, 5);
+  });
+
+  it("builds host-country match views with possible teams and probabilities", () => {
+    const model = buildScheduleExplorerModel(schedule);
+    const canadaHostedMatch85 = model.matchesByHostCountry.Canada.find((match) => match.matchNumber === 85);
+
+    expect(model.hostCountries).toContain("Canada");
+    expect(canadaHostedMatch85).toBeDefined();
+    expect(canadaHostedMatch85?.possibleTeams.length).toBeGreaterThan(0);
+    expect(
+      canadaHostedMatch85?.possibleTeams.some((team) => team.teamCountry === "Canada" && team.probability > 0)
+    ).toBe(true);
+  });
 });

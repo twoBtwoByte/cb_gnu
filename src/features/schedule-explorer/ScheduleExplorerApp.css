@@ -161,6 +161,15 @@
   color: #b23b3b;
 }
 
+.planner__scenario-list {
+  margin: 0.35rem 0 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.2rem;
+  color: #654040;
+  font-size: 0.82rem;
+}
+
 .planner__footer {
   margin-top: auto;
   background: #5f0e0e;
