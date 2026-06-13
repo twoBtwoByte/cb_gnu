@@ -55,6 +55,11 @@ describe("buildScheduleExplorerModel", () => {
     });
     expect(match85?.probability).toBeGreaterThan(0);
     expect(match85?.probability).toBeCloseTo(25, 1);
+    expect(match85?.opponentScenarios.length).toBeGreaterThan(0);
+    expect(match85?.opponentScenarios[0]).toEqual({
+      opponentCountry: "Curaçao",
+      probability: 6.667,
+    });
   });
 
   it("builds host-country match views with possible teams and probabilities", () => {
