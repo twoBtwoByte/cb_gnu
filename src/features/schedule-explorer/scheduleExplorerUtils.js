@@ -4,6 +4,7 @@ const GROUP_STAGE = "Group Stage";
 const GROUP_QUALIFIER_PATTERN = /^Group\s+([A-L])\s+(winners|runners-up)$/i;
 const GROUP_THIRD_PLACE_PATTERN = /^Group\s+([A-L](?:\/[A-L])+)\s+third\s+place$/i;
 const MATCH_REFERENCE_PATTERN = /^(Winner|Runner-up)\s+match\s+(\d+)$/i;
+const MATCH_PARTICIPANTS = 2;
 
 const COUNTRY_ALIASES = new Map([
   ["south korea", "korea republic"],
@@ -59,8 +60,8 @@ const toOpponentCode = (label = "") => {
 };
 
 const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, cache }) => {
-  const labels = extractBracketLabels(match).slice(0, 2);
-  if (labels.length < 2) return "";
+  const labels = extractBracketLabels(match).slice(0, MATCH_PARTICIPANTS);
+  if (labels.length < MATCH_PARTICIPANTS) return "";
 
   const slotCountrySets = labels.map((label) =>
     resolveCountriesForLabel({
@@ -76,6 +77,7 @@ const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, cache
     if (countriesInSlot.has(country)) indexes.push(slotIndex);
     return indexes;
   }, []);
+  // Default to slot 1 as the country side when the country cannot be unambiguously inferred.
   const inferredCountrySlotIndex = countrySlotIndexes.length === 1 ? countrySlotIndexes[0] : 0;
   const opponentLabel = labels[inferredCountrySlotIndex === 0 ? 1 : 0];
   return toOpponentCode(opponentLabel);
