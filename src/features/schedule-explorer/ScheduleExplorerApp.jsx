@@ -178,8 +178,8 @@ function ScheduleExplorerApp() {
           {selectedCountry && countryMatches.length > 0 && (
             <>
               <h2>
-                {selectedCountry} has potentially {countryMatches.length} match
-                {countryMatches.length === 1 ? "" : "es"}
+                Match
+                {countryMatches.length === 1 ? "" : "es"} {selectedCountry} may play in:
               </h2>
               <ul className="planner__matches">
                 {countryMatches.map((match) => {
