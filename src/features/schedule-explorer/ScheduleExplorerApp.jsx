@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import fallbackSchedule from "../../data/worldCup2026Schedule.json";
 import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
 import "./ScheduleExplorerApp.css";
@@ -26,7 +26,6 @@ const COUNTRY_ALIASES = new Map([
   ["iran", "ir iran"],
   ["cape verde", "cabo verde"],
   ["dr congo", "congo dr"],
-  ["bosnia and herzegovina", "bosnia and herzegovina"],
 ]);
 
 const formatSlotLabel = (slotNumbers = []) => {
@@ -127,6 +126,7 @@ function useScheduleData() {
   const [scoreError, setScoreError] = useState("");
   const [scoreLoading, setScoreLoading] = useState(false);
   const [lastScoreRequestAt, setLastScoreRequestAt] = useState("");
+  const completedMatchResultsRef = useRef({});
 
   const refreshSchedule = useCallback(async () => {
     setLoading(true);
@@ -202,7 +202,7 @@ function useScheduleData() {
       setScoreError("Could not refresh completed match scores. Showing the last stored values.");
       persistResults({
         requestedAt,
-        resultsByMatchNumber: completedMatchResults,
+        resultsByMatchNumber: completedMatchResultsRef.current,
       });
       if (import.meta.env.DEV) {
         // eslint-disable-next-line no-console
@@ -211,13 +211,17 @@ function useScheduleData() {
     } finally {
       setScoreLoading(false);
     }
-  }, [completedMatchResults, schedule]);
+  }, [schedule]);
 
   useEffect(() => {
     const stored = parseStoredResults();
     setCompletedMatchResults(stored.resultsByMatchNumber);
     setLastScoreRequestAt(stored.requestedAt);
   }, []);
+
+  useEffect(() => {
+    completedMatchResultsRef.current = completedMatchResults;
+  }, [completedMatchResults]);
 
   useEffect(() => {
     refreshSchedule();
@@ -392,7 +396,7 @@ function ScheduleExplorerApp() {
               <h2>
                 {selectedCountry} can potentially play {countryMatches.length} match
                 {countryMatches.length === 1 ? "" : "es"}
-                {countryMatches.length > 0 && ` (${completedCountryMatchCount} completed)`}
+                {` (${completedCountryMatchCount} completed)`}
               </h2>
               <ul className="planner__matches">
                 {countryMatches.map((match) => {
