@@ -128,6 +128,7 @@ function useScheduleData() {
   const [lastScoreRequestAt, setLastScoreRequestAt] = useState("");
   const completedMatchResultsRef = useRef({});
   const lastScoreRequestAtRef = useRef("");
+  const scheduleRef = useRef([]);
 
   const refreshSchedule = useCallback(async () => {
     setLoading(true);
@@ -190,7 +191,7 @@ function useScheduleData() {
       }
 
       const payload = await response.json();
-      const mappedResults = mapCompletedMatchesByNumber(schedule, payload?.matches);
+      const mappedResults = mapCompletedMatchesByNumber(scheduleRef.current, payload?.matches);
       const nextValue = {
         requestedAt,
         resultsByMatchNumber: mappedResults,
@@ -212,7 +213,7 @@ function useScheduleData() {
     } finally {
       setScoreLoading(false);
     }
-  }, [schedule]);
+  }, []);
 
   useEffect(() => {
     const stored = parseStoredResults();
@@ -223,6 +224,10 @@ function useScheduleData() {
   useEffect(() => {
     completedMatchResultsRef.current = completedMatchResults;
   }, [completedMatchResults]);
+
+  useEffect(() => {
+    scheduleRef.current = schedule;
+  }, [schedule]);
 
   useEffect(() => {
     lastScoreRequestAtRef.current = lastScoreRequestAt;
@@ -245,6 +250,7 @@ function useScheduleData() {
 
     const intervalId = setInterval(() => {
       const previousRequestTime = Date.parse(lastScoreRequestAtRef.current || "");
+      // Skip if a manual refresh already happened inside the current 6-hour window.
       if (Number.isNaN(previousRequestTime) || Date.now() - previousRequestTime >= SCORE_REFRESH_INTERVAL_MS) {
         refreshScores();
       }
@@ -404,7 +410,9 @@ function ScheduleExplorerApp() {
               <h2>
                 {selectedCountry} can potentially play {countryMatches.length} match
                 {countryMatches.length === 1 ? "" : "es"}
-                {` (${completedCountryMatchCount} completed)`}
+                {` (${completedCountryMatchCount} completed match${
+                  completedCountryMatchCount === 1 ? "" : "es"
+                })`}
               </h2>
               <ul className="planner__matches">
                 {countryMatches.map((match) => {
