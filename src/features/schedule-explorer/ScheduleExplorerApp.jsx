@@ -329,14 +329,6 @@ function ScheduleExplorerApp() {
     if (!selectedHostCountry) return [];
     return model.matchesByHostCountry[selectedHostCountry] ?? [];
   }, [model.matchesByHostCountry, selectedHostCountry]);
-  const completedCountryMatchCount = useMemo(
-    () =>
-      countryMatches.reduce(
-        (count, match) => (completedMatchResults[match.matchNumber] ? count + 1 : count),
-        0
-      ),
-    [completedMatchResults, countryMatches]
-  );
 
   return (
     <div className="planner">
