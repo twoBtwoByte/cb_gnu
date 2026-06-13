@@ -3,6 +3,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import ScheduleExplorerApp from "./ScheduleExplorerApp.jsx";
 
+// Always use an empty seed so tests are not affected by the CI-populated
+// completedMatchResults.json file (which may have a recent requestedAt that
+// would suppress the API refresh and break score-related assertions).
+vi.mock("../../data/completedMatchResults.json", () => ({
+  default: { requestedAt: "", resultsByMatchNumber: {} },
+}));
+
 describe("ScheduleExplorerApp", () => {
   beforeEach(() => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network error")));

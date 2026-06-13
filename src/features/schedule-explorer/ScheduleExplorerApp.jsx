@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import fallbackSchedule from "../../data/worldCup2026Schedule.json";
+import seedMatchResults from "../../data/completedMatchResults.json";
 import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
 import "./ScheduleExplorerApp.css";
 
@@ -217,8 +218,24 @@ function useScheduleData() {
 
   useEffect(() => {
     const stored = parseStoredResults();
-    setCompletedMatchResults(stored.resultsByMatchNumber);
-    setLastScoreRequestAt(stored.requestedAt);
+    const seedTime = Date.parse(seedMatchResults?.requestedAt || "");
+    const storedTime = Date.parse(stored.requestedAt || "");
+
+    // Prefer whichever source has the more recent requestedAt timestamp so the
+    // app starts with the freshest known results (CI-seeded file vs. localStorage).
+    const useSeed =
+      !Number.isNaN(seedTime) &&
+      (Number.isNaN(storedTime) || seedTime > storedTime);
+
+    const initial = useSeed
+      ? {
+          requestedAt: seedMatchResults.requestedAt,
+          resultsByMatchNumber: seedMatchResults.resultsByMatchNumber ?? {},
+        }
+      : stored;
+
+    setCompletedMatchResults(initial.resultsByMatchNumber);
+    setLastScoreRequestAt(initial.requestedAt);
   }, []);
 
   useEffect(() => {
