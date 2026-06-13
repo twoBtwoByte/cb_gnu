@@ -74,7 +74,7 @@ describe("ScheduleExplorerApp", () => {
         }
 
         return Promise.reject(new Error("network error"));
-      }))
+      })
     );
 
     render(<ScheduleExplorerApp />);
