@@ -109,11 +109,6 @@ function ScheduleExplorerApp() {
           <p>
             Select a country and venue to view every possible match path based on the official schedule mappings.
           </p>
-          <div className="planner__hero-actions">
-            <button className="planner__ghost-btn" type="button" onClick={refreshSchedule}>
-              Refresh schedule
-            </button>
-          </div>
         </div>
       </header>
 
@@ -183,36 +178,45 @@ function ScheduleExplorerApp() {
           {selectedCountry && countryMatches.length > 0 && (
             <>
               <h2>
-                {selectedCountry} has {countryMatches.length} match
-                {countryMatches.length === 1 ? "" : "es"} with probability &gt; 0%
+                {selectedCountry} has potentially {countryMatches.length} match
+                {countryMatches.length === 1 ? "" : "es"}
               </h2>
               <ul className="planner__matches">
-                {countryMatches.map((match) => (
-                  <li key={match.matchNumber} className="planner__match-card">
-                    <div>
-                      <p className="planner__match-number">Match {match.matchNumber}</p>
-                      <p className="planner__match-opponent">Play probability: {match.probability.toFixed(1)}%</p>
-                      <p className="planner__match-stage">{match.stage}</p>
-                    </div>
-                    <p>
-                      {match.venue}, {match.city}, {match.country}
-                    </p>
-                    <p>{match.scheduledDate}</p>
-                    {match.opponentScenarios.length > 0 && (
-                      <ul className="planner__scenario-list">
-                        {match.opponentScenarios.slice(0, 8).map((scenario) => (
-                          <li key={`${match.matchNumber}-${scenario.slotNumber}-${scenario.opponentCountry}`}>
-                            <span className="planner__scenario-slot">Slot {scenario.slotNumber}:</span>
-                            <span>
-                              vs {scenario.opponentCountry}
-                              {!isCertainProbability(scenario.probability) && ` (${scenario.probability.toFixed(1)}%)`}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                ))}
+                {countryMatches.map((match) => {
+                  const visibleScenarios = match.opponentScenarios.slice(0, 8);
+                  const showScenarioSlot = visibleScenarios.length > 1;
+
+                  return (
+                    <li key={match.matchNumber} className="planner__match-card">
+                      <div>
+                        <p className="planner__match-number">Match {match.matchNumber}</p>
+                        {!isCertainProbability(match.probability) && (
+                          <p className="planner__match-opponent">Play probability: {match.probability.toFixed(1)}%</p>
+                        )}
+                        <p className="planner__match-stage">{match.stage}</p>
+                      </div>
+                      <p>
+                        {match.venue}, {match.city}, {match.country}
+                      </p>
+                      <p>{match.scheduledDate}</p>
+                      {visibleScenarios.length > 0 && (
+                        <ul className="planner__scenario-list">
+                          {visibleScenarios.map((scenario) => (
+                            <li key={`${match.matchNumber}-${scenario.slotNumber}-${scenario.opponentCountry}`}>
+                              {showScenarioSlot && (
+                                <span className="planner__scenario-slot">Slot {scenario.slotNumber}:</span>
+                              )}
+                              <span>
+                                vs {scenario.opponentCountry}
+                                {!isCertainProbability(scenario.probability) && ` (${scenario.probability.toFixed(1)}%)`}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </>
           )}
@@ -267,6 +271,9 @@ function ScheduleExplorerApp() {
           >
             ☕ Buy Me a Coffee
           </a>
+          <button className="planner__coffee planner__coffee--button" type="button" onClick={refreshSchedule}>
+          Refresh schedule
+          </button>
 
           <details className="planner__feedback">
             <summary className="planner__feedback-summary">💡 Suggest Improvements</summary>
