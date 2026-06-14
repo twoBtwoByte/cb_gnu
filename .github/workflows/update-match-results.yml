@@ -30,7 +30,7 @@ jobs:
       - name: Check Expiration Date
         run: |
           CURRENT_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          END_DATE="2026-05-22T23:59:59Z"
+          END_DATE="2026-07-22T23:59:59Z"
           
           if [ "$CURRENT_DATE" \> "$END_DATE" ]; then
             echo "The workflow end date has passed. Exiting."
