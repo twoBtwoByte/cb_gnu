@@ -11,5 +11,4 @@ Schedule Explorer now fetches completed match data from a backend endpoint inste
   - `FOOTBALL_DATA_API_BASE_URL` (default `https://api.football-data.org/v4`)
   - `FOOTBALL_DATA_COMPETITION_CODE` (default `WC`)
 
-The repository includes a serverless handler at
-`/home/runner/work/cb_gnu/cb_gnu/twoBtwoByte/cb_gnu/api/completed-matches.js`.
+The repository includes a serverless handler at `api/completed-matches.js`.
