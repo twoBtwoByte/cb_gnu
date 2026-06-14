@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  update:
+  update-until-deadline:
     runs-on: ubuntu-latest
 
     environment:
@@ -25,6 +25,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24.x'
+
+      # Compare current time to your end date (Format: YYYY-MM-DDThh:mm:ssZ)
+      - name: Check Expiration Date
+        run: |
+          CURRENT_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          END_DATE="2026-07-22T23:59:59Z"
+          
+          if [ "$CURRENT_DATE" \> "$END_DATE" ]; then
+            echo "The workflow end date has passed. Exiting."
+            exit 1 # Fails or stops the workflow to prevent further actions
+          fi
 
       - name: Fetch and write match results
         env:
