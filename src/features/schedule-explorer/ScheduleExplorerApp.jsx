@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import fallbackSchedule from "../../data/worldCup2026Schedule.json";
 import seedMatchResults from "../../data/completedMatchResults.json";
 import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
@@ -6,32 +6,10 @@ import "./ScheduleExplorerApp.css";
 
 const DEFAULT_SCHEDULE_URL =
   "https://raw.githubusercontent.com/twoBtwoByte/cb_gnu/main/src/data/worldCup2026Schedule.json";
-const DEFAULT_COMPLETED_MATCHES_BACKEND_URL = "/api/completed-matches";
-const SCORE_REFRESH_INTERVAL_MS = 6 * 60 * 60 * 1000;
-const STORED_RESULTS_KEY = "scheduleExplorer.completedMatchResults.v1";
 
 const getScheduleUrl = () => import.meta.env.VITE_WORLD_CUP_SCHEDULE_URL ?? DEFAULT_SCHEDULE_URL;
-const getCompletedMatchesApiUrl = () => {
-  const configuredUrl =
-    import.meta.env.VITE_COMPLETED_MATCHES_BACKEND_URL ?? DEFAULT_COMPLETED_MATCHES_BACKEND_URL;
-
-  if (typeof window === "undefined") return configuredUrl;
-  try {
-    return new URL(configuredUrl, window.location.origin).toString();
-  } catch {
-    return configuredUrl;
-  }
-};
 
 const isCertainProbability = (probability) => Math.abs(probability - 100) < 0.0005;
-const COUNTRY_ALIASES = new Map([
-  ["south korea", "korea republic"],
-  ["united states", "usa"],
-  ["ivory coast", "cote d ivoire"],
-  ["iran", "ir iran"],
-  ["cape verde", "cabo verde"],
-  ["dr congo", "congo dr"],
-]);
 
 const formatSlotLabel = (slotNumbers = []) => {
   if (slotNumbers.length === 0) return "";
@@ -39,87 +17,9 @@ const formatSlotLabel = (slotNumbers = []) => {
   return `Slots ${slotNumbers.join(" & ")}`;
 };
 
-const toCanonicalCountrySlug = (value = "") => {
-  const slug = value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/&/g, " and ")
-    .replace(/[^a-zA-Z0-9]+/g, " ")
-    .trim()
-    .replace(/\s+/g, " ")
-    .toLowerCase();
-  return COUNTRY_ALIASES.get(slug) ?? slug;
-};
-
 const withNoCacheParam = (url) => {
   const separator = url.includes("?") ? "&" : "?";
   return `${url}${separator}ts=${Date.now()}`;
-};
-
-const getMatchLabels = (match) =>
-  Object.values(match?.bracket ?? {})
-    .map((slot) => (typeof slot?.label === "string" ? slot.label.trim() : ""))
-    .filter(Boolean)
-    .slice(0, 2);
-
-const parseStoredResults = () => {
-  try {
-    const raw = window.localStorage.getItem(STORED_RESULTS_KEY);
-    if (!raw) return { requestedAt: "", resultsByMatchNumber: {} };
-    const parsed = JSON.parse(raw);
-    return {
-      requestedAt: typeof parsed?.requestedAt === "string" ? parsed.requestedAt : "",
-      resultsByMatchNumber:
-        parsed?.resultsByMatchNumber && typeof parsed.resultsByMatchNumber === "object"
-          ? parsed.resultsByMatchNumber
-          : {},
-    };
-  } catch {
-    return { requestedAt: "", resultsByMatchNumber: {} };
-  }
-};
-
-const persistResults = (payload) => {
-  try {
-    window.localStorage.setItem(STORED_RESULTS_KEY, JSON.stringify(payload));
-  } catch {
-    // Ignore storage failures to keep the UI functional.
-  }
-};
-
-const mapCompletedMatchesByNumber = (schedule, apiMatches) => {
-  if (!Array.isArray(schedule) || schedule.length === 0 || !Array.isArray(apiMatches)) return {};
-
-  const matchLookup = new Map(
-    schedule.map((match) => {
-      const [slot1 = "", slot2 = ""] = getMatchLabels(match);
-      const key = [toCanonicalCountrySlug(slot1), toCanonicalCountrySlug(slot2)].sort().join("|");
-      return [key, match.matchNumber];
-    })
-  );
-
-  return apiMatches.reduce((accumulator, apiMatch) => {
-    const homeTeam = apiMatch?.homeTeam?.name ?? "";
-    const awayTeam = apiMatch?.awayTeam?.name ?? "";
-    const homeScore = apiMatch?.score?.fullTime?.home;
-    const awayScore = apiMatch?.score?.fullTime?.away;
-
-    if (typeof homeScore !== "number" || typeof awayScore !== "number" || !homeTeam || !awayTeam) {
-      return accumulator;
-    }
-
-    const key = [toCanonicalCountrySlug(homeTeam), toCanonicalCountrySlug(awayTeam)].sort().join("|");
-    const matchNumber = matchLookup.get(key);
-    if (!matchNumber) return accumulator;
-
-    accumulator[matchNumber] = {
-      homeTeam,
-      awayTeam,
-      homeScore,
-      awayScore,
-    };
-    return accumulator;
-  }, {});
 };
 
 function useScheduleData() {
@@ -127,13 +27,7 @@ function useScheduleData() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [lastLoadedAt, setLastLoadedAt] = useState("");
-  const [completedMatchResults, setCompletedMatchResults] = useState({});
-  const [scoreError, setScoreError] = useState("");
-  const [scoreLoading, setScoreLoading] = useState(false);
-  const [lastScoreRequestAt, setLastScoreRequestAt] = useState("");
-  const completedMatchResultsRef = useRef({});
-  const lastScoreRequestAtRef = useRef("");
-  const scheduleRef = useRef([]);
+  const [completedMatchResults] = useState(seedMatchResults?.resultsByMatchNumber ?? {});
 
   const refreshSchedule = useCallback(async () => {
     setLoading(true);
@@ -172,108 +66,9 @@ function useScheduleData() {
     }
   }, []);
 
-  const refreshScores = useCallback(async () => {
-    const requestedAt = new Date().toISOString();
-    setScoreLoading(true);
-    setScoreError("");
-
-    try {
-      const response = await fetch(withNoCacheParam(getCompletedMatchesApiUrl()), {
-        cache: "no-store",
-        headers: {
-          "Cache-Control": "no-cache",
-          Pragma: "no-cache",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Unable to load completed matches (${response.status})`);
-      }
-
-      const payload = await response.json();
-      const mappedResults = mapCompletedMatchesByNumber(scheduleRef.current, payload?.matches);
-      const nextValue = {
-        requestedAt,
-        resultsByMatchNumber: mappedResults,
-      };
-      setCompletedMatchResults(mappedResults);
-      setLastScoreRequestAt(requestedAt);
-      persistResults(nextValue);
-    } catch (loadError) {
-      setLastScoreRequestAt(requestedAt);
-      setScoreError("Could not refresh completed match scores. Showing the last stored values.");
-      persistResults({
-        requestedAt,
-        resultsByMatchNumber: completedMatchResultsRef.current,
-      });
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.error(loadError);
-      }
-    } finally {
-      setScoreLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const stored = parseStoredResults();
-    const seedTime = Date.parse(seedMatchResults?.requestedAt || "");
-    const storedTime = Date.parse(stored.requestedAt || "");
-
-    // Prefer whichever source has the more recent requestedAt timestamp so the
-    // app starts with the freshest known results (CI-seeded file vs. localStorage).
-    const useSeed =
-      !Number.isNaN(seedTime) &&
-      (Number.isNaN(storedTime) || seedTime > storedTime);
-
-    const initial = useSeed
-      ? {
-          requestedAt: seedMatchResults.requestedAt,
-          resultsByMatchNumber: seedMatchResults.resultsByMatchNumber ?? {},
-        }
-      : stored;
-
-    setCompletedMatchResults(initial.resultsByMatchNumber);
-    setLastScoreRequestAt(initial.requestedAt);
-  }, []);
-
-  useEffect(() => {
-    completedMatchResultsRef.current = completedMatchResults;
-  }, [completedMatchResults]);
-
-  useEffect(() => {
-    scheduleRef.current = schedule;
-  }, [schedule]);
-
-  useEffect(() => {
-    lastScoreRequestAtRef.current = lastScoreRequestAt;
-  }, [lastScoreRequestAt]);
-
   useEffect(() => {
     refreshSchedule();
   }, [refreshSchedule]);
-
-  useEffect(() => {
-    if (schedule.length === 0) return;
-
-    const lastRequestTime = Date.parse(lastScoreRequestAtRef.current || "");
-    const needsImmediateRefresh =
-      Number.isNaN(lastRequestTime) || Date.now() - lastRequestTime >= SCORE_REFRESH_INTERVAL_MS;
-
-    if (needsImmediateRefresh) {
-      refreshScores();
-    }
-
-    const intervalId = setInterval(() => {
-      const previousRequestTime = Date.parse(lastScoreRequestAtRef.current || "");
-      // Skip if a manual refresh already happened inside the current 6-hour window.
-      if (Number.isNaN(previousRequestTime) || Date.now() - previousRequestTime >= SCORE_REFRESH_INTERVAL_MS) {
-        refreshScores();
-      }
-    }, SCORE_REFRESH_INTERVAL_MS);
-
-    return () => clearInterval(intervalId);
-  }, [refreshScores, schedule.length]);
 
   return {
     schedule,
@@ -282,10 +77,6 @@ function useScheduleData() {
     lastLoadedAt,
     refreshSchedule,
     completedMatchResults,
-    scoreError,
-    scoreLoading,
-    lastScoreRequestAt,
-    refreshScores,
   };
 }
 
@@ -299,11 +90,8 @@ function ScheduleExplorerApp() {
     lastLoadedAt,
     refreshSchedule,
     completedMatchResults,
-    scoreError,
-    scoreLoading,
-    lastScoreRequestAt,
-    refreshScores,
   } = useScheduleData();
+  const scoresLastUpdated = seedMatchResults?.requestedAt ?? "";
 
   const model = useMemo(() => buildScheduleExplorerModel(schedule), [schedule]);
 
@@ -508,9 +296,6 @@ function ScheduleExplorerApp() {
           >
             ☕ Buy Me a Coffee
           </a>
-          <button className="planner__refresh-btn" type="button" onClick={refreshScores} disabled={scoreLoading}>
-            {scoreLoading ? "Refreshing scores…" : "Refresh scores"}
-          </button>
           <button className="planner__refresh-btn" type="button" onClick={refreshSchedule}>
             Refresh schedule
           </button>
@@ -534,13 +319,9 @@ function ScheduleExplorerApp() {
         {!loading && lastLoadedAt && (
           <p className="planner__status">Last refreshed: {new Date(lastLoadedAt).toLocaleString()}</p>
         )}
-        {scoreLoading && <p className="planner__status">Refreshing completed match scores…</p>}
-        {!scoreLoading && scoreError && (
-          <p className="planner__status planner__status--warning">{scoreError}</p>
-        )}
-        {lastScoreRequestAt && (
+        {scoresLastUpdated && (
           <p className="planner__status">
-            Scores last requested: {new Date(lastScoreRequestAt).toLocaleString()}
+            Scores last updated: {new Date(scoresLastUpdated).toLocaleString()}
           </p>
         )}
       </footer>
