@@ -13,6 +13,10 @@ jobs:
   update:
     runs-on: ubuntu-latest
 
+    environment:
+      name: PROD
+      deployment: false
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
