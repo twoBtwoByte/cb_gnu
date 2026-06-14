@@ -3,15 +3,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import ScheduleExplorerApp from "./ScheduleExplorerApp.jsx";
 
-// Always use an empty seed so tests are not affected by the CI-populated
-// completedMatchResults.json file (which may have a recent requestedAt that
-// would suppress the API refresh and break score-related assertions).
+// The mock uses a mutable variable so individual tests can override seed data.
+let mockSeedData = { requestedAt: "", resultsByMatchNumber: {} };
 vi.mock("../../data/completedMatchResults.json", () => ({
-  default: { requestedAt: "", resultsByMatchNumber: {} },
+  get default() {
+    return mockSeedData;
+  },
 }));
 
 describe("ScheduleExplorerApp", () => {
   beforeEach(() => {
+    mockSeedData = { requestedAt: "", resultsByMatchNumber: {} };
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network error")));
     vi.spyOn(console, "error").mockImplementation(() => {});
     window.localStorage.clear();
@@ -33,7 +35,7 @@ describe("ScheduleExplorerApp", () => {
     expect(footerActions).not.toBeNull();
     expect(header).not.toBeNull();
     expect(within(footerActions).getByRole("link", { name: /buy me a coffee/i })).toBeInTheDocument();
-    expect(within(footerActions).getByRole("button", { name: /refresh scores/i })).toBeInTheDocument();
+    expect(within(footerActions).queryByRole("button", { name: /refresh scores/i })).not.toBeInTheDocument();
     expect(within(footerActions).getByRole("button", { name: /refresh schedule/i })).toBeInTheDocument();
     expect(within(header).queryByRole("button", { name: /refresh schedule/i })).not.toBeInTheDocument();
   });
@@ -61,29 +63,13 @@ describe("ScheduleExplorerApp", () => {
     expect(within(scenarioList).queryByText(/Slot \d+:/i)).not.toBeInTheDocument();
   });
 
-  it("shows completed match score data from football-data results", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn((url) => {
-        const target = String(url);
-        if (target.includes("/api/completed-matches")) {
-          return Promise.resolve({
-            ok: true,
-            json: async () => ({
-              matches: [
-                {
-                  homeTeam: { name: "Canada" },
-                  awayTeam: { name: "Bosnia and Herzegovina" },
-                  score: { fullTime: { home: 2, away: 1 } },
-                },
-              ],
-            }),
-          });
-        }
-
-        return Promise.reject(new Error("network error"));
-      })
-    );
+  it("shows completed match score data from seed JSON", async () => {
+    mockSeedData = {
+      requestedAt: "2024-06-14T00:00:00.000Z",
+      resultsByMatchNumber: {
+        3: { homeTeam: "Canada", awayTeam: "Bosnia and Herzegovina", homeScore: 2, awayScore: 1 },
+      },
+    };
 
     render(<ScheduleExplorerApp />);
 
@@ -92,11 +78,9 @@ describe("ScheduleExplorerApp", () => {
       target: { value: "Canada" },
     });
 
-    await waitFor(() =>
-      expect(
-        screen.getByText(/Final score: Canada 2 - 1 Bosnia and Herzegovina/i)
-      ).toBeInTheDocument()
-    );
-    expect(screen.getByText(/Scores last requested:/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Final score: Canada 2 - 1 Bosnia and Herzegovina/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Scores last updated:/i)).toBeInTheDocument();
   });
 });
