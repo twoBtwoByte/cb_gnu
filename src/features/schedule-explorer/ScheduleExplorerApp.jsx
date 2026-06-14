@@ -12,9 +12,16 @@ const STORED_RESULTS_KEY = "scheduleExplorer.completedMatchResults.v1";
 
 const getScheduleUrl = () => import.meta.env.VITE_WORLD_CUP_SCHEDULE_URL ?? DEFAULT_SCHEDULE_URL;
 const getCompletedMatchesApiUrl = () => {
-  return (
+  const configuredUrl =
     import.meta.env.VITE_COMPLETED_MATCHES_BACKEND_URL ?? DEFAULT_COMPLETED_MATCHES_BACKEND_URL
-  );
+  ;
+
+  if (typeof window === "undefined") return configuredUrl;
+  try {
+    return new URL(configuredUrl, window.location.origin).toString();
+  } catch {
+    return configuredUrl;
+  }
 };
 
 const isCertainProbability = (probability) => Math.abs(probability - 100) < 0.0005;
