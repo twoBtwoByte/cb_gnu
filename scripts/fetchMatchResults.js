@@ -112,7 +112,14 @@ async function main() {
   const resultsByMatchNumber = mapCompletedMatchesByNumber(schedule, payload?.matches);
 
   const output = {
-    requestedAt: new Date().toISOString(),
+    requestedAt: new Date().toLocaleString('en-CA', { 
+      timeZone: 'America/New_York', 
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour12: false,
+      timeZoneName: 'short'
+    }),
     resultsByMatchNumber,
   };
 
