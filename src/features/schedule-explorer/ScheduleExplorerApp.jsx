@@ -6,17 +6,15 @@ import "./ScheduleExplorerApp.css";
 
 const DEFAULT_SCHEDULE_URL =
   "https://raw.githubusercontent.com/twoBtwoByte/cb_gnu/main/src/data/worldCup2026Schedule.json";
-const DEFAULT_FOOTBALL_DATA_BASE_URL = "https://api.football-data.org/v4";
-const DEFAULT_FOOTBALL_DATA_COMPETITION = "WC";
+const DEFAULT_COMPLETED_MATCHES_BACKEND_URL = "/api/completed-matches";
 const SCORE_REFRESH_INTERVAL_MS = 6 * 60 * 60 * 1000;
 const STORED_RESULTS_KEY = "scheduleExplorer.completedMatchResults.v1";
 
 const getScheduleUrl = () => import.meta.env.VITE_WORLD_CUP_SCHEDULE_URL ?? DEFAULT_SCHEDULE_URL;
 const getCompletedMatchesApiUrl = () => {
-  const baseUrl = import.meta.env.VITE_FOOTBALL_DATA_API_BASE_URL ?? DEFAULT_FOOTBALL_DATA_BASE_URL;
-  const competitionCode =
-    import.meta.env.VITE_FOOTBALL_DATA_COMPETITION_CODE ?? DEFAULT_FOOTBALL_DATA_COMPETITION;
-  return `${baseUrl}/competitions/${competitionCode}/matches?status=FINISHED`;
+  return (
+    import.meta.env.VITE_COMPLETED_MATCHES_BACKEND_URL ?? DEFAULT_COMPLETED_MATCHES_BACKEND_URL
+  );
 };
 
 const isCertainProbability = (probability) => Math.abs(probability - 100) < 0.0005;
@@ -179,11 +177,6 @@ function useScheduleData() {
         headers: {
           "Cache-Control": "no-cache",
           Pragma: "no-cache",
-          ...(import.meta.env.VITE_FOOTBALL_DATA_API_TOKEN
-            ? {
-                "X-Auth-Token": import.meta.env.VITE_FOOTBALL_DATA_API_TOKEN,
-              }
-            : {}),
         },
       });
 
