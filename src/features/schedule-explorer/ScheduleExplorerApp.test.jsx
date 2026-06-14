@@ -66,7 +66,7 @@ describe("ScheduleExplorerApp", () => {
       "fetch",
       vi.fn((url) => {
         const target = String(url);
-        if (target.includes("/competitions/WC/matches")) {
+        if (target.includes("/api/completed-matches")) {
           return Promise.resolve({
             ok: true,
             json: async () => ({
