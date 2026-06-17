@@ -31,6 +31,12 @@
       "homeScore": 0,
       "awayScore": 1
     },
+    "6": {
+      "homeTeam": "Australia",
+      "awayTeam": "Türkiye",
+      "homeScore": 2,
+      "awayScore": 0
+    },
     "7": {
       "homeTeam": "Brazil",
       "awayTeam": "Morocco",
