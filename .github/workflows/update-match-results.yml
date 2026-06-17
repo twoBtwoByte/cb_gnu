@@ -2,8 +2,8 @@ name: Update Match Results
 
 on:
   schedule:
-    # Runs every 4 hours, matching the client-side SCORE_REFRESH_INTERVAL_MS.
-    - cron: '0 */4 * * *'
+    # Runs every 2 hours, matching the client-side SCORE_REFRESH_INTERVAL_MS.
+    - cron: '0 */2 * * *'
   workflow_dispatch:
 
 permissions:
