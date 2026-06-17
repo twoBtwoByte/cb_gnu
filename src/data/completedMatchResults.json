@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-16, 22:00:05 EDT",
+  "requestedAt": "2026-06-17, 03:13:52 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -30,12 +30,6 @@
       "awayTeam": "Scotland",
       "homeScore": 0,
       "awayScore": 1
-    },
-    "6": {
-      "homeTeam": "Australia",
-      "awayTeam": "Türkiye",
-      "homeScore": 2,
-      "awayScore": 0
     },
     "7": {
       "homeTeam": "Brazil",
@@ -102,6 +96,18 @@
       "awayTeam": "Norway",
       "homeScore": 1,
       "awayScore": 4
+    },
+    "19": {
+      "homeTeam": "Argentina",
+      "awayTeam": "Algeria",
+      "homeScore": 3,
+      "awayScore": 0
+    },
+    "20": {
+      "homeTeam": "Austria",
+      "awayTeam": "Jordan",
+      "homeScore": 3,
+      "awayScore": 1
     }
   }
 }
