@@ -108,24 +108,6 @@
       "awayTeam": "Jordan",
       "homeScore": 3,
       "awayScore": 1
-    },
-    "22": {
-      "homeTeam": "England",
-      "awayTeam": "Croatia",
-      "homeScore": 4,
-      "awayScore": 2
-    },
-    "23": {
-      "homeTeam": "Portugal",
-      "awayTeam": "Congo DR",
-      "homeScore": 1,
-      "awayScore": 1
-    },
-    "24": {
-      "homeTeam": "Uzbekistan",
-      "awayTeam": "Colombia",
-      "homeScore": 1,
-      "awayScore": 3
     }
   }
 }
