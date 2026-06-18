@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-18, 11:31:14 EDT",
+  "requestedAt": "2026-06-18, 14:27:07 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -132,6 +132,12 @@
       "awayTeam": "Colombia",
       "homeScore": 1,
       "awayScore": 3
+    },
+    "25": {
+      "homeTeam": "Czechia",
+      "awayTeam": "South Africa",
+      "homeScore": 1,
+      "awayScore": 1
     }
   }
 }
