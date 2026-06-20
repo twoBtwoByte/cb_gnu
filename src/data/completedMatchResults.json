@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-20, 10:09:34 EDT",
+  "requestedAt": "2026-06-20, 13:07:03 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -168,6 +168,12 @@
       "awayTeam": "Morocco",
       "homeScore": 0,
       "awayScore": 1
+    },
+    "32": {
+      "homeTeam": "United States",
+      "awayTeam": "Australia",
+      "homeScore": 2,
+      "awayScore": 0
     }
   }
 }
