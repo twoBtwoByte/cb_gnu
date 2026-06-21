@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-20, 19:11:16 EDT",
+  "requestedAt": "2026-06-21, 00:27:08 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -180,6 +180,12 @@
       "awayTeam": "Ivory Coast",
       "homeScore": 2,
       "awayScore": 1
+    },
+    "34": {
+      "homeTeam": "Ecuador",
+      "awayTeam": "Curaçao",
+      "homeScore": 0,
+      "awayScore": 0
     },
     "35": {
       "homeTeam": "Netherlands",
