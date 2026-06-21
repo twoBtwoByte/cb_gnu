@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-21, 15:46:30 EDT",
+  "requestedAt": "2026-06-21, 17:17:06 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -202,7 +202,13 @@
     "38": {
       "homeTeam": "Spain",
       "awayTeam": "Saudi Arabia",
-      "homeScore": 5,
+      "homeScore": 4,
+      "awayScore": 0
+    },
+    "39": {
+      "homeTeam": "Belgium",
+      "awayTeam": "Iran",
+      "homeScore": 0,
       "awayScore": 0
     }
   }
