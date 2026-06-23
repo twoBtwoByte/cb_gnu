@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-23, 16:18:46 EDT",
+  "requestedAt": "2026-06-23, 19:10:09 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -240,6 +240,12 @@
       "awayTeam": "Algeria",
       "homeScore": 1,
       "awayScore": 2
+    },
+    "45": {
+      "homeTeam": "England",
+      "awayTeam": "Ghana",
+      "homeScore": 0,
+      "awayScore": 0
     },
     "47": {
       "homeTeam": "Portugal",
