@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-23, 23:50:44 EDT",
+  "requestedAt": "2026-06-24, 03:43:08 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -257,6 +257,12 @@
       "homeTeam": "Portugal",
       "awayTeam": "Uzbekistan",
       "homeScore": 5,
+      "awayScore": 0
+    },
+    "48": {
+      "homeTeam": "Colombia",
+      "awayTeam": "Congo DR",
+      "homeScore": 1,
       "awayScore": 0
     }
   }
