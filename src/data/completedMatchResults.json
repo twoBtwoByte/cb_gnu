@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-24, 15:57:37 EDT",
+  "requestedAt": "2026-06-24, 17:38:26 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -264,6 +264,18 @@
       "awayTeam": "Congo DR",
       "homeScore": 1,
       "awayScore": 0
+    },
+    "51": {
+      "homeTeam": "Switzerland",
+      "awayTeam": "Canada",
+      "homeScore": 2,
+      "awayScore": 1
+    },
+    "52": {
+      "homeTeam": "Bosnia-Herzegovina",
+      "awayTeam": "Qatar",
+      "homeScore": 3,
+      "awayScore": 1
     }
   }
 }
