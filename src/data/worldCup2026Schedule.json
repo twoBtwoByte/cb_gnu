@@ -1160,10 +1160,10 @@
     "scheduledDate": "June 28, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group A runners-up"
+        "label": "South Africa"
       },
       "slot2": {
-        "label": "Group B runners-up"
+        "label": "Canada"
       }
     }
   },
@@ -1291,7 +1291,7 @@
         "label": "Group D winners"
       },
       "slot2": {
-        "label": "Group B/E/F/I/J third place"
+        "label": "Group E/F/I/J third place"
       }
     }
   },
@@ -1352,7 +1352,7 @@
     "scheduledDate": "July 2, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group B winners"
+        "label": "Switzerland"
       },
       "slot2": {
         "label": "Group E/F/G/I/J third place"
