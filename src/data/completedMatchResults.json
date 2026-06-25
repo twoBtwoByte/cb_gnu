@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-25, 17:46:04 EDT",
+  "requestedAt": "2026-06-25, 19:20:49 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -300,6 +300,18 @@
       "awayTeam": "South Korea",
       "homeScore": 1,
       "awayScore": 0
+    },
+    "55": {
+      "homeTeam": "Curaçao",
+      "awayTeam": "Ivory Coast",
+      "homeScore": 0,
+      "awayScore": 2
+    },
+    "56": {
+      "homeTeam": "Ecuador",
+      "awayTeam": "Germany",
+      "homeScore": 2,
+      "awayScore": 1
     }
   }
 }
