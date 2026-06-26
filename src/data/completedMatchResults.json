@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-26, 15:51:59 EDT",
+  "requestedAt": "2026-06-26, 17:20:51 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -329,6 +329,18 @@
       "homeTeam": "Paraguay",
       "awayTeam": "Australia",
       "homeScore": 0,
+      "awayScore": 0
+    },
+    "61": {
+      "homeTeam": "Norway",
+      "awayTeam": "France",
+      "homeScore": 1,
+      "awayScore": 4
+    },
+    "62": {
+      "homeTeam": "Senegal",
+      "awayTeam": "Iraq",
+      "homeScore": 5,
       "awayScore": 0
     }
   }
