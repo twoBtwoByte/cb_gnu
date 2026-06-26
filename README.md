@@ -12,3 +12,9 @@ Schedule Explorer now fetches completed match data from a backend endpoint inste
   - `FOOTBALL_DATA_COMPETITION_CODE` (default `WC`)
 
 The repository includes a serverless handler at `api/completed-matches.js`.
+
+
+## Steps to run locally
+
+1. Install dependencies: `npm install`
+2. Start the server: `npm run start`
