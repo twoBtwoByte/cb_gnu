@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-25, 19:20:49 EDT",
+  "requestedAt": "2026-06-25, 23:57:40 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -312,6 +312,18 @@
       "awayTeam": "Germany",
       "homeScore": 2,
       "awayScore": 1
+    },
+    "57": {
+      "homeTeam": "Japan",
+      "awayTeam": "Sweden",
+      "homeScore": 1,
+      "awayScore": 1
+    },
+    "58": {
+      "homeTeam": "Tunisia",
+      "awayTeam": "Netherlands",
+      "homeScore": 1,
+      "awayScore": 3
     }
   }
 }
