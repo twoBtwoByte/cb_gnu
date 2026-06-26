@@ -1176,7 +1176,7 @@
     "scheduledDate": "June 29, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group E winners"
+        "label": "Germany"
       },
       "slot2": {
         "label": "Group A/B/C/D/F third place"
@@ -1192,10 +1192,10 @@
     "scheduledDate": "June 29, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group F winners"
+        "label": "Netherlands"
       },
       "slot2": {
-        "label": "Group C runners-up"
+        "label": "Morocco"
       }
     }
   },
@@ -1208,10 +1208,10 @@
     "scheduledDate": "June 29, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group C winners"
+        "label": "Brazil"
       },
       "slot2": {
-        "label": "Group F runners-up"
+        "label": "Japan"
       }
     }
   },
@@ -1240,7 +1240,7 @@
     "scheduledDate": "June 30, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group E runners-up"
+        "label": "Ivory Coast"
       },
       "slot2": {
         "label": "Group I runners-up"
@@ -1256,7 +1256,7 @@
     "scheduledDate": "June 30, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group A winners"
+        "label": "Mexico"
       },
       "slot2": {
         "label": "Group C/E/F/H/I third place"
@@ -1291,7 +1291,7 @@
         "label": "Group D winners"
       },
       "slot2": {
-        "label": "Group E/F/I/J third place"
+        "label": "Group B/E/F/I/J third place"
       }
     }
   },

@@ -36,17 +36,17 @@ describe("buildScheduleExplorerModel", () => {
     const model = buildScheduleExplorerModel(schedule);
     const canadaMatches = model.potentialMatchesByCountry.Canada;
     const match27 = canadaMatches.find((match) => match.matchNumber === 27);
-    const match85 = canadaMatches.find((match) => match.matchNumber === 85);
+    const match73 = canadaMatches.find((match) => match.matchNumber === 73);
 
     expect(match27?.opponentLabel).toBe("Qatar");
-    expect(match85?.opponentLabel).toBe("3EFGIJ");
+    expect(match73?.opponentLabel).toBe("South Africa");
   });
 
   it("computes non-zero match probabilities and opponent scenarios for a country", () => {
     const model = buildScheduleExplorerModel(schedule);
     const canadaMatches = model.potentialMatchesByCountry.Canada;
     const match3 = canadaMatches.find((match) => match.matchNumber === 3);
-    const match85 = canadaMatches.find((match) => match.matchNumber === 85);
+    const match73 = canadaMatches.find((match) => match.matchNumber === 73);
 
     expect(match3?.probability).toBe(100);
     expect(match3?.opponentScenarios[0]).toEqual({
@@ -54,18 +54,19 @@ describe("buildScheduleExplorerModel", () => {
       opponentCountry: "Bosnia and Herzegovina",
       probability: 100,
     });
-    expect(match85?.probability).toBeGreaterThan(0);
-    expect(match85?.probability).toBeCloseTo(25, 1);
-    expect(match85?.opponentScenarios.length).toBeGreaterThan(0);
-    expect(match85?.opponentScenarios[0].slotNumber).toBe(1);
-    expect(match85?.opponentScenarios[0].opponentCountry).toBe("Curaçao");
-    expect(match85?.opponentScenarios[0].probability).toBeCloseTo(6.667, 3);
+    expect(match73?.probability).toBe(100);
+    expect(match73?.opponentScenarios).toEqual([
+      {
+        slotNumber: 2,
+        opponentCountry: "South Africa",
+        probability: 100,
+      },
+    ]);
   });
 
   it("builds host-country match views with slot-aware possible teams ordered by slot", () => {
     const model = buildScheduleExplorerModel(schedule);
     const canadaHostedMatch3 = model.matchesByHostCountry.Canada.find((match) => match.matchNumber === 3);
-    const canadaHostedMatch85 = model.matchesByHostCountry.Canada.find((match) => match.matchNumber === 85);
 
     expect(model.hostCountries).toContain("Canada");
     expect(canadaHostedMatch3?.possibleTeams).toEqual([
@@ -82,10 +83,15 @@ describe("buildScheduleExplorerModel", () => {
         primarySlotNumber: 2,
       }),
     ]);
-    expect(canadaHostedMatch85).toBeDefined();
-    expect(canadaHostedMatch85?.possibleTeams.length).toBeGreaterThan(0);
-    expect(
-      canadaHostedMatch85?.possibleTeams.some((team) => team.teamCountry === "Canada" && team.probability > 0)
-    ).toBe(true);
+  });
+
+  it("excludes knockout-confirmed teams from alternate group-stage knockout paths", () => {
+    const model = buildScheduleExplorerModel(schedule);
+    const mexicoMatches = model.potentialMatchesByCountry.Mexico;
+    const match79 = mexicoMatches.find((match) => match.matchNumber === 79);
+    const match82 = mexicoMatches.find((match) => match.matchNumber === 82);
+
+    expect(match79?.probability).toBe(100);
+    expect(match82).toBeUndefined();
   });
 });

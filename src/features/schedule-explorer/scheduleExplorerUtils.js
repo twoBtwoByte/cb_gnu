@@ -38,6 +38,36 @@ const extractBracketLabels = (match) =>
     .map((slot) => (typeof slot?.label === "string" ? slot.label.trim() : ""))
     .filter(Boolean);
 
+const isStructuredBracketLabel = (label) =>
+  GROUP_QUALIFIER_PATTERN.test(label) ||
+  GROUP_THIRD_PLACE_PATTERN.test(label) ||
+  MATCH_REFERENCE_PATTERN.test(label);
+
+const buildKnockoutConfirmedTeams = (matches) => {
+  const confirmed = new Set();
+
+  matches
+    .filter((match) => match.stage !== GROUP_STAGE)
+    .forEach((match) => {
+      extractBracketLabels(match).forEach((label) => {
+        if (!isStructuredBracketLabel(label)) {
+          confirmed.add(label);
+        }
+      });
+    });
+
+  return confirmed;
+};
+
+const filterGroupCountries = (groupCountries, group, knockoutConfirmedTeams) =>
+  groupCountries.filter((country) => {
+    if (!knockoutConfirmedTeams.has(country)) return true;
+    const countryGroup = TEAM_DATA.find(
+      (team) => toCanonicalCountrySlug(team.name) === toCanonicalCountrySlug(country)
+    )?.group;
+    return countryGroup !== group;
+  });
+
 const toOpponentCode = (label = "") => {
   const qualifierMatch = label.match(GROUP_QUALIFIER_PATTERN);
   if (qualifierMatch) {
@@ -60,7 +90,7 @@ const toOpponentCode = (label = "") => {
   return label;
 };
 
-const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, cache }) => {
+const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, knockoutConfirmedTeams, cache }) => {
   const labels = extractBracketLabels(match).slice(0, MATCH_PARTICIPANTS);
   if (labels.length < MATCH_PARTICIPANTS) return "";
 
@@ -70,6 +100,7 @@ const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, cache
         label,
         matchMap,
         groupCountryMap,
+        knockoutConfirmedTeams,
         cache,
         resolving: new Set(),
       }).keys()
@@ -139,13 +170,24 @@ const buildGroupCountryMap = (countryOptions) => {
   }, {});
 };
 
-const resolveLabelProbabilities = ({ label, matchMap, groupCountryMap, cache, resolving }) => {
+const resolveLabelProbabilities = ({
+  label,
+  matchMap,
+  groupCountryMap,
+  knockoutConfirmedTeams,
+  cache,
+  resolving,
+}) => {
   if (cache.has(label)) return cache.get(label);
 
   const qualifierMatch = label.match(GROUP_QUALIFIER_PATTERN);
   if (qualifierMatch) {
     const [, group] = qualifierMatch;
-    const groupCountries = [...(groupCountryMap[group] ?? [])];
+    const groupCountries = filterGroupCountries(
+      [...(groupCountryMap[group] ?? [])],
+      group,
+      knockoutConfirmedTeams
+    );
     const groupSize = groupCountries.length || 1;
     const result = new Map(groupCountries.map((country) => [country, 1 / groupSize]));
     cache.set(label, result);
@@ -158,7 +200,11 @@ const resolveLabelProbabilities = ({ label, matchMap, groupCountryMap, cache, re
     const groups = groupsExpression.split("/");
     const selectionWeight = groups.length ? 1 / groups.length : 0;
     const result = groups.reduce((countries, group) => {
-      const groupCountries = [...(groupCountryMap[group] ?? [])];
+      const groupCountries = filterGroupCountries(
+        [...(groupCountryMap[group] ?? [])],
+        group,
+        knockoutConfirmedTeams
+      );
       const groupSize = groupCountries.length || 1;
       groupCountries.forEach((country) => {
         countries.set(country, (countries.get(country) ?? 0) + (1 / groupSize) * selectionWeight);
@@ -194,6 +240,7 @@ const resolveLabelProbabilities = ({ label, matchMap, groupCountryMap, cache, re
               label: nextLabel,
               matchMap,
               groupCountryMap,
+              knockoutConfirmedTeams,
               cache,
               resolving,
             }),
@@ -269,6 +316,7 @@ export function buildScheduleExplorerModel(schedule) {
     left.localeCompare(right)
   );
   const groupCountryMap = buildGroupCountryMap(countries);
+  const knockoutConfirmedTeams = buildKnockoutConfirmedTeams(matches);
 
   const cache = new Map();
   const potentialMatchesByCountry = countries.reduce((accumulator, country) => {
@@ -298,6 +346,7 @@ export function buildScheduleExplorerModel(schedule) {
         label,
         matchMap,
         groupCountryMap,
+        knockoutConfirmedTeams,
         cache,
         resolving: new Set(),
       })
@@ -319,6 +368,7 @@ export function buildScheduleExplorerModel(schedule) {
             match,
             matchMap,
             groupCountryMap,
+            knockoutConfirmedTeams,
             cache,
           }),
         })
