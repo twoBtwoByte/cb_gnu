@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-27, 17:06:27 EDT",
+  "requestedAt": "2026-06-27, 19:04:15 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -331,11 +331,23 @@
       "homeScore": 0,
       "awayScore": 0
     },
+    "61": {
+      "homeTeam": "Norway",
+      "awayTeam": "France",
+      "homeScore": 1,
+      "awayScore": 4
+    },
+    "62": {
+      "homeTeam": "Senegal",
+      "awayTeam": "Iraq",
+      "homeScore": 5,
+      "awayScore": 0
+    },
     "63": {
       "homeTeam": "Egypt",
       "awayTeam": "Iran",
       "homeScore": 1,
-      "awayScore": 2
+      "awayScore": 1
     },
     "64": {
       "homeTeam": "New Zealand",
@@ -347,6 +359,18 @@
       "homeTeam": "Uruguay",
       "awayTeam": "Spain",
       "homeScore": 0,
+      "awayScore": 1
+    },
+    "67": {
+      "homeTeam": "Panama",
+      "awayTeam": "England",
+      "homeScore": 0,
+      "awayScore": 2
+    },
+    "68": {
+      "homeTeam": "Croatia",
+      "awayTeam": "Ghana",
+      "homeScore": 2,
       "awayScore": 1
     }
   }
