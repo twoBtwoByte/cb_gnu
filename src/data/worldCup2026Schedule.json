@@ -1224,7 +1224,7 @@
     "scheduledDate": "June 30, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group I winners"
+        "label": "France"
       },
       "slot2": {
         "label": "Group C/D/F/G/H third place"
@@ -1243,7 +1243,7 @@
         "label": "Ivory Coast"
       },
       "slot2": {
-        "label": "Group I runners-up"
+        "label": "Norway"
       }
     }
   },
@@ -1288,7 +1288,7 @@
     "scheduledDate": "July 1, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group D winners"
+        "label": "USA"
       },
       "slot2": {
         "label": "Group B/E/F/I/J third place"
@@ -1336,7 +1336,7 @@
     "scheduledDate": "July 2, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group H winners"
+        "label": "Spain"
       },
       "slot2": {
         "label": "Group J runners-up"
@@ -1371,7 +1371,7 @@
         "label": "Group J winners"
       },
       "slot2": {
-        "label": "Group H runners-up"
+        "label": "Cabo Verde"
       }
     }
   },
@@ -1400,7 +1400,7 @@
     "scheduledDate": "July 3, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group D runners-up"
+        "label": "Australia"
       },
       "slot2": {
         "label": "Group G runners-up"
