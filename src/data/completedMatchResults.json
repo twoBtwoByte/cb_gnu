@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-27, 19:04:15 EDT",
+  "requestedAt": "2026-06-28, 00:04:20 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -371,6 +371,30 @@
       "homeTeam": "Croatia",
       "awayTeam": "Ghana",
       "homeScore": 2,
+      "awayScore": 1
+    },
+    "69": {
+      "homeTeam": "Algeria",
+      "awayTeam": "Austria",
+      "homeScore": 3,
+      "awayScore": 3
+    },
+    "70": {
+      "homeTeam": "Jordan",
+      "awayTeam": "Argentina",
+      "homeScore": 1,
+      "awayScore": 3
+    },
+    "71": {
+      "homeTeam": "Colombia",
+      "awayTeam": "Portugal",
+      "homeScore": 0,
+      "awayScore": 0
+    },
+    "72": {
+      "homeTeam": "Congo DR",
+      "awayTeam": "Uzbekistan",
+      "homeScore": 3,
       "awayScore": 1
     }
   }
