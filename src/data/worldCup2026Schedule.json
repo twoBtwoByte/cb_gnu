@@ -1179,7 +1179,7 @@
         "label": "Germany"
       },
       "slot2": {
-        "label": "Group A/B/C/D/F third place"
+        "label": "Paraguay"
       }
     }
   },
@@ -1227,7 +1227,7 @@
         "label": "France"
       },
       "slot2": {
-        "label": "Group C/D/F/G/H third place"
+        "label": "Sweden"
       }
     }
   },
@@ -1259,7 +1259,7 @@
         "label": "Mexico"
       },
       "slot2": {
-        "label": "Group C/E/F/H/I third place"
+        "label": "Ecuador"
       }
     }
   },
@@ -1272,10 +1272,10 @@
     "scheduledDate": "July 1, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group L winners"
+        "label": "England"
       },
       "slot2": {
-        "label": "Group E/H/I/J/K third place"
+        "label": "Congo DR"
       }
     }
   },
@@ -1291,7 +1291,7 @@
         "label": "USA"
       },
       "slot2": {
-        "label": "Group B/E/F/I/J third place"
+        "label": "Bosnia and Herzegovina"
       }
     }
   },
@@ -1304,10 +1304,10 @@
     "scheduledDate": "July 1, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group G winners"
+        "label": "Belgium"
       },
       "slot2": {
-        "label": "Group A/E/H/I/J third place"
+        "label": "Senegal"
       }
     }
   },
@@ -1320,10 +1320,10 @@
     "scheduledDate": "July 2, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group K runners-up"
+        "label": "Portugal"
       },
       "slot2": {
-        "label": "Group L runners-up"
+        "label": "Croatia"
       }
     }
   },
@@ -1339,7 +1339,7 @@
         "label": "Spain"
       },
       "slot2": {
-        "label": "Group J runners-up"
+        "label": "Austria"
       }
     }
   },
@@ -1355,7 +1355,7 @@
         "label": "Switzerland"
       },
       "slot2": {
-        "label": "Group E/F/G/I/J third place"
+        "label": "Algeria"
       }
     }
   },
@@ -1368,7 +1368,7 @@
     "scheduledDate": "July 3, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group J winners"
+        "label": "Argentina"
       },
       "slot2": {
         "label": "Cabo Verde"
@@ -1384,10 +1384,10 @@
     "scheduledDate": "July 3, 2026",
     "bracket": {
       "slot1": {
-        "label": "Group K winners"
+        "label": "Colombia"
       },
       "slot2": {
-        "label": "Group D/E/I/J/L third place"
+        "label": "Ghana"
       }
     }
   },
@@ -1403,7 +1403,7 @@
         "label": "Australia"
       },
       "slot2": {
-        "label": "Group G runners-up"
+        "label": "Egypt"
       }
     }
   },
