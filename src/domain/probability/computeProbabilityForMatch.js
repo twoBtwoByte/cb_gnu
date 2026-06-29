@@ -1,4 +1,4 @@
-import { TEAM_DATA } from "../../config/worldCupConfig.js";
+import { isEliminatedAfterGroupStage, TEAM_DATA } from "../../config/worldCupConfig.js";
 
 /** Probability of either team winning a knockout match (no results yet). */
 export const KNOCKOUT_WIN_PROB = 0.5;
@@ -15,6 +15,7 @@ export function roundProbability(value) {
 export function computeProbabilityForMatch(team, bracket) {
   if (!team || typeof team.group !== "string") return 0;
   if (!bracket || typeof bracket !== "object") return 0;
+  if (isEliminatedAfterGroupStage(team)) return 0;
 
   const groupSize = GROUP_SIZES[team.group] ?? 4;
   let probability = 0;

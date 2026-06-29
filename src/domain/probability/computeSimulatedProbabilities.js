@@ -1,4 +1,4 @@
-import { TEAM_DATA } from "../../config/worldCupConfig.js";
+import { isEliminatedAfterGroupStage, TEAM_DATA } from "../../config/worldCupConfig.js";
 import { computeGroupStandings, isGroupComplete } from "../simulator/standings.js";
 import { GROUP_SIZES, KNOCKOUT_WIN_PROB, roundProbability } from "./computeProbabilityForMatch.js";
 import { MATCH_CONFIGS } from "../../config/worldCupConfig.js";
@@ -81,7 +81,7 @@ export function computeSimulatedProbabilities(simulatedResults, bracket = MATCH_
   }
 
   Object.keys(probabilities).forEach((code) => {
-    probabilities[code] = roundProbability(probabilities[code]);
+    probabilities[code] = isEliminatedAfterGroupStage(code) ? 0 : roundProbability(probabilities[code]);
   });
 
   return probabilities;
