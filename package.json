@@ -21,5 +21,8 @@
     "test": "vitest run",
     "preview": "vite preview",
     "fetch-results": "node scripts/fetchMatchResults.js"
+  },
+  "allowScripts": {
+    "fsevents@2.3.3": true
   }
 }
