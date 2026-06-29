@@ -1,4 +1,4 @@
-import { TEAM_DATA } from "../../config/worldCupConfig.js";
+import { ELIMINATED_GROUP_STAGE_TEAMS, TEAM_DATA } from "../../config/worldCupConfig.js";
 
 const GROUP_STAGE = "Group Stage";
 const GROUP_QUALIFIER_PATTERN = /^Group\s+([A-L])\s+(winners|runners-up)$/i;
@@ -33,6 +33,13 @@ const toCanonicalCountrySlug = (value = "") => {
   return COUNTRY_ALIASES.get(slug) ?? slug;
 };
 
+const ELIMINATED_GROUP_STAGE_COUNTRY_SLUGS = new Set(
+  ELIMINATED_GROUP_STAGE_TEAMS.map((team) => toCanonicalCountrySlug(team.name))
+);
+
+const isEliminatedGroupStageCountry = (country) =>
+  ELIMINATED_GROUP_STAGE_COUNTRY_SLUGS.has(toCanonicalCountrySlug(country));
+
 const extractBracketLabels = (match) =>
   Object.values(match?.bracket ?? {})
     .map((slot) => (typeof slot?.label === "string" ? slot.label.trim() : ""))
@@ -61,6 +68,7 @@ const buildKnockoutConfirmedTeams = (matches) => {
 
 const filterGroupCountries = (groupCountries, group, knockoutConfirmedTeams) =>
   groupCountries.filter((country) => {
+    if (isEliminatedGroupStageCountry(country)) return false;
     if (!knockoutConfirmedTeams.has(country)) return true;
     const countryGroup = TEAM_DATA.find(
       (team) => toCanonicalCountrySlug(team.name) === toCanonicalCountrySlug(country)
@@ -90,22 +98,26 @@ const toOpponentCode = (label = "") => {
   return label;
 };
 
+const removeEliminatedGroupStageCountries = (probabilities) =>
+  new Map([...probabilities.entries()].filter(([country]) => !isEliminatedGroupStageCountry(country)));
+
 const resolveOpponentLabel = ({ country, match, matchMap, groupCountryMap, knockoutConfirmedTeams, cache }) => {
   const labels = extractBracketLabels(match).slice(0, MATCH_PARTICIPANTS);
   if (labels.length < MATCH_PARTICIPANTS) return "";
 
-  const slotCountrySets = labels.map((label) =>
-    new Set(
-      resolveLabelProbabilities({
+  const slotCountrySets = labels.map((label) => {
+    const probabilities = resolveLabelProbabilities({
         label,
         matchMap,
         groupCountryMap,
         knockoutConfirmedTeams,
         cache,
         resolving: new Set(),
-      }).keys()
-    )
-  );
+      });
+    const filteredProbabilities =
+      match.stage === GROUP_STAGE ? probabilities : removeEliminatedGroupStageCountries(probabilities);
+    return new Set(filteredProbabilities.keys());
+  });
 
   const countrySlotIndexes = slotCountrySets.reduce((indexes, countriesInSlot, slotIndex) => {
     if (countriesInSlot.has(country)) indexes.push(slotIndex);
@@ -341,16 +353,20 @@ export function buildScheduleExplorerModel(schedule) {
 
   matches.forEach((match) => {
     const labels = extractBracketLabels(match).slice(0, MATCH_PARTICIPANTS);
-    const slotProbabilities = labels.map((label) =>
-      resolveLabelProbabilities({
-        label,
-        matchMap,
-        groupCountryMap,
-        knockoutConfirmedTeams,
-        cache,
-        resolving: new Set(),
-      })
-    );
+    const slotProbabilities = labels
+      .map((label) =>
+        resolveLabelProbabilities({
+          label,
+          matchMap,
+          groupCountryMap,
+          knockoutConfirmedTeams,
+          cache,
+          resolving: new Set(),
+        })
+      )
+      .map((probabilities) =>
+        match.stage === GROUP_STAGE ? probabilities : removeEliminatedGroupStageCountries(probabilities)
+      );
 
     const matchCountries = new Set();
     slotProbabilities.forEach((slotProbabilityMap) => {

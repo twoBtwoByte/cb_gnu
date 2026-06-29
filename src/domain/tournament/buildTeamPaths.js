@@ -1,4 +1,4 @@
-import { MATCH_CONFIGS, TEAM_DATA } from "../../config/worldCupConfig.js";
+import { isEliminatedAfterGroupStage, MATCH_CONFIGS, TEAM_DATA } from "../../config/worldCupConfig.js";
 import { computeGroupStandings, isGroupComplete } from "../simulator/standings.js";
 import { GROUP_SIZES, KNOCKOUT_WIN_PROB, roundProbability } from "../probability/computeProbabilityForMatch.js";
 
@@ -47,6 +47,8 @@ function getThirdPlaceSelectionProbability(team, slot, simulatedResults) {
 }
 
 export function buildTeamPaths(team, bracket = MATCH_96_BRACKET, simulatedResults = null) {
+  if (isEliminatedAfterGroupStage(team)) return [];
+
   const { group } = team;
   const paths = [];
 

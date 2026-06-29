@@ -1,7 +1,13 @@
 /**
  * Compatibility facade for the refactored probability domain/application modules.
  */
-export { MATCH_CONFIGS, TEAM_DATA } from "../config/worldCupConfig.js";
+export {
+  ELIMINATED_GROUP_STAGE_TEAM_CODES,
+  ELIMINATED_GROUP_STAGE_TEAMS,
+  MATCH_CONFIGS,
+  TEAM_DATA,
+  isEliminatedAfterGroupStage,
+} from "../config/worldCupConfig.js";
 export {
   MATCH_INFO,
   MATCH_96_BRACKET,

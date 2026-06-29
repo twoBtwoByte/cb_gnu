@@ -94,4 +94,16 @@ describe("buildScheduleExplorerModel", () => {
     expect(match79?.probability).toBe(100);
     expect(match82).toBeUndefined();
   });
+
+  it("keeps eliminated teams in group-stage matches but excludes them from knockout matches", () => {
+    const model = buildScheduleExplorerModel(schedule);
+    const qatarMatches = model.potentialMatchesByCountry.Qatar;
+    const qatarMatchNumbers = qatarMatches.map((match) => match.matchNumber);
+
+    expect(qatarMatchNumbers).toEqual(expect.arrayContaining([8, 27, 52]));
+    expect(qatarMatches.every((match) => match.stage === "Group Stage")).toBe(true);
+    expect(model.matchesByHostCountry.USA.find((match) => match.matchNumber === 81)?.possibleTeams).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ teamCountry: "Qatar" })])
+    );
+  });
 });

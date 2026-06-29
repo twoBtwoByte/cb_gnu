@@ -703,3 +703,34 @@ export const TEAM_DATA = [
   { name: "Ghana",                             code: "GHA",   flag: "🇬🇭", confederation: "CAF",                   group: "L" },
   { name: "Panama",                            code: "PAN",   flag: "🇵🇦", confederation: "CONCACAF",              group: "L" },
 ];
+
+// Countries that did not progress beyond the completed group stage. These
+// teams retain their group-stage matches, but have 0% probability for every
+// Round-of-32 or later match.
+export const ELIMINATED_GROUP_STAGE_TEAM_CODES = [
+  "KOR",
+  "CZE",
+  "QAT",
+  "HAI",
+  "SCO",
+  "TUR",
+  "CUW",
+  "TUN",
+  "IRN",
+  "NZL",
+  "KSA",
+  "URU",
+  "IRQ",
+  "JOR",
+  "UZB",
+  "PAN",
+];
+
+export const ELIMINATED_GROUP_STAGE_TEAMS = TEAM_DATA.filter((team) =>
+  ELIMINATED_GROUP_STAGE_TEAM_CODES.includes(team.code)
+);
+
+export function isEliminatedAfterGroupStage(teamOrCode) {
+  const code = typeof teamOrCode === "string" ? teamOrCode : teamOrCode?.code;
+  return ELIMINATED_GROUP_STAGE_TEAM_CODES.includes(code);
+}
