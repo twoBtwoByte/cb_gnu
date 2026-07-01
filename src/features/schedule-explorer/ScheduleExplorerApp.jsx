@@ -162,7 +162,10 @@ function ScheduleExplorerApp() {
     refreshMatchResults,
   } = useMatchResults();
 
-  const model = useMemo(() => buildScheduleExplorerModel(schedule), [schedule]);
+  const model = useMemo(
+    () => buildScheduleExplorerModel(schedule, completedMatchResults),
+    [schedule, completedMatchResults]
+  );
 
   useEffect(() => {
     if (selectedCountry && !model.countries.includes(selectedCountry)) {
