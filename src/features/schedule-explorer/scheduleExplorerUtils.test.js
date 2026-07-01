@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import schedule from "../../data/worldCup2026Schedule.json";
+import completedMatchResults from "../../data/completedMatchResults.json";
 import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
 
 describe("buildScheduleExplorerModel", () => {
@@ -105,5 +106,17 @@ describe("buildScheduleExplorerModel", () => {
     expect(model.matchesByHostCountry.USA.find((match) => match.matchNumber === 81)?.possibleTeams).not.toEqual(
       expect.arrayContaining([expect.objectContaining({ teamCountry: "Qatar" })])
     );
+  });
+
+  it("propagates knockout probabilities using completed match results", () => {
+    const model = buildScheduleExplorerModel(schedule, completedMatchResults.resultsByMatchNumber);
+    const canadaMatches = model.potentialMatchesByCountry.Canada;
+    const match90 = canadaMatches.find((match) => match.matchNumber === 90);
+    const match97 = canadaMatches.find((match) => match.matchNumber === 97);
+    const match104 = canadaMatches.find((match) => match.matchNumber === 104);
+
+    expect(match90?.probability).toBe(100);
+    expect(match97?.probability).toBe(50);
+    expect(match104?.probability).toBe(12.5);
   });
 });
