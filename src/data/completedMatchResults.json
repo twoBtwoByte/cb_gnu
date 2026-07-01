@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-07-01, 12:27:59 EDT",
+  "requestedAt": "2026-07-01, 15:59:23 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -438,6 +438,12 @@
       "awayTeam": "Ecuador",
       "homeScore": 2,
       "awayScore": 0
+    },
+    "80": {
+      "homeTeam": "England",
+      "awayTeam": "Congo DR",
+      "homeScore": 2,
+      "awayScore": 1
     }
   }
 }
