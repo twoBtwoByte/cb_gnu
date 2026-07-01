@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const dataDir = join(__dirname, "../src/data");
+const dataDir = join(__dirname, "../public/data");
 
 const schedule = JSON.parse(
   readFileSync(join(dataDir, "worldCup2026Schedule.json"), "utf8")
@@ -131,7 +131,7 @@ async function main() {
 
   const count = Object.keys(resultsByMatchNumber).length;
   console.log(
-    `Wrote ${count} completed match result(s) to src/data/completedMatchResults.json`
+    `Wrote ${count} completed match result(s) to public/data/completedMatchResults.json`
   );
 }
 
