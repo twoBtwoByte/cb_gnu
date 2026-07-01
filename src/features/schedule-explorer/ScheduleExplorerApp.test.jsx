@@ -8,7 +8,7 @@ const RESULTS_URL = "completedMatchResults.json";
 
 // The mock uses a mutable variable so individual tests can override seed data.
 let mockSeedData = { requestedAt: "", resultsByMatchNumber: {} };
-vi.mock("../../data/completedMatchResults.json", () => ({
+vi.mock("../../../public/data/completedMatchResults.json", () => ({
   get default() {
     return mockSeedData;
   },
