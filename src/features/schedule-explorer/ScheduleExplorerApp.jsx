@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import fallbackSchedule from "../../data/worldCup2026Schedule.json";
 import seedMatchResults from "../../data/completedMatchResults.json";
+import {
+  getResultsUrl,
+  getScheduleUrl,
+  RESULTS_REFRESH_INTERVAL_MS,
+} from "../../config/scheduleExplorerConfig.js";
 import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
 import "./ScheduleExplorerApp.css";
-
-const DEFAULT_SCHEDULE_URL =
-  "https://raw.githubusercontent.com/twoBtwoByte/cb_gnu/main/src/data/worldCup2026Schedule.json";
-
-const getScheduleUrl = () => import.meta.env.VITE_WORLD_CUP_SCHEDULE_URL ?? DEFAULT_SCHEDULE_URL;
 
 const isCertainProbability = (probability) => Math.abs(probability - 100) < 0.0005;
 
@@ -27,7 +27,6 @@ function useScheduleData() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [lastLoadedAt, setLastLoadedAt] = useState("");
-  const [completedMatchResults] = useState(seedMatchResults?.resultsByMatchNumber ?? {});
 
   const refreshSchedule = useCallback(async () => {
     setLoading(true);
@@ -76,7 +75,72 @@ function useScheduleData() {
     error,
     lastLoadedAt,
     refreshSchedule,
+  };
+}
+
+function useMatchResults() {
+  const [completedMatchResults, setCompletedMatchResults] = useState(
+    seedMatchResults?.resultsByMatchNumber ?? {}
+  );
+  const [scoresLastUpdated, setScoresLastUpdated] = useState(seedMatchResults?.requestedAt ?? "");
+  const [resultsLoading, setResultsLoading] = useState(false);
+  const [resultsError, setResultsError] = useState("");
+
+  const refreshMatchResults = useCallback(async () => {
+    setResultsLoading(true);
+    setResultsError("");
+
+    try {
+      const response = await fetch(withNoCacheParam(getResultsUrl()), {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Unable to load match results (${response.status})`);
+      }
+
+      const payload = await response.json();
+      if (
+        !payload ||
+        typeof payload !== "object" ||
+        !payload.resultsByMatchNumber ||
+        typeof payload.resultsByMatchNumber !== "object"
+      ) {
+        throw new Error("Match results payload is invalid.");
+      }
+
+      setCompletedMatchResults(payload.resultsByMatchNumber);
+      setScoresLastUpdated(typeof payload.requestedAt === "string" ? payload.requestedAt : "");
+    } catch (loadError) {
+      setResultsError(
+        "Using cached match results because the latest remote results could not be loaded."
+      );
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error(loadError);
+      }
+    } finally {
+      setResultsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshMatchResults();
+
+    const intervalId = setInterval(refreshMatchResults, RESULTS_REFRESH_INTERVAL_MS);
+    return () => clearInterval(intervalId);
+  }, [refreshMatchResults]);
+
+  return {
     completedMatchResults,
+    scoresLastUpdated,
+    resultsLoading,
+    resultsError,
+    refreshMatchResults,
   };
 }
 
@@ -89,9 +153,14 @@ function ScheduleExplorerApp() {
     error,
     lastLoadedAt,
     refreshSchedule,
-    completedMatchResults,
   } = useScheduleData();
-  const scoresLastUpdated = seedMatchResults?.requestedAt ?? "";
+  const {
+    completedMatchResults,
+    scoresLastUpdated,
+    resultsLoading,
+    resultsError,
+    refreshMatchResults,
+  } = useMatchResults();
 
   const model = useMemo(() => buildScheduleExplorerModel(schedule), [schedule]);
 
@@ -296,6 +365,14 @@ function ScheduleExplorerApp() {
           >
             ☕ Buy Me a Coffee
           </a>
+          <button
+            className="planner__refresh-btn"
+            type="button"
+            onClick={refreshMatchResults}
+            disabled={resultsLoading}
+          >
+            Refresh scores
+          </button>
           <button className="planner__refresh-btn" type="button" onClick={refreshSchedule}>
             Refresh schedule
           </button>
@@ -319,9 +396,13 @@ function ScheduleExplorerApp() {
         {!loading && lastLoadedAt && (
           <p className="planner__status">Last refreshed: {new Date(lastLoadedAt).toLocaleString()}</p>
         )}
+        {resultsLoading && <p className="planner__status">Loading latest match results…</p>}
+        {!resultsLoading && resultsError && (
+          <p className="planner__status planner__status--warning">{resultsError}</p>
+        )}
         {scoresLastUpdated && (
           <p className="planner__status">
-            Scores last updated: {new Date(scoresLastUpdated).toLocaleString()}
+            Scores last updated: {scoresLastUpdated}
           </p>
         )}
       </footer>
