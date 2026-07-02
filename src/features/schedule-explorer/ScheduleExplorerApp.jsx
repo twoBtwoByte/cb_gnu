@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import fallbackSchedule from "../../data/worldCup2026Schedule.json";
-import seedMatchResults from "../../data/completedMatchResults.json";
+import fallbackSchedule from "../../../public/data/worldCup2026Schedule.json";
+import seedMatchResults from "../../../public/data/completedMatchResults.json";
 import {
   getResultsUrl,
   getScheduleUrl,
