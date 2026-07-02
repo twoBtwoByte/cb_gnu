@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-06-30, 19:15:36 EDT",
+  "requestedAt": "2026-07-01, 19:18:08 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -431,6 +431,24 @@
       "homeTeam": "Ivory Coast",
       "awayTeam": "Norway",
       "homeScore": 1,
+      "awayScore": 2
+    },
+    "79": {
+      "homeTeam": "Mexico",
+      "awayTeam": "Ecuador",
+      "homeScore": 2,
+      "awayScore": 0
+    },
+    "80": {
+      "homeTeam": "England",
+      "awayTeam": "Congo DR",
+      "homeScore": 2,
+      "awayScore": 1
+    },
+    "82": {
+      "homeTeam": "Belgium",
+      "awayTeam": "Senegal",
+      "homeScore": 3,
       "awayScore": 2
     }
   }
