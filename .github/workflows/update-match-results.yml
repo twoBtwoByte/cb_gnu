@@ -68,7 +68,13 @@ jobs:
                 exit 1
               fi
 
-              echo "Retrying push after syncing with origin/main (next attempt $((attempt + 1))/3)..."
-              sleep $((2 ** attempt))
+              case "$attempt" in
+                1) delay=2 ;;
+                2) delay=4 ;;
+                *) delay=8 ;;
+              esac
+
+              echo "Attempt $attempt/3 failed, retrying after ${delay}s..."
+              sleep "$delay"
             done
           fi
