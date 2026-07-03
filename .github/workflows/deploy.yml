@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: write
 
 concurrency:
   group: pages
@@ -45,6 +46,18 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v4
   
+      - name: Delete existing pages artifact if present
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          artifact_ids=$(gh api \
+            /repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts \
+            --jq '[.artifacts[] | select(.name == "github-pages") | .id] | .[]')
+          for id in $artifact_ids; do
+            echo "Deleting stale artifact $id"
+            gh api --method DELETE /repos/${{ github.repository }}/actions/artifacts/$id
+          done
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
