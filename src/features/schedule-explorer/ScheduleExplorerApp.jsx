@@ -368,18 +368,7 @@ function ScheduleExplorerApp() {
           >
             ☕ Buy Me a Coffee
           </a>
-          <button
-            className="planner__refresh-btn"
-            type="button"
-            onClick={refreshMatchResults}
-            disabled={resultsLoading}
-          >
-            Refresh scores
-          </button>
-          <button className="planner__refresh-btn" type="button" onClick={refreshSchedule}>
-            Refresh schedule
-          </button>
-
+     
           <details className="planner__feedback">
             <summary className="planner__feedback-summary">💡 Suggest Improvements</summary>
             <form
