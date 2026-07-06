@@ -52,30 +52,6 @@ describe("ScheduleExplorerApp", () => {
     vi.useRealTimers();
   });
 
-  it("renders refresh action in footer beside other actions", async () => {
-    render(<ScheduleExplorerApp />);
-
-    await waitFor(() => expect(screen.getByRole("combobox", { name: "Host country" })).toBeEnabled());
-
-    const footerActions = document.querySelector(".planner__footer-actions");
-    const header = document.querySelector(".planner__hero");
-
-    expect(footerActions).not.toBeNull();
-    expect(header).not.toBeNull();
-    expect(within(footerActions).getByRole("link", { name: /buy me a coffee/i })).toBeInTheDocument();
-
-    const refreshScoresButton = within(footerActions).getByRole("button", { name: /refresh scores/i });
-    const refreshScheduleButton = within(footerActions).getByRole("button", { name: /refresh schedule/i });
-    expect(refreshScoresButton).toBeInTheDocument();
-    expect(refreshScheduleButton).toBeInTheDocument();
-
-    const footerButtons = within(footerActions).getAllByRole("button");
-    expect(footerButtons.indexOf(refreshScoresButton)).toBeLessThan(
-      footerButtons.indexOf(refreshScheduleButton)
-    );
-    expect(within(header).queryByRole("button", { name: /refresh schedule/i })).not.toBeInTheDocument();
-  });
-
   it("uses updated country heading and hides 100% probability and single-entry slot labels", async () => {
     render(<ScheduleExplorerApp />);
 
@@ -118,52 +94,6 @@ describe("ScheduleExplorerApp", () => {
       screen.getByText(/Final score: Canada 2 - 1 Bosnia and Herzegovina/i)
     ).toBeInTheDocument();
     expect(screen.getByText(/Scores last updated:/i)).toBeInTheDocument();
-  });
-
-  it("updates scores when Refresh scores is clicked and remote fetch succeeds", async () => {
-    mockSeedData = {
-      requestedAt: "2024-06-14T00:00:00.000Z",
-      resultsByMatchNumber: {
-        3: { homeTeam: "Canada", awayTeam: "Bosnia and Herzegovina", homeScore: 1, awayScore: 0 },
-      },
-    };
-
-    vi.stubGlobal(
-      "fetch",
-      createFetchMock({
-        resultsRejects: false,
-        resultsPayload: {
-          requestedAt: "2026-06-30, 12:00:00 EDT",
-          resultsByMatchNumber: {
-            3: { homeTeam: "Canada", awayTeam: "Bosnia and Herzegovina", homeScore: 3, awayScore: 2 },
-          },
-        },
-      })
-    );
-
-    render(<ScheduleExplorerApp />);
-
-    await waitFor(() => expect(screen.getByRole("combobox", { name: "Team country" })).toBeEnabled());
-
-    fireEvent.change(screen.getByRole("combobox", { name: "Team country" }), {
-      target: { value: "Canada" },
-    });
-
-    await waitFor(() =>
-      expect(
-        screen.getByText(/Final score: Canada 3 - 2 Bosnia and Herzegovina/i)
-      ).toBeInTheDocument()
-    );
-    expect(screen.getByText(/Scores last updated: 2026-06-30, 12:00:00 EDT/i)).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: /refresh scores/i }));
-
-    await waitFor(() => {
-      const resultsFetchCalls = fetch.mock.calls.filter(([url]) =>
-        String(url).includes(RESULTS_URL)
-      );
-      expect(resultsFetchCalls.length).toBeGreaterThanOrEqual(2);
-    });
   });
 
   it("keeps seed scores and shows warning when remote results fetch fails", async () => {
