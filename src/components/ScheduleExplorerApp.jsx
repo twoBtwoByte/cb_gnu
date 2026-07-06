@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import fallbackSchedule from "../../../public/data/worldCup2026Schedule.json";
-import seedMatchResults from "../../../public/data/completedMatchResults.json";
+import fallbackSchedule from "../../public/data/worldCup2026Schedule.json";
+import seedMatchResults from "../../public/data/completedMatchResults.json";
 import {
   getResultsUrl,
   getScheduleUrl,
   RESULTS_REFRESH_INTERVAL_MS,
-} from "../../config/scheduleExplorerConfig.js";
-import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
+} from "../config/scheduleExplorerConfig.js";
+import { buildScheduleExplorerModel } from "../utils/scheduleExplorerUtils.js";
 import "./ScheduleExplorerApp.css";
 
 const isCertainProbability = (probability) => Math.abs(probability - 100) < 0.0005;

@@ -1,14 +1,14 @@
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import ScheduleExplorerApp from "./ScheduleExplorerApp.jsx";
+import ScheduleExplorerApp from "../components/ScheduleExplorerApp.jsx";
 
 const SCHEDULE_URL = "worldCup2026Schedule.json";
 const RESULTS_URL = "completedMatchResults.json";
 
 // The mock uses a mutable variable so individual tests can override seed data.
 let mockSeedData = { requestedAt: "", resultsByMatchNumber: {} };
-vi.mock("../../../public/data/completedMatchResults.json", () => ({
+vi.mock("../../public/data/completedMatchResults.json", () => ({
   get default() {
     return mockSeedData;
   },

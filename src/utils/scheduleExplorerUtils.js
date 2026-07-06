@@ -1,10 +1,10 @@
-import { ELIMINATED_GROUP_STAGE_TEAMS } from "../../config/worldCupConfig.js";
+import { ELIMINATED_GROUP_STAGE_TEAMS } from "../config/eliminatedTeams.js";
 import {
   createKnockoutProbabilityEngine,
   extractBracketLabels,
   isMatchReferenceLabel,
   toCanonicalCountrySlug,
-} from "../../domain/knockout/knockoutProbabilityEngine.js";
+} from "../utils/knockoutEngine.js";
 
 const GROUP_STAGE = "Group Stage";
 const GROUP_QUALIFIER_PATTERN = /^Group\s+([A-L])\s+(winners|runners-up)$/i;

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import schedule from "../../../public/data/worldCup2026Schedule.json";
-import completedMatchResults from "../../../public/data/completedMatchResults.json";
-import { buildScheduleExplorerModel } from "./scheduleExplorerUtils.js";
+import schedule from "../../public/data/worldCup2026Schedule.json";
+import completedMatchResults from "../../public/data/completedMatchResults.json";
+import { buildScheduleExplorerModel } from "../utils/scheduleExplorerUtils.js";
 
 describe("buildScheduleExplorerModel", () => {
   it("builds unique country and venue options from schedule data", () => {
