@@ -43,8 +43,8 @@ function mapCompletedMatchesByNumber(scheduleData, apiMatches) {
 
   const matchLookup = new Map(
     scheduleData.map((match) => {
-      const [slot1 = "", slot2 = ""] = getMatchLabels(match);
-      const key = [toCanonicalCountrySlug(slot1), toCanonicalCountrySlug(slot2)]
+      const [team1Label = "", team2Label = ""] = getMatchLabels(match);
+      const key = [toCanonicalCountrySlug(team1Label), toCanonicalCountrySlug(team2Label)]
         .sort()
         .join("|");
       return [key, match.matchNumber];
