@@ -70,7 +70,9 @@ jobs:
 
       - name: Wait before deployment retry
         if: steps.deployment_attempt_1.outcome == 'failure'
-        run: sleep 15
+        run: |
+          echo "First GitHub Pages deployment attempt failed; retrying once."
+          sleep 15
 
       - name: Deploy to GitHub Pages (attempt 2)
         if: steps.deployment_attempt_1.outcome == 'failure'
