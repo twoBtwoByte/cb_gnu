@@ -18,6 +18,9 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  DEPLOYMENT_RETRY_DELAY_SECONDS: '15'
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -66,9 +69,28 @@ jobs:
         with:
           path: dist/
   
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages (attempt 1)
         id: deployment
         uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Wait before deployment retry
+        if: steps.deployment.outcome == 'failure'
+        run: |
+          echo "First GitHub Pages deployment attempt failed; retrying once after ${DEPLOYMENT_RETRY_DELAY_SECONDS} seconds."
+          sleep "$DEPLOYMENT_RETRY_DELAY_SECONDS"
+
+      - name: Deploy to GitHub Pages (attempt 2)
+        if: steps.deployment.outcome == 'failure'
+        id: deployment_retry
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Fail if both deployment attempts fail
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry.outcome == 'failure'
+        run: |
+          echo "GitHub Pages deployment failed after 2 attempts."
+          exit 1
       
       - name: Log rebuild reason
         run: |
