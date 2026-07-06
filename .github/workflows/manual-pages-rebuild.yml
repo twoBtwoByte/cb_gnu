@@ -70,20 +70,27 @@ jobs:
           path: dist/
   
       - name: Deploy to GitHub Pages (attempt 1)
-        id: deployment_attempt_1
+        id: deployment
         uses: actions/deploy-pages@v4
         continue-on-error: true
 
       - name: Wait before deployment retry
-        if: steps.deployment_attempt_1.outcome == 'failure'
+        if: steps.deployment.outcome == 'failure'
         run: |
           echo "First GitHub Pages deployment attempt failed; retrying once after ${DEPLOYMENT_RETRY_DELAY_SECONDS}s."
           sleep "$DEPLOYMENT_RETRY_DELAY_SECONDS"
 
       - name: Deploy to GitHub Pages (attempt 2)
-        if: steps.deployment_attempt_1.outcome == 'failure'
-        id: deployment_attempt_2
+        if: steps.deployment.outcome == 'failure'
+        id: deployment_retry
         uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Fail if both deployment attempts fail
+        if: steps.deployment.outcome == 'failure' && steps.deployment_retry.outcome == 'failure'
+        run: |
+          echo "GitHub Pages deployment failed after 2 attempts."
+          exit 1
       
       - name: Log rebuild reason
         run: |
