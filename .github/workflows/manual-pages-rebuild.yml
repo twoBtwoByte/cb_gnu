@@ -77,7 +77,7 @@ jobs:
 
       - name: Deploy to GitHub Pages (attempt 2)
         if: steps.deployment_attempt_1.outcome == 'failure'
-        id: deployment
+        id: deployment_attempt_2
         uses: actions/deploy-pages@v4
       
       - name: Log rebuild reason
