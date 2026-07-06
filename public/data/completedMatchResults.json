@@ -474,18 +474,5 @@
       "awayTeam": "Algeria",
       "homeScore": 2,
       "awayScore": 0
-    },
-    "87": {
-      "homeTeam": "Colombia",
-      "awayTeam": "Ghana",
-      "homeScore": 1,
-      "awayScore": 0
-    },
-    "88": {
-      "homeTeam": "Australia",
-      "awayTeam": "Egypt",
-      "homeScore": 3,
-      "awayScore": 5
     }
-  }
 }
