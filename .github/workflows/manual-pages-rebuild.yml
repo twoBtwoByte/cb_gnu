@@ -77,7 +77,7 @@ jobs:
       - name: Wait before deployment retry
         if: steps.deployment.outcome == 'failure'
         run: |
-          echo "First GitHub Pages deployment attempt failed; retrying once after ${DEPLOYMENT_RETRY_DELAY_SECONDS}s."
+          echo "First GitHub Pages deployment attempt failed; retrying once after ${DEPLOYMENT_RETRY_DELAY_SECONDS} seconds."
           sleep "$DEPLOYMENT_RETRY_DELAY_SECONDS"
 
       - name: Deploy to GitHub Pages (attempt 2)
