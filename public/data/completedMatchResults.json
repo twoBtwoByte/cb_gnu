@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-07-07, 22:53:29 EDT",
+  "requestedAt": "2026-07-08, 02:21:39 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -486,6 +486,48 @@
       "awayTeam": "Egypt",
       "homeScore": 3,
       "awayScore": 5
+    },
+    "89": {
+      "homeTeam": "Paraguay",
+      "awayTeam": "France",
+      "homeScore": 0,
+      "awayScore": 1
+    },
+    "90": {
+      "homeTeam": "Canada",
+      "awayTeam": "Morocco",
+      "homeScore": 0,
+      "awayScore": 3
+    },
+    "91": {
+      "homeTeam": "Brazil",
+      "awayTeam": "Norway",
+      "homeScore": 1,
+      "awayScore": 2
+    },
+    "92": {
+      "homeTeam": "Mexico",
+      "awayTeam": "England",
+      "homeScore": 2,
+      "awayScore": 3
+    },
+    "93": {
+      "homeTeam": "Portugal",
+      "awayTeam": "Spain",
+      "homeScore": 0,
+      "awayScore": 1
+    },
+    "94": {
+      "homeTeam": "United States",
+      "awayTeam": "Belgium",
+      "homeScore": 1,
+      "awayScore": 4
+    },
+    "96": {
+      "homeTeam": "Switzerland",
+      "awayTeam": "Colombia",
+      "homeScore": 4,
+      "awayScore": 3
     }
   }
 }
