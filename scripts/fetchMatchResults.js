@@ -166,9 +166,6 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
   const results = {};
   const mappedApiKeys = new Set();
 
-  // Also record which schedule slots were unresolvable (for diagnostics)
-  const unresolvedSlots = new Map(); // teamKey -> { slot1, slot2 }
-
   scheduleData.forEach((match) => {
     const [slot1 = "", slot2 = ""] = getMatchLabels(match);
     const slug1 = toCanonicalCountrySlug(slot1);
@@ -193,9 +190,7 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
         mappedApiKeys.add(key);
       }
     } else {
-      // Track unresolved schedule slots so we can explain unmapped API matches
-      const key = [resolvedSlug1, resolvedSlug2].sort().join("|");
-      unresolvedSlots.set(key, { slot1, slot2 });
+      // slot still unresolved (knockout "Winner match X") — skip
     }
   });
 
