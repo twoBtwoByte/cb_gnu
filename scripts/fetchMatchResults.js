@@ -35,6 +35,7 @@ const COUNTRY_ALIASES = new Map([
   ["cape verde", "cabo verde"],
   ["dr congo", "congo dr"],
   ["bosnia herzegovina", "bosnia and herzegovina"],
+  ["turkey", "turkiye"], // API uses legacy English name; schedule uses official name "Türkiye" → slug "turkiye"
 ]);
 
 const toCanonicalCountrySlug = (value = "") => {
