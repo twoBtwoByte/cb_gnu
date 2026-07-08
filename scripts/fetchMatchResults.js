@@ -60,8 +60,34 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
     return {};
   }
 
-  // Build a map to resolve "Winner match XX" to actual team names from existing results
+  // First pass: map all API matches by team names (ignoring schedule for now)
+  const apiMatchesByTeams = new Map();
+  apiMatches.forEach((apiMatch) => {
+    const homeTeam = apiMatch?.homeTeam?.name ?? "";
+    const awayTeam = apiMatch?.awayTeam?.name ?? "";
+    const homeScore = apiMatch?.score?.fullTime?.home;
+    const awayScore = apiMatch?.score?.fullTime?.away;
+
+    if (
+      typeof homeScore !== "number" ||
+      typeof awayScore !== "number" ||
+      !homeTeam ||
+      !awayTeam
+    ) {
+      return;
+    }
+
+    const key = [toCanonicalCountrySlug(homeTeam), toCanonicalCountrySlug(awayTeam)]
+      .sort()
+      .join("|");
+    apiMatchesByTeams.set(key, { homeTeam, awayTeam, homeScore, awayScore });
+  });
+
+  // Build a map to resolve "Winner match XX" to actual team names
+  // Use both existing results AND new API matches
   const winnerLookup = new Map();
+  
+  // Add winners from existing results
   Object.entries(existingResults).forEach(([matchNum, result]) => {
     const homeSlug = toCanonicalCountrySlug(result.homeTeam);
     const awaySlug = toCanonicalCountrySlug(result.awayTeam);
@@ -77,8 +103,61 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
     }
   });
 
-  // Build lookup table from schedule, resolving placeholders where possible
-  const matchLookup = new Map();
+  // Add winners from new API matches (we'll determine their match numbers later)
+  // This requires iterative resolution
+
+  // Iteratively build the lookup table
+  // Multiple passes may be needed to resolve nested knockout matches
+  let resolved = true;
+  let iterations = 0;
+  const maxIterations = 10; // Prevent infinite loops
+  
+  while (resolved && iterations < maxIterations) {
+    resolved = false;
+    iterations++;
+
+    scheduleData.forEach((match) => {
+      const [slot1 = "", slot2 = ""] = getMatchLabels(match);
+      const slug1 = toCanonicalCountrySlug(slot1);
+      const slug2 = toCanonicalCountrySlug(slot2);
+
+      // Resolve "winner match XX" to actual team if available
+      const resolvedSlug1 = winnerLookup.get(slug1) ?? slug1;
+      const resolvedSlug2 = winnerLookup.get(slug2) ?? slug2;
+
+      // If both teams are resolved, check if we can find this match in API results
+      if (
+        resolvedSlug1 &&
+        resolvedSlug2 &&
+        !resolvedSlug1.startsWith("winner match") &&
+        !resolvedSlug2.startsWith("winner match")
+      ) {
+        const key = [resolvedSlug1, resolvedSlug2].sort().join("|");
+        const apiMatch = apiMatchesByTeams.get(key);
+        
+        if (apiMatch) {
+          // Determine the winner and add to lookup
+          const homeSlug = toCanonicalCountrySlug(apiMatch.homeTeam);
+          const awaySlug = toCanonicalCountrySlug(apiMatch.awayTeam);
+          const winner =
+            apiMatch.homeScore > apiMatch.awayScore
+              ? homeSlug
+              : apiMatch.awayScore > apiMatch.homeScore
+              ? awaySlug
+              : null;
+          
+          const lookupKey = `winner match ${match.matchNumber}`;
+          if (winner && !winnerLookup.has(lookupKey)) {
+            winnerLookup.set(lookupKey, winner);
+            resolved = true; // Continue iterating
+          }
+        }
+      }
+    });
+  }
+
+  // Final pass: map API matches to match numbers
+  const results = {};
   scheduleData.forEach((match) => {
     const [slot1 = "", slot2 = ""] = getMatchLabels(match);
     const slug1 = toCanonicalCountrySlug(slot1);
@@ -88,7 +167,7 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
     const resolvedSlug1 = winnerLookup.get(slug1) ?? slug1;
     const resolvedSlug2 = winnerLookup.get(slug2) ?? slug2;
 
-    // Only create lookup if both teams are resolved (not placeholders)
+    // Only try to match if both teams are resolved
     if (
       resolvedSlug1 &&
       resolvedSlug2 &&
@@ -96,34 +175,15 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
       !resolvedSlug2.startsWith("winner match")
     ) {
       const key = [resolvedSlug1, resolvedSlug2].sort().join("|");
-      matchLookup.set(key, match.matchNumber);
+      const apiMatch = apiMatchesByTeams.get(key);
+      
+      if (apiMatch) {
+        results[match.matchNumber] = apiMatch;
+      }
     }
   });
 
-  return apiMatches.reduce((acc, apiMatch) => {
-    const homeTeam = apiMatch?.homeTeam?.name ?? "";
-    const awayTeam = apiMatch?.awayTeam?.name ?? "";
-    const homeScore = apiMatch?.score?.fullTime?.home;
-    const awayScore = apiMatch?.score?.fullTime?.away;
-
-    if (
-      typeof homeScore !== "number" ||
-      typeof awayScore !== "number" ||
-      !homeTeam ||
-      !awayTeam
-    ) {
-      return acc;
-    }
-
-    const key = [toCanonicalCountrySlug(homeTeam), toCanonicalCountrySlug(awayTeam)]
-      .sort()
-      .join("|");
-    const matchNumber = matchLookup.get(key);
-    if (!matchNumber) return acc;
-
-    acc[matchNumber] = { homeTeam, awayTeam, homeScore, awayScore };
-    return acc;
-  }, {});
+  return results;
 };
 
 async function main() {
