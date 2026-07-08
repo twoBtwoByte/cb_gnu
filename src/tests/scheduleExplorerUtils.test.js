@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
 import schedule from "../../public/data/worldCup2026Schedule.json";
-import completedMatchResults from "../../public/data/completedMatchResults.json";
 import { buildScheduleExplorerModel } from "../utils/scheduleExplorerUtils.js";
+import {
+  canadaAdvancementScenario,
+  canadaQuarterFinalScenario,
+  canadaSemiFinalScenario,
+  earlyEliminationScenario,
+  complexProbabilityScenario,
+  drawScenario,
+  usaAdvancementScenario,
+} from "./fixtures/mockCompletedMatchResults.js";
 
 describe("buildScheduleExplorerModel", () => {
   it("builds unique country and venue options from schedule data", () => {
@@ -108,15 +116,136 @@ describe("buildScheduleExplorerModel", () => {
     );
   });
 
-  it("propagates knockout probabilities using completed match results", () => {
-    const model = buildScheduleExplorerModel(schedule, completedMatchResults.resultsByMatchNumber);
-    const canadaMatches = model.potentialMatchesByCountry.Canada;
-    const match90 = canadaMatches.find((match) => match.matchNumber === 90);
-    const match97 = canadaMatches.find((match) => match.matchNumber === 97);
-    const match104 = canadaMatches.find((match) => match.matchNumber === 104);
+  describe("knockout probability propagation with isolated test data", () => {
+    it("propagates 100% probability when team wins Round of 32 match", () => {
+      const model = buildScheduleExplorerModel(schedule, canadaAdvancementScenario);
+      const canadaMatches = model.potentialMatchesByCountry.Canada;
+      const match90 = canadaMatches.find((match) => match.matchNumber === 90);
 
-    expect(match90?.probability).toBe(100);
-    expect(match97?.probability).toBe(50);
-    expect(match104?.probability).toBe(12.5);
+      // Canada won match 73, so should have 100% probability for Round of 16 match 90
+      expect(match90?.probability).toBe(100);
+      expect(match90?.stage).toBe("Round of 16");
+    });
+
+    it("propagates 100% probability when team wins Round of 16 and advances to QF", () => {
+      const model = buildScheduleExplorerModel(schedule, canadaAdvancementScenario);
+      const canadaMatches = model.potentialMatchesByCountry.Canada;
+      const match97 = canadaMatches.find((match) => match.matchNumber === 97);
+
+      // Canada won match 90 (Round of 16), so Canada is confirmed for Quarter-final match 97
+      // Even if opponent is not yet determined, Canada has 100% probability to be in this match
+      expect(match97?.probability).toBe(100);
+      expect(match97?.stage).toBe("Quarter-final");
+    });
+
+    it("propagates 100% probability when both QF opponents are confirmed", () => {
+      const model = buildScheduleExplorerModel(schedule, canadaQuarterFinalScenario);
+      const canadaMatches = model.potentialMatchesByCountry.Canada;
+      const match97 = canadaMatches.find((match) => match.matchNumber === 97);
+
+      // Both Canada and France won their R16 matches, so both are confirmed for QF match 97
+      expect(match97?.probability).toBe(100);
+      expect(match97?.stage).toBe("Quarter-final");
+    });
+
+    it("propagates 100% probability to semi-final when QF is won", () => {
+      const model = buildScheduleExplorerModel(schedule, canadaQuarterFinalScenario);
+      const canadaMatches = model.potentialMatchesByCountry.Canada;
+      const match101 = canadaMatches.find((match) => match.matchNumber === 101);
+
+      // Canada won match 97 (QF), so has 100% probability to be in SF match 101
+      expect(match101?.probability).toBe(100);
+      expect(match101?.stage).toBe("Semi-final");
+    });
+
+    it("propagates 100% probability to final when semi-final is won", () => {
+      const model = buildScheduleExplorerModel(schedule, canadaSemiFinalScenario);
+      const canadaMatches = model.potentialMatchesByCountry.Canada;
+      const match104 = canadaMatches.find((match) => match.matchNumber === 104);
+
+      // Canada won SF match 101, so has 100% probability to be in Final match 104
+      expect(match104?.probability).toBe(100);
+      expect(match104?.stage).toBe("Final");
+    });
+
+    it("excludes team from knockout matches when eliminated in Round of 32", () => {
+      const model = buildScheduleExplorerModel(schedule, earlyEliminationScenario);
+      const canadaMatches = model.potentialMatchesByCountry.Canada;
+      const match90 = canadaMatches.find((match) => match.matchNumber === 90);
+
+      // Canada lost match 73, so should not appear in match 90
+      expect(match90).toBeUndefined();
+    });
+
+    it("handles draws as unresolved matches - maintains knockout advancement probability", () => {
+      const model = buildScheduleExplorerModel(schedule, drawScenario);
+      const mexicoMatches = model.potentialMatchesByCountry.Mexico;
+      const match79 = mexicoMatches.find((match) => match.matchNumber === 79);
+
+      // Match 1 was a draw, so Mexico should still have probability for match 79
+      // Group stage draws don't eliminate teams from knockout rounds
+      expect(match79?.probability).toBeGreaterThan(0);
+    });
+
+    it("propagates winner through multiple knockout rounds correctly", () => {
+      const model = buildScheduleExplorerModel(schedule, usaAdvancementScenario);
+      const usaMatches = model.potentialMatchesByCountry.USA;
+      const match81 = usaMatches.find((match) => match.matchNumber === 81);
+      const match94 = usaMatches.find((match) => match.matchNumber === 94);
+
+      // USA won match 81 (Round of 32), should have 100% for that match
+      expect(match81?.probability).toBe(100);
+      // USA won match 94 (Round of 16), should have 100% for that match  
+      expect(match94?.probability).toBe(100);
+    });
+
+    it("calculates Round of 16 probabilities correctly after Round of 32 wins", () => {
+      const model = buildScheduleExplorerModel(schedule, complexProbabilityScenario);
+      const englandMatches = model.potentialMatchesByCountry.England;
+      const match92 = englandMatches.find((match) => match.matchNumber === 92);
+
+      // England won match 80 (R32), so should have 100% probability for match 92 (R16)
+      expect(match92?.probability).toBe(100);
+    });
+
+    it("excludes losing teams from subsequent knockout rounds", () => {
+      const model = buildScheduleExplorerModel(schedule, complexProbabilityScenario);
+      const mexicoMatches = model.potentialMatchesByCountry.Mexico;
+      
+      // Mexico lost match 92 (Round of 16) to England
+      // Mexico should not appear in any Quarter-finals or later
+      const quarterFinalMatches = mexicoMatches.filter((match) => 
+        match.matchNumber >= 97 && match.matchNumber <= 100
+      );
+      expect(quarterFinalMatches.length).toBe(0);
+    });
+
+    it("maintains consistent probabilities across opponent scenarios", () => {
+      const model = buildScheduleExplorerModel(schedule, canadaQuarterFinalScenario);
+      const canadaMatches = model.potentialMatchesByCountry.Canada;
+      const match97 = canadaMatches.find((match) => match.matchNumber === 97);
+
+      // Sum of opponent scenario probabilities should equal match probability
+      const totalOpponentProbability = match97?.opponentScenarios?.reduce(
+        (sum, scenario) => sum + scenario.probability,
+        0
+      );
+      expect(totalOpponentProbability).toBe(match97?.probability);
+    });
+
+    it("handles teams eliminated from knockout stage but still shows group stage matches", () => {
+      const model = buildScheduleExplorerModel(schedule, earlyEliminationScenario);
+      const canadaMatches = model.potentialMatchesByCountry.Canada;
+      
+      // Canada should still have group stage matches even if eliminated from knockout
+      const groupMatches = canadaMatches.filter((match) => match.stage === "Group Stage");
+      expect(groupMatches.length).toBeGreaterThan(0);
+      
+      // But no knockout matches after elimination (Round of 32 match 73 is still there but later ones are not)
+      const knockoutMatchesAfterElimination = canadaMatches.filter(
+        (match) => match.stage !== "Group Stage" && match.matchNumber > 73
+      );
+      expect(knockoutMatchesAfterElimination.length).toBe(0);
+    });
   });
 });
