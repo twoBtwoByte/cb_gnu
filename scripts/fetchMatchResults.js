@@ -113,10 +113,10 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
   // Iteratively build the lookup table
   // Multiple passes may be needed to resolve nested knockout matches
   // (Round of 16 → Quarter-finals → Semi-finals → Final = 4 stages max)
-  // Using 10 iterations provides ample headroom for tournament structure
+  // Using 5 iterations (4 stages + 1 buffer) provides adequate headroom
   let resolved = true;
   let iterations = 0;
-  const maxIterations = 10;
+  const maxIterations = 5;
   
   while (resolved && iterations < maxIterations) {
     resolved = false;
