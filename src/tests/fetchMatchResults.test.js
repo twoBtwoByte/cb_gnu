@@ -9,8 +9,10 @@ const COUNTRY_ALIASES = new Map([
   ["ivory coast", "cote d ivoire"],
   ["iran", "ir iran"],
   ["cape verde", "cabo verde"],
+  ["cape verde islands", "cabo verde"],
   ["dr congo", "congo dr"],
   ["bosnia herzegovina", "bosnia and herzegovina"],
+  ["turkey", "turkiye"], // API uses legacy English name; schedule uses "Türkiye" → slug "turkiye"
 ]);
 
 function toCanonicalCountrySlug(value = "") {
@@ -90,8 +92,10 @@ describe("fetchMatchResults script functions", () => {
       expect(toCanonicalCountrySlug("Ivory Coast")).toBe("cote d ivoire");
       expect(toCanonicalCountrySlug("Iran")).toBe("ir iran");
       expect(toCanonicalCountrySlug("Cape Verde")).toBe("cabo verde");
+      expect(toCanonicalCountrySlug("Cape Verde Islands")).toBe("cabo verde");
       expect(toCanonicalCountrySlug("DR Congo")).toBe("congo dr");
       expect(toCanonicalCountrySlug("Bosnia Herzegovina")).toBe("bosnia and herzegovina");
+      expect(toCanonicalCountrySlug("Turkey")).toBe("turkiye");
     });
 
     it("normalizes special characters and whitespace", () => {

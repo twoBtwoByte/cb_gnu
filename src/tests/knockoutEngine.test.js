@@ -43,6 +43,7 @@ describe("knockoutEngine utility functions", () => {
       expect(toCanonicalCountrySlug("Ivory Coast")).toBe("cote d'ivoire");
       expect(toCanonicalCountrySlug("Iran")).toBe("ir iran");
       expect(toCanonicalCountrySlug("Cape Verde")).toBe("cabo verde");
+      expect(toCanonicalCountrySlug("Cape Verde Islands")).toBe("cabo verde");
       expect(toCanonicalCountrySlug("DR Congo")).toBe("congo dr");
     });
 

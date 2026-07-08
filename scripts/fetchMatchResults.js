@@ -33,8 +33,10 @@ const COUNTRY_ALIASES = new Map([
   ["ivory coast", "cote d ivoire"],
   ["iran", "ir iran"],
   ["cape verde", "cabo verde"],
+  ["cape verde islands", "cabo verde"],
   ["dr congo", "congo dr"],
   ["bosnia herzegovina", "bosnia and herzegovina"],
+  ["turkey", "turkiye"], // API uses legacy English name; schedule uses official name "Türkiye" → slug "turkiye"
 ]);
 
 const toCanonicalCountrySlug = (value = "") => {
@@ -164,6 +166,8 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
 
   // Final pass: map API matches to match numbers
   const results = {};
+  const mappedApiKeys = new Set();
+
   scheduleData.forEach((match) => {
     const [slot1 = "", slot2 = ""] = getMatchLabels(match);
     const slug1 = toCanonicalCountrySlug(slot1);
@@ -185,11 +189,42 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
       
       if (apiMatch) {
         results[match.matchNumber] = apiMatch;
+        mappedApiKeys.add(key);
       }
     }
   });
 
-  return results;
+  // Collect all schedule team slugs (both resolved and raw) for name-matching diagnostics
+  const allScheduleSlugs = new Set();
+  scheduleData.forEach((match) => {
+    const [slot1 = "", slot2 = ""] = getMatchLabels(match);
+    allScheduleSlugs.add(toCanonicalCountrySlug(slot1));
+    allScheduleSlugs.add(toCanonicalCountrySlug(slot2));
+  });
+
+  // Identify unmapped API matches and build diagnostics
+  const unmappedApiMatches = [];
+  apiMatchesByTeams.forEach((apiMatch, key) => {
+    if (!mappedApiKeys.has(key)) {
+      const homeSlug = toCanonicalCountrySlug(apiMatch.homeTeam);
+      const awaySlug = toCanonicalCountrySlug(apiMatch.awayTeam);
+
+      let reason;
+      if (!allScheduleSlugs.has(homeSlug) && !allScheduleSlugs.has(awaySlug)) {
+        reason = `neither "${apiMatch.homeTeam}" nor "${apiMatch.awayTeam}" appear in the schedule`;
+      } else if (!allScheduleSlugs.has(homeSlug)) {
+        reason = `"${apiMatch.homeTeam}" (slug: "${homeSlug}") not found in schedule — add an alias or check spelling`;
+      } else if (!allScheduleSlugs.has(awaySlug)) {
+        reason = `"${apiMatch.awayTeam}" (slug: "${awaySlug}") not found in schedule — add an alias or check spelling`;
+      } else {
+        reason = `both teams are in the schedule but this exact pairing wasn't resolved (knockout slot may still reference "Winner match X")`;
+      }
+
+      unmappedApiMatches.push({ apiMatch, reason });
+    }
+  });
+
+  return { results, unmappedApiMatches };
 };
 
 async function main() {
@@ -219,7 +254,7 @@ async function main() {
   console.log(`API returned ${apiMatches.length} completed match(es)`);
   console.log(`Existing results: ${Object.keys(existingResults).length}`);
 
-  const newResults = mapCompletedMatchesByNumber(schedule, apiMatches, existingResults);
+  const { results: newResults, unmappedApiMatches } = mapCompletedMatchesByNumber(schedule, apiMatches, existingResults);
 
   // Merge: preserve existing, add new, update changed
   let addedCount = 0;
@@ -273,9 +308,11 @@ async function main() {
   }
 
   // Warn about unmapped API matches
-  const mappedCount = Object.keys(newResults).length;
-  if (mappedCount < apiMatches.length) {
-    console.warn(`WARNING: ${apiMatches.length - mappedCount} API match(es) could not be mapped to schedule`);
+  if (unmappedApiMatches.length > 0) {
+    console.warn(`WARNING: ${unmappedApiMatches.length} API match(es) could not be mapped to schedule:`);
+    unmappedApiMatches.forEach(({ apiMatch, reason }) => {
+      console.warn(`  - ${apiMatch.homeTeam} ${apiMatch.homeScore}–${apiMatch.awayScore} ${apiMatch.awayTeam}: ${reason}`);
+    });
   }
 
   const output = {

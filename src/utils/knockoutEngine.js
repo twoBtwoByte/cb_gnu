@@ -9,6 +9,7 @@ const COUNTRY_ALIASES = new Map([
   ["ivory coast", "cote d'ivoire"],
   ["iran", "ir iran"],
   ["cape verde", "cabo verde"],
+  ["cape verde islands", "cabo verde"],
   ["dr congo", "congo dr"],
   ["bosnia & herzegovina", "bosnia and herzegovina"],
   ["bosnia-herzegovina", "bosnia and herzegovina"],
