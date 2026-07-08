@@ -23,6 +23,10 @@ const API_TOKEN = process.env.VITE_FOOTBALL_DATA_API_TOKEN;
 
 const apiUrl = `${API_BASE_URL}/competitions/${COMPETITION_CODE}/matches?status=FINISHED`;
 
+// Tournament structure constants
+const GROUP_STAGE_MATCHES = 88; // Total matches in group stage
+const KNOCKOUT_GAP_THRESHOLD = 10; // Gaps >10 indicate missing knockout round data
+
 const COUNTRY_ALIASES = new Map([
   ["south korea", "korea republic"],
   ["united states", "usa"],
@@ -259,12 +263,11 @@ async function main() {
     Object.entries(mergedResults).sort(([a], [b]) => Number(a) - Number(b))
   );
 
-  // Check for unexpected gaps in knockout stage
-  // Group stage has 88 matches; gaps >10 in knockout (matches 89+) may indicate missing data
+  // Check for unexpected gaps in knockout stage (matches after group stage)
   const sortedNumbers = Object.keys(sortedResults).map(Number);
   for (let i = 1; i < sortedNumbers.length; i++) {
     const gap = sortedNumbers[i] - sortedNumbers[i - 1];
-    if (gap > 10 && sortedNumbers[i] > 88) {
+    if (gap > KNOCKOUT_GAP_THRESHOLD && sortedNumbers[i] > GROUP_STAGE_MATCHES) {
       console.warn(`WARNING: Large gap in match numbers: ${sortedNumbers[i - 1]} to ${sortedNumbers[i]}`);
     }
   }
