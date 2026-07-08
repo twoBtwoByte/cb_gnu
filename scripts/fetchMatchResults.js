@@ -190,8 +190,6 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
         results[match.matchNumber] = apiMatch;
         mappedApiKeys.add(key);
       }
-    } else {
-      // slot still unresolved (knockout "Winner match X") — skip
     }
   });
 
