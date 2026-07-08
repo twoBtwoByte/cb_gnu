@@ -108,9 +108,11 @@ const mapCompletedMatchesByNumber = (scheduleData, apiMatches, existingResults =
 
   // Iteratively build the lookup table
   // Multiple passes may be needed to resolve nested knockout matches
+  // (Round of 16 → Quarter-finals → Semi-finals → Final = 4 stages max)
+  // Using 10 iterations provides ample headroom for tournament structure
   let resolved = true;
   let iterations = 0;
-  const maxIterations = 10; // Prevent infinite loops
+  const maxIterations = 10;
   
   while (resolved && iterations < maxIterations) {
     resolved = false;
@@ -258,6 +260,7 @@ async function main() {
   );
 
   // Check for unexpected gaps in knockout stage
+  // Group stage has 88 matches; gaps >10 in knockout (matches 89+) may indicate missing data
   const sortedNumbers = Object.keys(sortedResults).map(Number);
   for (let i = 1; i < sortedNumbers.length; i++) {
     const gap = sortedNumbers[i] - sortedNumbers[i - 1];
