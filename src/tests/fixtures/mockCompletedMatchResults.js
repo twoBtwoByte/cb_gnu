@@ -204,4 +204,3 @@ export const usaAdvancementScenario = {
     awayScore: 1,
   },
 };
-
