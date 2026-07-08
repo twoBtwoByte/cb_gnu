@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-07-08, 02:29:54 EDT",
+  "requestedAt": "2026-07-08, 04:53:12 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -30,6 +30,12 @@
       "awayTeam": "Scotland",
       "homeScore": 0,
       "awayScore": 1
+    },
+    "6": {
+      "homeTeam": "Australia",
+      "awayTeam": "Turkey",
+      "homeScore": 2,
+      "awayScore": 0
     },
     "7": {
       "homeTeam": "Brazil",
@@ -72,6 +78,12 @@
       "awayTeam": "Uruguay",
       "homeScore": 1,
       "awayScore": 1
+    },
+    "14": {
+      "homeTeam": "Spain",
+      "awayTeam": "Cape Verde Islands",
+      "homeScore": 0,
+      "awayScore": 0
     },
     "15": {
       "homeTeam": "Iran",
@@ -169,6 +181,12 @@
       "homeScore": 0,
       "awayScore": 1
     },
+    "31": {
+      "homeTeam": "Turkey",
+      "awayTeam": "Paraguay",
+      "homeScore": 0,
+      "awayScore": 1
+    },
     "32": {
       "homeTeam": "United States",
       "awayTeam": "Australia",
@@ -198,6 +216,12 @@
       "awayTeam": "Japan",
       "homeScore": 0,
       "awayScore": 4
+    },
+    "37": {
+      "homeTeam": "Uruguay",
+      "awayTeam": "Cape Verde Islands",
+      "homeScore": 2,
+      "awayScore": 2
     },
     "38": {
       "homeTeam": "Spain",
@@ -325,6 +349,12 @@
       "homeScore": 1,
       "awayScore": 3
     },
+    "59": {
+      "homeTeam": "Turkey",
+      "awayTeam": "United States",
+      "homeScore": 3,
+      "awayScore": 2
+    },
     "60": {
       "homeTeam": "Paraguay",
       "awayTeam": "Australia",
@@ -354,6 +384,12 @@
       "awayTeam": "Belgium",
       "homeScore": 1,
       "awayScore": 5
+    },
+    "65": {
+      "homeTeam": "Cape Verde Islands",
+      "awayTeam": "Saudi Arabia",
+      "homeScore": 0,
+      "awayScore": 0
     },
     "66": {
       "homeTeam": "Uruguay",
@@ -475,6 +511,12 @@
       "homeScore": 2,
       "awayScore": 0
     },
+    "86": {
+      "homeTeam": "Argentina",
+      "awayTeam": "Cape Verde Islands",
+      "homeScore": 3,
+      "awayScore": 2
+    },
     "87": {
       "homeTeam": "Colombia",
       "awayTeam": "Ghana",
@@ -522,6 +564,12 @@
       "awayTeam": "Belgium",
       "homeScore": 1,
       "awayScore": 4
+    },
+    "95": {
+      "homeTeam": "Argentina",
+      "awayTeam": "Egypt",
+      "homeScore": 3,
+      "awayScore": 2
     },
     "96": {
       "homeTeam": "Switzerland",
