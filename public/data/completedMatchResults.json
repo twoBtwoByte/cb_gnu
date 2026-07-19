@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-07-19, 16:52:50 EDT",
+  "requestedAt": "2026-07-19, 18:55:25 EDT",
   "resultsByMatchNumber": {
     "1": {
       "homeTeam": "Mexico",
@@ -612,6 +612,12 @@
       "awayTeam": "Argentina",
       "homeScore": 1,
       "awayScore": 2
+    },
+    "104": {
+      "homeTeam": "Spain",
+      "awayTeam": "Argentina",
+      "homeScore": 1,
+      "awayScore": 0
     }
   }
 }
